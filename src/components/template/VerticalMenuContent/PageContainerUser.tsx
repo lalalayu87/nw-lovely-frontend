@@ -25,7 +25,7 @@ const CustomHeader = <T extends ElementType>({
     return <Header {...props} />
 }
 
-const PageContainer = (props: PageContainerProps) => {
+const PageContainerUser = (props: PageContainerProps) => {
     const {
         pageContainerType = 'default',
         children,
@@ -92,4 +92,4 @@ const PageContainer = (props: PageContainerProps) => {
     )
 }
 
-export default PageContainer
+export default PageContainerUser

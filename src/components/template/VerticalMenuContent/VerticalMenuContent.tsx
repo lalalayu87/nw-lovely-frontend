@@ -19,7 +19,7 @@ export interface VerticalMenuContentProps {
     collapsed?: boolean
     routeKey: string
     navigationTree?: NavigationTree[]
-    userAuthority: string[]
+    userAuthority: string
     onMenuItemClick?: () => void
     direction?: Direction
 }
@@ -32,7 +32,7 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         collapsed,
         routeKey,
         navigationTree = [],
-        userAuthority = [],
+        userAuthority = "",
         onMenuItemClick,
         direction = themeConfig.direction,
     } = props

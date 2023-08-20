@@ -11,12 +11,6 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/Dashboard/Home')),
         authority: [],
     },
-    {
-        key: 'UserHsome',
-        path: '/userhome',
-        component: lazy(() => import('@/views/Dashboard/UserHome')),
-        authority: [],
-    },
     /** Example purpose only, please remove */
     {
         key: 'ScheduleList',
@@ -72,6 +66,15 @@ export const protectedRoutes = [
         component: lazy(() =>
             import('@/views/demo/Mypage')
         ),
+        authority: [],
+    },
+]
+
+export const protectedUserRoutes = [
+    {
+        key: 'Userhome',
+        path: '/userhome',
+        component: lazy(() => import('@/views/Dashboard/UserHome')),
         authority: [],
     },
 ]

@@ -14,6 +14,7 @@ import navigationConfig from '@/configs/navigation.config'
 import VerticalMenuContent from '@/components/template/VerticalMenuContent'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useAppSelector } from '@/store'
+import userNavigationConfig from '@/configs/navigation.config/userIndex'
 
 const sideNavStyle = {
     width: SIDE_NAV_WIDTH,
@@ -63,14 +64,24 @@ const SideNav = () => {
     }
 
     const menuContent = (
+        userAuthority === "admin" ? (
         <VerticalMenuContent
             navMode={navMode}
             collapsed={sideNavCollapse}
             navigationTree={navigationConfig}
             routeKey={currentRouteKey}
-            userAuthority={userAuthority as string[]}
+            userAuthority={userAuthority as string}
             direction={direction}
-        />
+            />) : (
+             <VerticalMenuContent
+            navMode={navMode}
+            collapsed={sideNavCollapse}
+            navigationTree={userNavigationConfig}
+            routeKey={currentRouteKey}
+            userAuthority={userAuthority as string}
+            direction={direction}
+            />   
+        )
     )
 
     return (
