@@ -16,20 +16,20 @@ interface SignUpFormProps extends CommonProps {
 }
 
 type SignUpFormSchema = {
+    id: string
     userName: string
     password: string
     email: string
 }
 
 const validationSchema = Yup.object().shape({
-    userName: Yup.string().required('Please enter your user name'),
-    email: Yup.string()
-        .email('Invalid email')
-        .required('Please enter your email'),
-    password: Yup.string().required('Please enter your password'),
+    id: Yup.string().required('id를 입력하세요.'),
+    userName: Yup.string().required('이름을 입력하세요.'),
+    email: Yup.string().email('Invalid email').required('이메일을 입력하세요.'),
+    password: Yup.string().required('비밀번호를 입력하세요.'),
     confirmPassword: Yup.string().oneOf(
         [Yup.ref('password')],
-        'Your passwords do not match'
+        '비밀번호가 일치하지 않습니다.'
     ),
 })
 
@@ -44,9 +44,9 @@ const SignUpForm = (props: SignUpFormProps) => {
         values: SignUpFormSchema,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
-        const { userName, password, email } = values
+        const { id, userName, password, email } = values
         setSubmitting(true)
-        const result = await signUp({ userName, password, email })
+        const result = await signUp({ id, userName, password, email })
 
         if (result?.status === 'failed') {
             setMessage(result.message)
@@ -64,6 +64,7 @@ const SignUpForm = (props: SignUpFormProps) => {
             )}
             <Formik
                 initialValues={{
+                    id: 'id',
                     userName: 'admin1',
                     password: '123Qwe1',
                     confirmPassword: '123Qwe1',
@@ -82,7 +83,20 @@ const SignUpForm = (props: SignUpFormProps) => {
                     <Form>
                         <FormContainer>
                             <FormItem
-                                label="User Name"
+                                label="ID"
+                                invalid={errors.userName && touched.userName}
+                                errorMessage={errors.userName}
+                            >
+                                <Field
+                                    type="text"
+                                    autoComplete="off"
+                                    name="id"
+                                    placeholder="아이디"
+                                    component={Input}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="이름"
                                 invalid={errors.userName && touched.userName}
                                 errorMessage={errors.userName}
                             >
@@ -90,7 +104,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     type="text"
                                     autoComplete="off"
                                     name="userName"
-                                    placeholder="User Name"
+                                    placeholder="이름"
                                     component={Input}
                                 />
                             </FormItem>
@@ -103,24 +117,37 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     type="email"
                                     autoComplete="off"
                                     name="email"
-                                    placeholder="Email"
+                                    placeholder="이메일"
                                     component={Input}
                                 />
                             </FormItem>
                             <FormItem
-                                label="Password"
+                                label="인증코드"
+                                invalid={errors.email && touched.email}
+                                errorMessage={errors.email}
+                            >
+                                <Field
+                                    type="email"
+                                    autoComplete="off"
+                                    name="emailCode"
+                                    placeholder="이메일 인증코드"
+                                    component={Input}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="비밀번호"
                                 invalid={errors.password && touched.password}
                                 errorMessage={errors.password}
                             >
                                 <Field
                                     autoComplete="off"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder="비밀번호 (영문, 숫자, 특수문자 8-30자)"
                                     component={PasswordInput}
                                 />
                             </FormItem>
                             <FormItem
-                                label="Confirm Password"
+                                label="비밀번호 확인"
                                 invalid={
                                     errors.confirmPassword &&
                                     touched.confirmPassword
@@ -130,8 +157,34 @@ const SignUpForm = (props: SignUpFormProps) => {
                                 <Field
                                     autoComplete="off"
                                     name="confirmPassword"
-                                    placeholder="Confirm Password"
+                                    placeholder="비밀번호 확인"
                                     component={PasswordInput}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="업체명"
+                                invalid={errors.userName && touched.userName}
+                                errorMessage={errors.userName}
+                            >
+                                <Field
+                                    type="text"
+                                    autoComplete="off"
+                                    name="company"
+                                    placeholder="업체명"
+                                    component={Input}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="사업자등록번호"
+                                invalid={errors.userName && touched.userName}
+                                errorMessage={errors.userName}
+                            >
+                                <Field
+                                    type="text"
+                                    autoComplete="off"
+                                    name="businessRegistration"
+                                    placeholder="사업자등록번호"
+                                    component={Input}
                                 />
                             </FormItem>
                             <Button
