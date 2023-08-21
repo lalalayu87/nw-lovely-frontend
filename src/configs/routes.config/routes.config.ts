@@ -13,15 +13,9 @@ export const protectedRoutes = [
     },
     /** Example purpose only, please remove */
     {
-        key: 'ScheduleList',
-        path: '/scheduleList',
-        component: lazy(() => import('@/views/demo/ScheduleList')),
-        authority: [],
-    },
-    {
-        key: 'Customer',
-        path: '/customer',
-        component: lazy(() => import('@/views/demo/Customer')),
+        key: 'singleMenuItem',
+        path: '/single-menu-view',
+        component: lazy(() => import('@/views/demo/SingleMenuView')),
         authority: [],
     },
     {
@@ -39,33 +33,29 @@ export const protectedRoutes = [
     {
         key: 'groupMenu.single',
         path: '/group-single-menu-item-view',
-        component: lazy(() =>
-            import('@/views/demo/GroupSingleMenuItemView')
-        ),
+        component: lazy(() => import('@/views/demo/GroupSingleMenuItemView')),
         authority: [],
     },
     {
         key: 'groupMenu.collapse.item1',
         path: '/group-collapse-menu-item-view-1',
-        component: lazy(() =>
-            import('@/views/demo/GroupCollapseMenuItemView1')
+        component: lazy(
+            () => import('@/views/demo/GroupCollapseMenuItemView1')
         ),
         authority: [],
     },
     {
         key: 'groupMenu.collapse.item2',
         path: '/group-collapse-menu-item-view-2',
-        component: lazy(() =>
-            import('@/views/demo/GroupCollapseMenuItemView2')
+        component: lazy(
+            () => import('@/views/demo/GroupCollapseMenuItemView2')
         ),
         authority: [],
     },
     {
         key: 'Mypage',
         path: '/mypage',
-        component: lazy(() =>
-            import('@/views/demo/Mypage')
-        ),
+        component: lazy(() => import('@/views/demo/Mypage')),
         authority: [],
     },
 ]

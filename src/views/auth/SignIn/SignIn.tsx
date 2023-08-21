@@ -4,8 +4,8 @@ const SignIn = () => {
     return (
         <>
             <div className="mb-8">
-                <h3 className="mb-1">낭만웨딩 어서오세요!</h3>
-                <p>낭만웨딩에서 새로운 인생을 시작하세요!</p>
+                <h3 className="mb-1">Welcome!</h3>
+                <p>낭만 웨딩에서 특별한 순간을 시작해보세요!</p>
             </div>
             <SignInForm disableSubmit={false} />
         </>

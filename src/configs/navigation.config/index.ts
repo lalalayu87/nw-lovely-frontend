@@ -1,7 +1,7 @@
 import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_ITEM,
-    NAV_ITEM_TYPE_COLLAPSE
+    NAV_ITEM_TYPE_COLLAPSE,
 } from '@/constants/navigation.constant'
 import type { NavigationTree } from '@/@types/navigation'
 
@@ -18,30 +18,10 @@ const navigationConfig: NavigationTree[] = [
     },
     /** Example purpose only, please remove */
     {
-        key: 'ScheduleList',
-        path: '/scheduleList',
-        title: '스케줄표',
-        translateKey: 'nav.scheduleList',
-        icon: 'singleMenu',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
-    {
-        key: 'Mypage',
-        path: '/mypage',
-        title: '마이페이지',
-        translateKey: 'nav.mypage',
-        icon: 'singleMenu',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
-    {
-        key: 'Customer',
-        path: '/customer',
-        title: '고객관리',
-        translateKey: 'nav.customer',
+        key: 'singleMenuItem',
+        path: '/single-menu-view',
+        title: 'Single menu item',
+        translateKey: 'nav.singleMenuItem',
         icon: 'singleMenu',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],

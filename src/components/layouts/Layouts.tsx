@@ -24,12 +24,13 @@ const layouts = {
 
 const Layout = () => {
     const layoutType = useAppSelector((state) => state.theme.layout.type)
-    // console.log(useAppSelector((state) => state))
+
     const { authenticated } = useAuth()
+
     useDirection()
 
     useLocale()
-    // console.log("authenticated : ", authenticated)
+
     const AppLayout = useMemo(() => {
         if (authenticated) {
             return layouts[layoutType]

@@ -34,7 +34,6 @@ const PageContainer = (props: PageContainerProps) => {
         extraHeader,
         footer = true,
     } = props
-    console.log('children : ', children)
 
     return (
         <div className="h-full flex flex-auto flex-col justify-between">

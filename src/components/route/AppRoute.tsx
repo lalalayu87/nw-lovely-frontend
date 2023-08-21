@@ -21,9 +21,6 @@ const AppRoute = <T extends Record<string, unknown>>({
     routeKey,
     ...props
 }: AppRouteProps<T>) => {
-    console.log('component : ', Component)
-    console.log('routeKey : ', routeKey)
-    console.log('props : ', props)
     const location = useLocation()
 
     const dispatch = useAppDispatch()

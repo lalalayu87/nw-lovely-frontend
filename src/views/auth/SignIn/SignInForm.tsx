@@ -135,7 +135,7 @@ const SignInForm = (props: SignInFormProps) => {
                             </Button>
                             <div className="mt-4 text-center">
                                 <span>{`Don't have an account yet?`} </span>
-                                <ActionLink to={signUpUrl}>Sign up</ActionLink>
+                                <ActionLink to={signUpUrl}>회원가입</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>
