@@ -20,7 +20,7 @@ interface DefaultItemProps {
     nav: NavigationTree
     onLinkClick?: (link: { key: string; title: string; path: string }) => void
     sideCollapsed?: boolean
-    userAuthority: string[]
+    userAuthority: string
 }
 
 interface VerticalMenuItemProps extends CollapsedItemProps, DefaultItemProps {}

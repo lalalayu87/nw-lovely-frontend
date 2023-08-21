@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import { APP_NAME } from '@/constants/app.constant'
 import type { CommonProps } from '@/@types/common'
 
 interface LogoProps extends CommonProps {
@@ -18,7 +17,7 @@ const Logo = (props: LogoProps) => {
         className,
         imgClass,
         style,
-        logoWidth = 'auto'
+        logoWidth = 'auto',
     } = props
 
     return (
@@ -26,7 +25,7 @@ const Logo = (props: LogoProps) => {
             className={classNames('logo', className)}
             style={{
                 ...style,
-                ...{ width: logoWidth }
+                ...{ width: logoWidth },
             }}
         >
             {/* 로고 */}

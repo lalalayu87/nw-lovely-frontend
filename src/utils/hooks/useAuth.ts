@@ -43,13 +43,14 @@ function useAuth() {
                             resp.data.user || {
                                 avatar: '',
                                 userName: 'Anonymous',
-                                authority: ['USER'],
+                                authority: 'USER',
                                 email: '',
                             }
                         )
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
+
                 navigate(
                     redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
                 )
@@ -79,7 +80,7 @@ function useAuth() {
                             resp.data.user || {
                                 avatar: '',
                                 userName: 'Anonymous',
-                                authority: ['USER'],
+                                authority: 'USER',
                                 email: '',
                             }
                         )
@@ -110,7 +111,7 @@ function useAuth() {
                 avatar: '',
                 userName: '',
                 email: '',
-                authority: [],
+                authority: '',
             })
         )
         navigate(appConfig.unAuthenticatedEntryPath)
