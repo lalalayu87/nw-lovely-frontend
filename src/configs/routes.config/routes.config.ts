@@ -8,7 +8,7 @@ export const protectedRoutes = [
     {
         key: 'home',
         path: '/home',
-        component: lazy(() => import('@/views/Home')),
+        component: lazy(() => import('@/views/Dashboard/Home')),
         authority: [],
     },
     /** Example purpose only, please remove */
@@ -33,25 +33,38 @@ export const protectedRoutes = [
     {
         key: 'groupMenu.single',
         path: '/group-single-menu-item-view',
-        component: lazy(() =>
-            import('@/views/demo/GroupSingleMenuItemView')
-        ),
+        component: lazy(() => import('@/views/demo/GroupSingleMenuItemView')),
         authority: [],
     },
     {
         key: 'groupMenu.collapse.item1',
         path: '/group-collapse-menu-item-view-1',
-        component: lazy(() =>
-            import('@/views/demo/GroupCollapseMenuItemView1')
+        component: lazy(
+            () => import('@/views/demo/GroupCollapseMenuItemView1')
         ),
         authority: [],
     },
     {
         key: 'groupMenu.collapse.item2',
         path: '/group-collapse-menu-item-view-2',
-        component: lazy(() =>
-            import('@/views/demo/GroupCollapseMenuItemView2')
+        component: lazy(
+            () => import('@/views/demo/GroupCollapseMenuItemView2')
         ),
+        authority: [],
+    },
+    {
+        key: 'Mypage',
+        path: '/mypage',
+        component: lazy(() => import('@/views/demo/Mypage')),
+        authority: [],
+    },
+]
+
+export const protectedUserRoutes = [
+    {
+        key: 'Userhome',
+        path: '/userhome',
+        component: lazy(() => import('@/views/Dashboard/UserHome')),
         authority: [],
     },
 ]

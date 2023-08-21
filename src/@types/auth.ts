@@ -7,7 +7,7 @@ export type SignInResponse = {
     token: string
     user: {
         userName: string
-        authority: string[]
+        authority: string
         avatar: string
         email: string
     }

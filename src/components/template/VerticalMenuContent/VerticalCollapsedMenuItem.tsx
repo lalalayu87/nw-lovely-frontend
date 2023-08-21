@@ -11,7 +11,7 @@ import type { NavigationTree } from '@/@types/navigation'
 interface DefaultItemProps extends CommonProps {
     nav: NavigationTree
     onLinkClick?: (link: { key: string; title: string; path: string }) => void
-    userAuthority: string[]
+    userAuthority: string
 }
 
 interface CollapsedItemProps extends DefaultItemProps {
