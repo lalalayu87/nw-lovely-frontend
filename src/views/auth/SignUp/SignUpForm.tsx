@@ -120,6 +120,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     placeholder="이메일"
                                     component={Input}
                                 />
+                                <Button>인증</Button>
                             </FormItem>
                             <FormItem
                                 label="인증코드"
