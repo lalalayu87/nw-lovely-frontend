@@ -9,6 +9,8 @@ import type { CommonProps } from '../../@types/common'
 import type { MonthBaseProps } from './components/Month'
 import type { DayKeydownPayload } from './components/types'
 import type { RefObject } from 'react'
+import Button from '@/components/ui/Button'
+import { TbArrowBigLeft, TbArrowBigRight } from 'react-icons/tb'
 
 export interface DateTableProps extends CommonProps, MonthBaseProps {
     dateViewCount: number
@@ -110,38 +112,36 @@ const DateTable = (props: DateTableProps) => {
                             )
                         }
                     >
-                        <div>
-                            <button
-                                className={classNames(pickerHeaderLabelClass)}
-                                disabled={!enableHeaderLabel}
-                                tabIndex={index > 0 ? -1 : 0}
-                                onClick={() => onNextLevel('month')}
-                                onMouseDown={(event) =>
-                                    preventFocus && event.preventDefault()
-                                }
-                            >
-                                {formatMonthLabel({
-                                    month: monthDate,
-                                    locale,
-                                    format: labelFormat?.month || 'MMM',
-                                })}
-                            </button>
-                            <button
-                                className={classNames(pickerHeaderLabelClass)}
-                                disabled={!enableHeaderLabel}
-                                tabIndex={index > 0 ? -1 : 0}
-                                onClick={() => onNextLevel('year')}
-                                onMouseDown={(event) =>
-                                    preventFocus && event.preventDefault()
-                                }
-                            >
-                                {formatMonthLabel({
-                                    month: monthDate,
-                                    locale,
-                                    format: labelFormat?.year || 'YYYY',
-                                })}
-                            </button>
-                        </div>
+                        <button
+                            className={classNames(pickerHeaderLabelClass)}
+                            disabled={!enableHeaderLabel}
+                            tabIndex={index > 0 ? -1 : 0}
+                            onClick={() => onNextLevel('month')}
+                            onMouseDown={(event) =>
+                                preventFocus && event.preventDefault()
+                            }
+                        >
+                            {formatMonthLabel({
+                                month: monthDate,
+                                locale,
+                                format: labelFormat?.month || 'MMM',
+                            })}
+                        </button>
+                        <button
+                            className={classNames(pickerHeaderLabelClass)}
+                            disabled={!enableHeaderLabel}
+                            tabIndex={index > 0 ? -1 : 0}
+                            onClick={() => onNextLevel('year')}
+                            onMouseDown={(event) =>
+                                preventFocus && event.preventDefault()
+                            }
+                        >
+                            {formatMonthLabel({
+                                month: monthDate,
+                                locale,
+                                format: labelFormat?.year || 'YYYY',
+                            })}
+                        </button>
                     </Header>
                     <Month
                         month={month}
@@ -163,7 +163,23 @@ const DateTable = (props: DateTableProps) => {
             )
         })
 
-    return <>{months}</>
+    return (
+        <>
+            {/* <Button
+                shape="circle"
+                variant="plain"
+                size="xs"
+                icon={<TbArrowBigLeft />}
+            /> */}
+            {months}
+            {/* <Button
+                shape="circle"
+                variant="plain"
+                size="xs"
+                icon={<TbArrowBigRight />}
+            /> */}
+        </>
+    )
 }
 
 export default DateTable

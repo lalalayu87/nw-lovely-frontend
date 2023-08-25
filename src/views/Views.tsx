@@ -52,7 +52,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                                               'props in View : ',
                                               props
                                           )} */}
-                                        ,
+
                                         <AppRoute
                                             routeKey={route.key}
                                             component={route.component}
@@ -105,7 +105,6 @@ const AllRoutes = (props: AllRoutesProps) => {
                                         {...props}
                                         {...route.meta}
                                     >
-                                        ,
                                         <AppRoute
                                             routeKey={route.key}
                                             component={route.component}

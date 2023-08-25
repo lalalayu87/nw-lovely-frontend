@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import { APP_NAME } from '@/constants/app.constant'
 import type { CommonProps } from '@/@types/common'
 
 interface LogoProps extends CommonProps {

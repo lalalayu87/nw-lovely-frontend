@@ -1,4 +1,4 @@
-const Mypage = () => {
+const ScheduleUser = () => {
     return (
         <div>
             <p>MyPage</p>
@@ -6,4 +6,4 @@ const Mypage = () => {
     )
 }
 
-export default Mypage;
+export default ScheduleUser

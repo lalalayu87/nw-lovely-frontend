@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import isEmpty from 'lodash/isEmpty'
 
 function useAuthority(
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     userAuthority: string = '',
     authority: string[] = [],
     emptyCheck = false
