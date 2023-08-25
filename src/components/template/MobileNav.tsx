@@ -87,7 +87,7 @@ const MobileNav = () => {
                                     collapsed={sideNavCollapse}
                                     navigationTree={navigationConfig}
                                     routeKey={currentRouteKey}
-                                    userAuthority={userAuthority as string[]}
+                                    userAuthority={userAuthority as string}
                                     direction={direction}
                                     onMenuItemClick={onDrawerClose}
                                 />

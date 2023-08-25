@@ -66,7 +66,7 @@
 }
 
 .picker-table {
-  @apply border-collapse w-full;
+  @apply border-collapse w-11/12;
 }
 
 .picker-header-arrow {
