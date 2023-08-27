@@ -1,20 +1,30 @@
 {
     "nav": {
         "home": "Home",
-        "singleMenuItem": "Single menu item",
+        "organization": "조직관리",
+        "place": "장소관리",
+        "schedule": "일정관리",
+        "cuesheet": "큐시트관리",
+        "mypage": "마이페이지",
+        "communityUser": "커뮤니티",
         "collapseMenu": {
-            "collapseMenu": "Collapse menu item",
+            "collapseMenu": "장소관리",
             "item1": "Collapse menu item 1",
             "item2": "Collapse menu item 2"
         },
         "groupMenu": {
             "groupMenu": "Group menu",
-            "single": "Group single menu item",
+            "single": "일정관리",
             "collapse": {
-                "collapse": "Group collapse menu",
+                "collapse": "큐시트관리",
                 "item1": "Group collapse menu item 1",
                 "item2": "Group collapse menu item 2"
             }
+        },
+        "collapseMenu1": {
+            "collapseMenu": "마이페이지",
+            "item1": "마이페이지1",
+            "item2": "마이페이지2"
         }
     }
 }

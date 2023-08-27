@@ -24,8 +24,8 @@ type SignInFormSchema = {
 }
 
 const validationSchema = Yup.object().shape({
-    userName: Yup.string().required('Please enter your user name'),
-    password: Yup.string().required('Please enter your password'),
+    userName: Yup.string().required('아이디를 입력해주세요'),
+    password: Yup.string().required('비밀번호를 입력해주세요'),
     rememberMe: Yup.bool(),
 })
 
@@ -83,7 +83,7 @@ const SignInForm = (props: SignInFormProps) => {
                     <Form>
                         <FormContainer>
                             <FormItem
-                                label="User Name"
+                                label="아이디"
                                 invalid={
                                     (errors.userName &&
                                         touched.userName) as boolean
@@ -94,12 +94,12 @@ const SignInForm = (props: SignInFormProps) => {
                                     type="text"
                                     autoComplete="off"
                                     name="userName"
-                                    placeholder="User Name"
+                                    placeholder="아이디"
                                     component={Input}
                                 />
                             </FormItem>
                             <FormItem
-                                label="Password"
+                                label="비밀번호"
                                 invalid={
                                     (errors.password &&
                                         touched.password) as boolean
@@ -109,7 +109,7 @@ const SignInForm = (props: SignInFormProps) => {
                                 <Field
                                     autoComplete="off"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder="비밀번호"
                                     component={PasswordInput}
                                 />
                             </FormItem>
@@ -119,10 +119,10 @@ const SignInForm = (props: SignInFormProps) => {
                                     name="rememberMe"
                                     component={Checkbox}
                                 >
-                                    Remember Me
+                                    로그인 정보 기억하기
                                 </Field>
                                 <ActionLink to={forgotPasswordUrl}>
-                                    Forgot Password?
+                                    비밀번호 찾기
                                 </ActionLink>
                             </div>
                             <Button
@@ -134,8 +134,8 @@ const SignInForm = (props: SignInFormProps) => {
                                 {isSubmitting ? 'Signing in...' : 'Sign In'}
                             </Button>
                             <div className="mt-4 text-center">
-                                <span>{`Don't have an account yet?`} </span>
-                                <ActionLink to={signUpUrl}>Sign up</ActionLink>
+                                <span>{`아직 회원이 아니신가요?`} </span>
+                                <ActionLink to={signUpUrl}>회원가입</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>

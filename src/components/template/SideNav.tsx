@@ -63,26 +63,26 @@ const SideNav = () => {
         return navMode
     }
 
-    const menuContent = (
-        userAuthority === "admin" ? (
-        <VerticalMenuContent
-            navMode={navMode}
-            collapsed={sideNavCollapse}
-            navigationTree={navigationConfig}
-            routeKey={currentRouteKey}
-            userAuthority={userAuthority as string}
-            direction={direction}
-            />) : (
-             <VerticalMenuContent
-            navMode={navMode}
-            collapsed={sideNavCollapse}
-            navigationTree={userNavigationConfig}
-            routeKey={currentRouteKey}
-            userAuthority={userAuthority as string}
-            direction={direction}
-            />   
+    const menuContent =
+        userAuthority === 'admin' ? (
+            <VerticalMenuContent
+                navMode={navMode}
+                collapsed={sideNavCollapse}
+                navigationTree={navigationConfig}
+                routeKey={currentRouteKey}
+                userAuthority={userAuthority as string}
+                direction={direction}
+            />
+        ) : (
+            <VerticalMenuContent
+                navMode={navMode}
+                collapsed={sideNavCollapse}
+                navigationTree={userNavigationConfig}
+                routeKey={currentRouteKey}
+                userAuthority={userAuthority as string}
+                direction={direction}
+            />
         )
-    )
 
     return (
         <>

@@ -7,7 +7,7 @@ interface AuthorityCheckProps extends CommonProps {
 }
 
 const AuthorityCheck = (props: AuthorityCheckProps) => {
-    const { userAuthority = "", authority = [], children } = props
+    const { userAuthority = '', authority = [], children } = props
 
     const roleMatched = useAuthority(userAuthority, authority)
 

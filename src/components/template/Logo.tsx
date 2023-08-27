@@ -29,11 +29,12 @@ const Logo = (props: LogoProps) => {
                 ...{ width: logoWidth },
             }}
         >
-            <img
+            {/* 로고 */}
+            {/* <img
                 className={imgClass}
                 src={`${LOGO_SRC_PATH}logo-${mode}-${type}.png`}
                 alt={`${APP_NAME} logo`}
-            />
+            /> */}
         </div>
     )
 }

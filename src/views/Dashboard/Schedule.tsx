@@ -16,6 +16,37 @@ type ScheduleProps = {
     }[]
 }
 
+const scheduleData = [
+    {
+        id: '0',
+        time: '10:00am',
+        eventName: 'Sprint Planning',
+        desciption: 'via Zoom',
+        type: 'meeting',
+    },
+    {
+        id: '1',
+        time: '1:00pm',
+        eventName: 'Design discussion',
+        desciption: 'via Microsoft Teams',
+        type: 'meeting',
+    },
+    {
+        id: '2',
+        time: '3:00pm',
+        eventName: 'Create daily report',
+        desciption: 'Daily task',
+        type: 'task',
+    },
+    {
+        id: '3',
+        time: '4:00pm',
+        eventName: 'MySql online workshop',
+        desciption: 'Online workshop',
+        type: 'workshop',
+    },
+]
+
 const isToday = (someDate: Date) => {
     const today = new Date()
     return (
@@ -68,7 +99,7 @@ const EventIcon = ({ type }: { type: string }) => {
     }
 }
 
-const Schedule = ({ data = [] }: ScheduleProps) => {
+const Schedule = ({ data = scheduleData }: ScheduleProps) => {
     const [value, setValue] = useState<Date | null>()
 
     const { textTheme } = useThemeClass()

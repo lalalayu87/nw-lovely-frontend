@@ -34,8 +34,6 @@ function useAuth() {
     > => {
         try {
             const resp = await apiSignIn(values)
-            console.log("resp : ", resp)
-            console.log("query : ", query)
             if (resp.data) {
                 const { token } = resp.data
                 dispatch(signInSuccess(token))
@@ -52,15 +50,14 @@ function useAuth() {
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
-               
-                    navigate(
-                        redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
-                        )
-                        return {
-                            status: 'success',
-                            message: '',
-                        }
-               
+
+                navigate(
+                    redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
+                )
+                return {
+                    status: 'success',
+                    message: '',
+                }
             }
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {

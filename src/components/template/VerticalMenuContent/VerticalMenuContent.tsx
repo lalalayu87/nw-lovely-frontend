@@ -32,7 +32,7 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         collapsed,
         routeKey,
         navigationTree = [],
-        userAuthority = "",
+        userAuthority = '',
         onMenuItemClick,
         direction = themeConfig.direction,
     } = props
