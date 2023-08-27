@@ -12,10 +12,10 @@ const Side = ({ children, content, ...rest }: SideProps) => {
     return (
         <div className="grid lg:grid-cols-3 h-full">
             <div
-                className="bg-no-repeat bg-cover py-6 px-16 flex-col justify-between hidden lg:flex"
-                style={{
-                    backgroundImage: `url('/img/others/auth-side-bg.jpg')`,
-                }}
+                className="bg-no-repeat bg-red-200 py-6 px-16 flex-col justify-between hidden lg:flex"
+                // style={{
+                //     backgroundImage: `url('/img/logo/tumblr_e4684ea4cdf3ea0a5c99655d8f4ac99b_928f40e3_1280.jpg')`,
+                // }}
             >
                 {/* <Logo mode="dark" /> */}
                 <div>

@@ -13,12 +13,12 @@ import type { NavMode } from '@/@types/theme'
 
 type HorizontalMenuContentProps = {
     manuVariant: NavMode
-    userAuthority?: string[]
+    userAuthority?: string
 }
 
 const HorizontalMenuContent = ({
     manuVariant,
-    userAuthority = [],
+    userAuthority = '',
 }: HorizontalMenuContentProps) => {
     const { t } = useTranslation()
 
