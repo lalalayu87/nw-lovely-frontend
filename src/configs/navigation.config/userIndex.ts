@@ -1,9 +1,10 @@
 import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_ITEM,
-    NAV_ITEM_TYPE_COLLAPSE
+    NAV_ITEM_TYPE_COLLAPSE,
 } from '@/constants/navigation.constant'
 import type { NavigationTree } from '@/@types/navigation'
+import { BiCalendarCheck } from 'react-icons/bi'
 
 const userNavigationConfig: NavigationTree[] = [
     {
@@ -12,6 +13,36 @@ const userNavigationConfig: NavigationTree[] = [
         title: 'Home',
         translateKey: 'nav.Userhome',
         icon: 'home',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    {
+        key: 'CuesheetUser',
+        path: '/cuesheetUser',
+        title: '큐시트',
+        translateKey: 'nav.CuesheetUser',
+        icon: 'hiOutlineClipboardList',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    {
+        key: 'CommunityUser',
+        path: '/communityUser',
+        title: '커뮤니티',
+        translateKey: 'nav.CommunityUser',
+        icon: 'hiOutlineChatAlt2',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    {
+        key: 'MypageUser',
+        path: '/mypageUser',
+        title: '마이페이지',
+        translateKey: 'nav.MypageUser',
+        icon: 'hiOutlineEmojiHappy',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],
         subMenu: [],

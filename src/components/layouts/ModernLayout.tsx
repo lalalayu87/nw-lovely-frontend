@@ -5,12 +5,15 @@ import SideNavToggle from '@/components/template/SideNavToggle'
 import MobileNav from '@/components/template/MobileNav'
 import SideNav from '@/components/template/SideNav'
 import View from '@/views'
+import SearchUser from '../template/SearchUser'
+import Bookmark from '../template/Bookmark'
 
 const HeaderActionsStart = () => {
     return (
         <>
             <MobileNav />
             <SideNavToggle />
+            <SearchUser />
         </>
     )
 }
@@ -18,6 +21,7 @@ const HeaderActionsStart = () => {
 const HeaderActionsEnd = () => {
     return (
         <>
+            <Bookmark />
             <SidePanel />
             <UserDropdown hoverable={false} />
         </>

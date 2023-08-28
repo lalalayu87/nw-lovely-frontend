@@ -29,6 +29,98 @@ type MyTasksProps = {
     data?: Task[]
 }
 
+const myTasksData = [
+    {
+        taskId: 'KCM-1393',
+        taskSubject: 'Design sign up flow',
+        priority: 0,
+        assignees: [
+            {
+                id: '1',
+                name: 'Carolyn Perkins',
+                email: 'eileen_h@hotmail.com',
+                img: '/img/avatars/thumb-1.jpg',
+            },
+            {
+                id: '2',
+                name: 'Terrance Moreno',
+                email: '',
+                img: '/img/avatars/thumb-2.jpg',
+            },
+        ],
+    },
+    {
+        taskId: 'KCM-2039',
+        taskSubject: 'Update contact page',
+        priority: 1,
+        assignees: [
+            {
+                id: '1',
+                name: 'Carolyn Perkins',
+                email: 'eileen_h@hotmail.com',
+                img: '/img/avatars/thumb-1.jpg',
+            },
+        ],
+    },
+    {
+        taskId: 'KCM-2155',
+        taskSubject: 'Document features 2.0',
+        priority: 1,
+        assignees: [
+            {
+                id: '1',
+                name: 'Carolyn Perkins',
+                email: 'eileen_h@hotmail.com',
+                img: '/img/avatars/thumb-1.jpg',
+            },
+            {
+                id: '2',
+                name: 'Terrance Moreno',
+                email: '',
+                img: '/img/avatars/thumb-2.jpg',
+            },
+            {
+                id: '3',
+                name: 'Ron Vargas',
+                email: 'ronnie_vergas@infotech.io',
+                img: '/img/avatars/thumb-3.jpg',
+            },
+        ],
+    },
+    {
+        taskId: 'KCM-2270',
+        taskSubject: 'Fix typo in home page',
+        priority: 2,
+        assignees: [
+            {
+                id: '1',
+                name: 'Carolyn Perkins',
+                email: 'eileen_h@hotmail.com',
+                img: '/img/avatars/thumb-1.jpg',
+            },
+            {
+                id: '5',
+                name: 'Joyce Freeman',
+                email: 'joyce991@infotech.io',
+                img: '/img/avatars/thumb-5.jpg',
+            },
+        ],
+    },
+    {
+        taskId: 'KCM-1957',
+        taskSubject: 'Fix broken API',
+        priority: 0,
+        assignees: [
+            {
+                id: '1',
+                name: 'Carolyn Perkins',
+                email: 'eileen_h@hotmail.com',
+                img: '/img/avatars/thumb-1.jpg',
+            },
+        ],
+    },
+]
+
 const { Tr, Th, Td, THead, TBody } = Table
 
 const PriorityTag = ({ priority }: { priority: number }) => {
@@ -56,7 +148,7 @@ const PriorityTag = ({ priority }: { priority: number }) => {
     }
 }
 
-const MyTasks = ({ data = [] }: MyTasksProps) => {
+const MyTasks = ({ data = myTasksData }: MyTasksProps) => {
     const navigate = useNavigate()
 
     const columns: ColumnDef<Task>[] = useMemo(
@@ -158,7 +250,7 @@ const MyTasks = ({ data = [] }: MyTasksProps) => {
                     })}
                 </TBody>
             </Table>
-            </Card>
+        </Card>
     )
 }
 
