@@ -14,7 +14,9 @@ import type { CommonProps } from '@/@types/common'
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
     forgotPasswordUrl?: string
-    signUpUrl?: string
+    companySignUpUrl: string
+    userSignUpUrl: string
+    // signUpUrl?: string
 }
 
 type SignInFormSchema = {
@@ -34,7 +36,9 @@ const SignInForm = (props: SignInFormProps) => {
         disableSubmit = false,
         className,
         forgotPasswordUrl = '/forgot-password',
-        signUpUrl = '/sign-up',
+        companySignUpUrl = '/company-sign-up',
+        userSignUpUrl = '/user-sign-up',
+        // signUpUrl = '/sign-up',
     } = props
 
     const [message, setMessage] = useTimeOutMessage()
@@ -135,7 +139,13 @@ const SignInForm = (props: SignInFormProps) => {
                             </Button>
                             <div className="mt-4 text-center">
                                 <span>{`아직 회원이 아니신가요?`} </span>
-                                <ActionLink to={signUpUrl}>회원가입</ActionLink>
+                                <ActionLink to={companySignUpUrl}>
+                                    기업 회원가입&nbsp;
+                                </ActionLink>
+                                <span>|</span>
+                                <ActionLink to={userSignUpUrl}>
+                                    &nbsp;일반 회원가입
+                                </ActionLink>
                             </div>
                         </FormContainer>
                     </Form>
