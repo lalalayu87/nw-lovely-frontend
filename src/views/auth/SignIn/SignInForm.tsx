@@ -37,7 +37,7 @@ const SignInForm = (props: SignInFormProps) => {
         className,
         forgotPasswordUrl = '/forgot-password',
         companySignUpUrl = '/company-sign-up',
-        userSignUpUrl = '/user-sign-up',
+        userSignUpUrl = '/sign-up',
         // signUpUrl = '/sign-up',
     } = props
 

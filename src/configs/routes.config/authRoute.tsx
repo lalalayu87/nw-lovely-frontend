@@ -11,21 +11,15 @@ const authRoute: Routes = [
     {
         key: 'companySignUpForm',
         path: `/company-sign-up`,
-        component: lazy(() => import('@/views/auth/SignUp')),
+        component: lazy(() => import('@/views/auth/CompanySignUp')),
         authority: [],
     },
     {
-        key: 'userSignUpForm',
-        path: `/user-sign-up`,
+        key: 'signUp',
+        path: `/sign-up`,
         component: lazy(() => import('@/views/auth/SignUp')),
         authority: [],
     },
-    // {
-    //     key: 'signUp',
-    //     path: `/sign-up`,
-    //     component: lazy(() => import('@/views/auth/SignUp')),
-    //     authority: [],
-    // },
     {
         key: 'forgotPassword',
         path: `/forgot-password`,

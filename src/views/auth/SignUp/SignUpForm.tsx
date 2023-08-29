@@ -185,34 +185,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     component={PasswordInput}
                                 />
                             </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="업체명"
-                                invalid={errors.userName && touched.userName}
-                                errorMessage={errors.userName}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="company"
-                                    placeholder="업체명"
-                                    component={Input}
-                                />
-                            </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="사업자등록번호"
-                                invalid={errors.userName && touched.userName}
-                                errorMessage={errors.userName}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="businessRegistration"
-                                    placeholder="사업자등록번호"
-                                    component={Input}
-                                />
-                            </FormItem>
+
                             <Button
                                 block
                                 loading={isSubmitting}
