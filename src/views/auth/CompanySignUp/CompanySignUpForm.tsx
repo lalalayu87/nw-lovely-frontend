@@ -9,6 +9,7 @@ import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import useAuth from '@/utils/hooks/useAuth'
 import type { CommonProps } from '@/@types/common'
+import React, { useState, useRef } from 'react'
 
 interface SignUpFormProps extends CommonProps {
     disableSubmit?: boolean
@@ -23,6 +24,8 @@ type SignUpFormSchema = {
     emailCode: string
     password: string
     passwordConfirm: string
+    company: string
+    businessRegistration: string
 }
 
 const validationSchema = Yup.object().shape({
@@ -55,26 +58,82 @@ const validationSchema = Yup.object().shape({
     passwordConfirm: Yup.string().oneOf(
         [Yup.ref('password')],
         '비밀번호가 일치하지 않습니다.'
-    )
+    ),
+    company: Yup.string().required('업체명을 입력하세요.'),
+    businessRegistration: Yup.string().required('사업자등록번호를 입력하세요.')
 })
 
-const SignUpForm = (props: SignUpFormProps) => {
+const CompanySignUpForm = (props: SignUpFormProps) => {
     const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
 
     const { signUp } = useAuth()
 
     const [message, setMessage] = useTimeOutMessage()
 
+    const [businessRegistrationValue, setbusinessRegistrationValue] =
+        useState<string>('')
+    const businessRegistrationRef = useRef<string>()
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // event: React.ChangeEvent<HTMLInputElement>
+        // const newValue = event.target.value.replace(/\D+/g, '')
+        const value = event.target.value
+        const newValue = businessRegistrationRef.current.replace(/\D+/g, '')
+        const newValueLength = 10
+
+        let result
+        result = ''
+
+        for (let i = 0; i < newValue.length && i < newValueLength; i++) {
+            switch (i) {
+                case 3:
+                    result += '-'
+                    break
+                case 2:
+                    result += '-'
+                    break
+                case 5:
+                    result += '-'
+                    break
+                default:
+                    break
+            }
+            result += newValue[i]
+        }
+
+        console.log(newValue)
+        setbusinessRegistrationValue(newValue)
+        // if (newValue.length === 10) {
+        //     console.log(newValue.length)
+        //     const formattedValue = newValue.replace(
+        //         /(\d{3})(\d{4})(\d{4})(\d{2})/,
+        //         '$1-$2-$3-$4'
+        //     )
+        //     setbusinessRegistrationValue(formattedValue) // 상태 업데이트
+        // } else {
+        //     setbusinessRegistrationValue(newValue) // 상태 업데이트
+        // }
+    }
+
     const onSignUp = async (
         values: SignUpFormSchema,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
-        const { id, userName, phone, email, emailCode, password } = values
+        const {
+            id,
+            userName,
+            phone,
+            email,
+            emailCode,
+            password,
+            company,
+            businessRegistration
+        } = values
         setSubmitting(true)
         const result = await signUp({
             userName,
-            email,
-            password
+            password,
+            email
         })
 
         if (result?.status === 'failed') {
@@ -99,7 +158,9 @@ const SignUpForm = (props: SignUpFormProps) => {
                     email: '',
                     emailCode: '',
                     password: '',
-                    passwordConfirm: ''
+                    passwordConfirm: '',
+                    company: '',
+                    businessRegistration: ''
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
@@ -141,20 +202,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     component={Input}
                                 />
                             </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="폰번호"
-                                invalid={errors.phone && touched.phone}
-                                errorMessage={errors.phone}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="phone"
-                                    placeholder="숫자만 입력하세요"
-                                    component={Input}
-                                />
-                            </FormItem>
 
                             <FormItem
                                 className=" my-6"
@@ -165,10 +212,10 @@ const SignUpForm = (props: SignUpFormProps) => {
                                 {/* 왼쪽 여백 space-x-1 > * + * */}
                                 <div className="flex space-x-1 > * + *">
                                     <Field
-                                        type="text"
+                                        type="email"
                                         autoComplete="off"
                                         name="email"
-                                        placeholder="test@email.com"
+                                        placeholder="이메일"
                                         component={Input}
                                     />
                                     <Button
@@ -220,8 +267,42 @@ const SignUpForm = (props: SignUpFormProps) => {
                                 <Field
                                     autoComplete="off"
                                     name="passwordConfirm"
-                                    placeholder="비밀번호를 한번 더 입력하세요"
+                                    placeholder="비밀번호 확인"
                                     component={PasswordInput}
+                                />
+                            </FormItem>
+                            <FormItem
+                                className="my-6"
+                                label="업체명"
+                                invalid={errors.company && touched.company}
+                                errorMessage={errors.company}
+                            >
+                                <Field
+                                    type="text"
+                                    autoComplete="off"
+                                    name="company"
+                                    placeholder="업체명"
+                                    component={Input}
+                                />
+                            </FormItem>
+                            <FormItem
+                                className="my-6"
+                                label="사업자등록번호"
+                                invalid={
+                                    errors.businessRegistration &&
+                                    touched.businessRegistration
+                                }
+                                errorMessage={errors.businessRegistration}
+                            >
+                                <Field
+                                    type="text"
+                                    autoComplete="off"
+                                    name="businessRegistration"
+                                    component={Input}
+                                    onChange={onChange}
+                                    placeholder="사업자등록번호"
+                                    // value={businessRegistrationRef}
+                                    ref={businessRegistrationRef}
                                 />
                             </FormItem>
                             <Button
@@ -246,4 +327,4 @@ const SignUpForm = (props: SignUpFormProps) => {
     )
 }
 
-export default SignUpForm
+export default CompanySignUpForm
