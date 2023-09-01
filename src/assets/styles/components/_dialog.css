@@ -28,12 +28,12 @@
 }
 
 .dialog-content {
-  @apply p-6 rounded-lg shadow-xl sm:my-16 relative h-full bg-white dark:bg-gray-800;
+  @apply w-max p-6 pb-1 rounded-lg shadow-xl sm:my-16 relative h-max bg-white dark:bg-gray-800;
 }
 
 .dialog-overlay {
   transition: all 0.15s ease-in-out;
-  @apply bg-opacity-60 inset-0 fixed z-30 bg-black dark:bg-opacity-80;
+  @apply  bg-opacity-60 inset-0 fixed z-30 bg-black dark:bg-opacity-80;
 }
 
 .dialog-overlay-after-open {
