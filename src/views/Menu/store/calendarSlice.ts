@@ -18,6 +18,7 @@ type Event = {
     brideContact: string
     brideEmail: string
     weddingDate: Date
+    scheduleDate: Date
     // eventColor: string
     // groupId?: undefined
 }
@@ -39,6 +40,7 @@ export type CalendarState = {
         brideContact: string
         brideEmail: string
         weddingDate: Date
+        scheduleDate: Date
     } & Partial<Event>
 }
 
@@ -65,6 +67,7 @@ const initialState: CalendarState = {
         brideContact: '',
         brideEmail: '',
         weddingDate: new Date(),
+        scheduleDate: new Date(),
     },
 }
 

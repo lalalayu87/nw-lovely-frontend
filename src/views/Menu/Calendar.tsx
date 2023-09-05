@@ -26,7 +26,7 @@ const Calendar = () => {
     const events = useAppSelector((state) => state.crmCalendar.data.eventList)
 
     useEffect(() => {
-        dispatch(getEvents())
+        // dispatch(getEvents())
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -60,6 +60,7 @@ const Calendar = () => {
     const onSubmit = (data: EventParam, type: string) => {
         const newEvents = cloneDeep(events)
         if (type === 'NEW') {
+            console.log('data : ', data)
             newEvents.push(data)
         }
 
@@ -85,6 +86,8 @@ const Calendar = () => {
                     bride,
                     brideContact,
                     brideEmail,
+                    weddingDate,
+                    scheduleDate,
                 } = arg.event
                 event = {
                     id,
@@ -94,6 +97,8 @@ const Calendar = () => {
                     bride,
                     brideContact,
                     brideEmail,
+                    weddingDate,
+                    scheduleDate,
                     // start: dayjs(start).format(),
                     // end: dayjs(end).format(),
                     // title,

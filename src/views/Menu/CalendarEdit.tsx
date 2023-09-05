@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 import { closeDialog, useAppDispatch, useAppSelector } from './store'
 import { TimeInput } from '@/components/ui'
 import CalendarDialog from '@/components/ui/Dialog/CalenderDialog'
+import { useState } from 'react'
 
 type FormModel = {
     // title: string
@@ -28,6 +29,7 @@ type FormModel = {
     brideContact: string
     brideEmail: string
     weddingDate: Date
+    scheduleDate: Date
 }
 
 export type EventParam = {
@@ -39,6 +41,7 @@ export type EventParam = {
     brideContact: string
     brideEmail: string
     weddingDate: Date
+    scheduleDate: Date
 }
 
 type ColorOption = {
@@ -47,7 +50,11 @@ type ColorOption = {
     color: string
 }
 
-const weddingOptions = [{ 1: 1 }, { 2: 2 }, { 3: 3 }]
+const weddingOptions = [
+    { value: 'one', label: 'one' },
+    { value: 'two', label: 'two' },
+    { value: 'three', label: 'three' },
+]
 
 type EventDialogProps = {
     submit: (eventData: EventParam, type: string) => void
@@ -193,10 +200,18 @@ const validationSchema = Yup.object().shape({
 
 const CalendarEdit = ({ submit }: EventDialogProps) => {
     const dispatch = useAppDispatch()
+    const today = new Date(+new Date() + 3240 * 10000)
+        .toISOString()
+        .split('T')[0]
 
+    const [dateValue, setDateValue] = useState<Date>(new Date())
     const open = useAppSelector((state) => state.crmCalendar.data.dialogOpen)
     const selected = useAppSelector((state) => state.crmCalendar.data.selected)
     const newId = useUniqueId('event-')
+
+    const onCertainPeriodChange = (date: Date) => {
+        setDateValue(date)
+    }
 
     const handleDialogClose = () => {
         dispatch(closeDialog())
@@ -206,7 +221,7 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
         values: FormModel,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
-        setSubmitting(false)
+        setSubmitting(true)
         const eventData: EventParam = {
             groom: values.groom,
             groomContact: values.groomContact,
@@ -215,6 +230,7 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
             brideContact: values.brideContact,
             brideEmail: values.brideEmail,
             weddingDate: values.weddingDate,
+            scheduleDate: values.scheduleDate,
             id: selected.id || newId,
         }
         //     title: values.title,
@@ -225,8 +241,8 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
         // if (values.endDate) {
         //     eventData.end = dayjs(values.endDate).format()
         // }
-        submit?.(eventData, selected.type)
         console.log('eventData : ', eventData)
+        submit?.(eventData, selected.type)
         console.log('selected.type : ', selected.type)
         dispatch(closeDialog())
     }
@@ -259,6 +275,7 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                         brideContact: selected.brideContact || '',
                         brideEmail: selected.brideEmail || '',
                         weddingDate: selected.weddingDate || '',
+                        scheduleDate: selected.scheduleDate || '',
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
@@ -366,69 +383,106 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                 {/* 신부 정보 */}
                                 <div className="flex">
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold mb-2">
-                                            고객 상태
-                                        </p>
-                                        <FormItem>
-                                            <Select
-                                                options={weddingOptions}
-                                                // components={{
-                                                //     Option: CustomSelectOption,
-                                                //     Control: CustomControl,
-                                                // }}
-                                                defaultValue={weddingOptions[0]}
-                                                className="mb-4"
-                                            />
+                                        <FormItem label="고객 상태">
+                                            <Field name="customerStatus">
+                                                {({
+                                                    field,
+                                                    form,
+                                                }: FieldProps) => (
+                                                    <Select
+                                                        options={weddingOptions}
+                                                        // components={{
+                                                        //     Option: CustomSelectOption,
+                                                        //     Control: CustomControl,
+                                                        // }}
+                                                        defaultValue={
+                                                            field.value
+                                                        }
+                                                        className="mb-4"
+                                                    />
+                                                )}
+                                            </Field>
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold mb-2">
-                                            일정 등록
-                                        </p>
-                                        <FormItem>
-                                            <DatePicker placeholder="날짜를 골라주세요" />
+                                        <FormItem label="일정 등록">
+                                            <Field name="scheduleDate">
+                                                {({
+                                                    field,
+                                                    form,
+                                                }: FieldProps) => (
+                                                    <DatePicker
+                                                        field={field}
+                                                        form={form}
+                                                        value={field.value}
+                                                        placeholder={today}
+                                                        onChange={(date) => {
+                                                            form.setFieldValue(
+                                                                field.name,
+                                                                date
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            </Field>
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold mb-2">
-                                            시간
-                                        </p>
-                                        <TimeInput />
+                                        <FormItem label="시간">
+                                            <TimeInput />
+                                        </FormItem>
                                     </div>
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold -mt-3 mb-2">
-                                            예식(예정)일
-                                        </p>
-                                        <FormItem>
-                                            <DatePicker
-                                                placeholder="날짜를 골라주세요"
-                                                value={weddingDate}
-                                            />
+                                        <FormItem label="예식 예정일">
+                                            <Field name="weddingDate">
+                                                {({
+                                                    field,
+                                                    form,
+                                                }: FieldProps) => (
+                                                    <DatePicker
+                                                        field={field}
+                                                        form={form}
+                                                        value={field.value}
+                                                        placeholder={today}
+                                                        onChange={(date) => {
+                                                            form.setFieldValue(
+                                                                field.name,
+                                                                date
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            </Field>
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold -mt-3 mb-2">
-                                            웨딩홀
-                                        </p>
-                                        <FormItem>
-                                            <Select
-                                                options={weddingOptions}
-                                                // components={{
-                                                //     Option: CustomSelectOption,
-                                                //     Control: CustomControl,
-                                                // }}
-                                                defaultValue={weddingOptions[0]}
-                                                className="mb-4"
-                                            />
+                                        <FormItem label="웨딩홀">
+                                            <Field name="weddingHall">
+                                                {({
+                                                    field,
+                                                    form,
+                                                }: FieldProps) => (
+                                                    <Select
+                                                        options={weddingOptions}
+                                                        // components={{
+                                                        //     Option: CustomSelectOption,
+                                                        //     Control: CustomControl,
+                                                        // }}
+                                                        defaultValue={
+                                                            field.value
+                                                        }
+                                                        className="mb-4"
+                                                    />
+                                                )}
+                                            </Field>
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <p className="flex items-center font-semibold -mt-3 mb-2">
-                                            시작 시간
-                                        </p>
-                                        <TimeInput />
+                                        <FormItem label="시작 시간">
+                                            <TimeInput />
+                                        </FormItem>
                                     </div>
                                 </div>
                                 <div className="-mt-4">
