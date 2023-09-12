@@ -6,6 +6,7 @@ import {
 import type { NavigationTree } from '@/@types/navigation'
 import { BiCalendarCheck } from 'react-icons/bi'
 
+// route.configs.ts와 연결
 const navigationConfig: NavigationTree[] = [
     {
         key: 'home',
@@ -17,7 +18,6 @@ const navigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
-    /** Example purpose only, please remove */
     {
         key: 'organization',
         path: '/organization',

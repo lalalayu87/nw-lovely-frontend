@@ -78,6 +78,7 @@ export default function salesFakeApi(server: Server, apiPrefix: string) {
     )
 
     server.get(`${apiPrefix}/sales/orders`, (schema, { queryParams }) => {
+        console.log('step4')
         const { pageIndex, pageSize, query } = queryParams
         const order = queryParams['sort[order]']
         const key = queryParams['sort[key]']

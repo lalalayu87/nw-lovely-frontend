@@ -14,26 +14,31 @@ const BaseService = axios.create({
 
 BaseService.interceptors.request.use(
     (config) => {
+        console.log('step4')
         const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+        console.log('rawPersistData :', rawPersistData)
         const persistData = deepParseJson(rawPersistData)
-
+        console.log('persistData :', persistData)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let accessToken = (persistData as any).auth.session.token
-
+        console.log('step5')
         if (!accessToken) {
             const { auth } = store.getState()
             accessToken = auth.session.token
+            console.log('step6')
         }
 
         if (accessToken) {
             config.headers[
                 REQUEST_HEADER_AUTH_KEY
             ] = `${TOKEN_TYPE}${accessToken}`
+            console.log('step7')
         }
-
+        console.log('step8', config)
         return config
     },
     (error) => {
+        console.log('step9')
         return Promise.reject(error)
     }
 )
@@ -41,6 +46,7 @@ BaseService.interceptors.request.use(
 BaseService.interceptors.response.use(
     (response) => response,
     (error) => {
+        console.log('step 10')
         const { response } = error
 
         if (response && unauthorizedCode.includes(response.status)) {

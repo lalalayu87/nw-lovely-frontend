@@ -31,11 +31,10 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'appsSales.orderList',
-        path: `/cuesheet`,
-        component: lazy(() => import('@/views/cueSheet/OrderList')),
-        // authority: [ADMIN, USER],
-        authority: []
+        key: 'cuesheet',
+        path: '/cuesheet',
+        component: lazy(() => import('@/views/sales/ProductList')),
+        authority: [],
     },
     {
         key: 'mypage',
