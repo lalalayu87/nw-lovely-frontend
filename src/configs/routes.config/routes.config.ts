@@ -33,7 +33,7 @@ export const protectedRoutes = [
     {
         key: 'cuesheet',
         path: '/cuesheet',
-        component: lazy(() => import('@/views/sales/ProductList')),
+        component: lazy(() => import('@/views/Menu/cueSheet/CueSheetList')),
         authority: [],
     },
     {

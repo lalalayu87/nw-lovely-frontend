@@ -1,26 +1,28 @@
 import reducer from './store'
 import { injectReducer } from '@/store'
 import AdaptableCard from '@/components/shared/AdaptableCard'
-import ProductTable from './components/ProductTable'
-import ProductTableTools from './components/ProductTableTools'
+import CueSheetTable from './components/CueSheetTable'
+import CueSheetTableTools from './components/CueSheetTableTools'
 import { render } from 'react-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import Example from './components/example'
 
 injectReducer('salesProductList', reducer)
 
-const ProductList = () => {
+const CueSheetList = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Products</h3>
-                <ProductTableTools />
+                <CueSheetTableTools />
             </div>
-            <DndProvider backend={HTML5Backend}>
-                <ProductTable />
-            </DndProvider>
+            {/* <DndProvider backend={HTML5Backend}> */}
+            {/* <Example /> */}
+            <CueSheetTable />
+            {/* </DndProvider> */}
         </AdaptableCard>
     )
 }
 
-export default ProductList
+export default CueSheetList
