@@ -7,6 +7,7 @@ import { render } from 'react-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Example from './components/example'
+import CueSheetHeader from './components/CueSheetHeader'
 
 injectReducer('salesProductList', reducer)
 
@@ -17,6 +18,8 @@ const CueSheetList = () => {
                 <h3 className="mb-4 lg:mb-0">Products</h3>
                 <CueSheetTableTools />
             </div>
+            <CueSheetHeader />
+
             {/* <DndProvider backend={HTML5Backend}> */}
             {/* <Example /> */}
             <CueSheetTable />

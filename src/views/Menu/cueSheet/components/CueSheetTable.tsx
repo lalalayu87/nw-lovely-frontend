@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
 import DataTable from '@/components/shared/DataTable'
@@ -29,7 +29,7 @@ import {
     Draggable,
 } from 'react-beautiful-dnd'
 
-type Product = {
+type cueSheet = {
     id: string
     name: string
     productCode: string
@@ -65,7 +65,7 @@ const inventoryStatusColor: Record<
     },
 }
 
-const ActionColumn = ({ row }: { row: Product }) => {
+const ActionColumn = ({ row }: { row: cueSheet }) => {
     const dispatch = useAppDispatch()
     const { textTheme } = useThemeClass()
     const navigate = useNavigate()
@@ -97,21 +97,6 @@ const ActionColumn = ({ row }: { row: Product }) => {
     )
 }
 
-// const ProductColumn = ({ row }: { row: Product }) => {
-//     const avatar = row.img ? (
-//         <Avatar src={row.img} />
-//     ) : (
-//         <Avatar icon={<FiPackage />} />
-//     )
-
-//     return (
-//         <div className="flex items-center">
-//             {avatar}
-//             <span className={`ml-2 rtl:mr-2 font-semibold`}>{row.name}</span>
-//         </div>
-//     )
-// }
-
 const CueSheetTable = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
 
@@ -132,7 +117,10 @@ const CueSheetTable = () => {
     const data = useAppSelector(
         (state) => state.salesProductList.data.productList
     )
-    console.log('data :', data)
+    console.log(
+        'data :',
+        data.map((item, index) => [item, index])
+    )
 
     useEffect(() => {
         fetchData()
@@ -154,12 +142,6 @@ const CueSheetTable = () => {
         dispatch(getProducts({ pageIndex, pageSize, sort, query, filterData }))
     }
 
-    const onPaginationChange = (page: number) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.pageIndex = page
-        dispatch(setTableData(newTableData))
-    }
-
     const onSelectChange = (value: number) => {
         const newTableData = cloneDeep(tableData)
         newTableData.pageSize = Number(value)
@@ -173,131 +155,92 @@ const CueSheetTable = () => {
         dispatch(setTableData(newTableData))
     }
 
-    const onDragEnd = () => {
-        console.log('onDragEnd!')
-    }
+    const onDragEnd = (result: DropResult) => {
+        const [updatelist, setUpdateList] = useState([])
+        console.log('result ? : ', result)
 
-    const columns: ColumnDef<Product>[] = useMemo(
-        () => [
-            {
-                header: '순서',
-                accessorKey: 'name',
-                // cell: (props) => {
-                //     const row = props.row.original
-                //     return <ProductColumn row={row} />
-                // },
-            },
-            {
-                header: '대본',
-                accessorKey: 'category',
-                cell: (props) => {
-                    const row = props.row.original
-                    return <span className="capitalize">{row.category}</span>
-                },
-            },
-            {
-                header: '행위자',
-                accessorKey: 'stock',
-                sortable: true,
-            },
-            {
-                header: '비고',
-                accessorKey: 'status',
-                cell: (props) => {
-                    const { status } = props.row.original
-                    return (
-                        <div className="flex items-center gap-2">
-                            <Badge
-                                className={
-                                    inventoryStatusColor[status].dotClass
-                                }
-                            />
-                            <span
-                                className={`capitalize font-semibold ${inventoryStatusColor[status].textClass}`}
-                            >
-                                {inventoryStatusColor[status].label}
-                            </span>
-                        </div>
-                    )
-                },
-            },
-            {
-                header: '파일',
-                accessorKey: 'price',
-                cell: (props) => {
-                    const { price } = props.row.original
-                    return <span>${price}</span>
-                },
-            },
-            {
-                header: '',
-                id: 'action',
-                cell: (props) => <ActionColumn row={props.row.original} />,
-            },
-        ],
-        []
-    )
+        if (!result.destination) {
+            return // 드래그 앤 드롭이 완료되지 않았을 때 반환
+        }
+        const currentTags = [...CueSheetTableList]
+        const draggingItemIndex = result.source.index
+        const afterDragItemIndex = result.destination.index
+
+        const removeTag = currentTags.splice(beforeDragItemIndex, 1)
+
+        currentTags.splice(afterDragItemIndex, 0, removeTag[0])
+
+        setTags(currentTags)
+
+        const { source, destination } = result
+        console.log('source', source)
+        console.log('destination', destination)
+
+        const reorderedData = Array.from(data)
+        console.log('reorderedData ', reorderedData.splice(source.index, 1))
+
+        const [movedItem] = reorderedData.splice(source.index, 1) // 원래 위치에서 아이템을 제거
+        reorderedData.splice(destination.index, 0, movedItem) // 새 위치에 아이템을 삽입
+        console.log(reorderedData.splice(destination.index, 0, movedItem))
+
+        // 여기서 reorderedData를 사용하여 새로운 데이터 상태를 업데이트할 수 있음
+        // reorderedData를 Redux 상태에 업데이트하거나 필요한 작업을 수행하세요.
+
+        // 예시: Redux 상태를 업데이트하는 방법 (필요에 따라 수정)
+        setUpdateList()
+    }
 
     return (
         <>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="one">
-                    {/* beautiful-dnd에서 제공하는 특별한 prop */}
+                <Droppable droppableId="CueSheetTableList">
                     {(provided) => (
-                        <ul
-                            ref={provided.innerRef}
+                        <div
                             {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className="scrumboard flex flex-col flex-auto w-full h-full mb-2"
                         >
-                            <Draggable draggableId="first" index={0}>
-                                {(provided) => (
-                                    <li
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                    >
-                                        one
-                                    </li>
-                                )}
-                            </Draggable>
-                            <Draggable draggableId="second" index={1}>
-                                {(provided) => (
-                                    <li
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                    >
-                                        two
-                                    </li>
-                                )}
-                            </Draggable>
-                        </ul>
+                            {data.map((item, index) => (
+                                <Draggable
+                                    key={item.id}
+                                    draggableId={item.id}
+                                    index={index}
+                                >
+                                    {(provided) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                        >
+                                            {item.name}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
                     )}
                 </Droppable>
             </DragDropContext>
-            {/* <DataTable
-                ref={tableRef}
-                columns={columns}
-                data={data}
-                // skeletonAvatarColumns={[0]}
-                // skeletonAvatarProps={{
-                //     className: 'rounded-md',
-                // }}
-                loading={loading}
-                // pagingData={{
-                //     total: tableData.total as number,
-                //     pageIndex:
-                //         tableData.pageIndex as number,
-                //     pageSize:
-                //         tableData.pageSize as number,
-                // }}
-                // onPaginationChange={
-                //     onPaginationChange
-                // }
-                // onSelectChange={onSelectChange}
-                // onSort={onSort}
-            />
-            <ProductDeleteConfirmation /> */}
         </>
+        // {/* <DataTable
+        //     ref={tableRef}
+        //     columns={columns}
+        //     // skeletonAvatarColumns={[0]}
+        //     // skeletonAvatarProps={{
+        //     //     className: 'rounded-md',
+        //     // }}
+        //     loading={loading}
+        //     pagingData={{
+        //         total: tableData.total as number,
+        //         pageIndex: tableData.pageIndex as number,
+        //         pageSize: tableData.pageSize as number,
+        //     }}
+        //     onPaginationChange={onPaginationChange}
+        //     onSelectChange={onSelectChange}
+        //     onSort={onSort}
+        // /> */}
+        // <ProductDeleteConfirmation />
     )
 }
 
