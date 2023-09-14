@@ -91,7 +91,10 @@ const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>((props, ref) => {
     }, [_value, format, amLabel, pmLabel])
 
     useDidUpdate(() => {
-        if (value?.getTime() !== _value?.getTime()) {
+        if (
+            value?.toString() !== '' &&
+            value?.getTime() !== _value?.getTime()
+        ) {
             setValue(value as Date | null)
         }
     }, [value])

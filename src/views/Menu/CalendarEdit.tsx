@@ -28,8 +28,12 @@ type FormModel = {
     bride: string
     brideContact: string
     brideEmail: string
-    weddingDate: Date
-    scheduleDate: Date
+    weddingDate: Date | string
+    scheduleDate: Date | string
+    customerStatus: string
+    weddingHall: string
+    weddingTime: Date | string
+    guaranteePerson: number
 }
 
 export type EventParam = {
@@ -40,14 +44,23 @@ export type EventParam = {
     bride: string
     brideContact: string
     brideEmail: string
-    weddingDate: Date
-    scheduleDate: Date
+    weddingDate: Date | string
+    scheduleDate: Date | string
+    customerStatus: string
+    weddingHall: string
+    weddingTime: Date | string
+    guaranteePerson: number
 }
 
 type ColorOption = {
     value: string
     label: string
     color: string
+}
+
+type selectOptionType = {
+    value: string
+    label: string
 }
 
 const weddingOptions = [
@@ -147,6 +160,30 @@ const colorOptions = [
     },
 ]
 
+const selectOption = ({
+    innerProps,
+    label,
+    data,
+    isSelected,
+}: OptionProps<selectOptionType>) => {
+    return (
+        <div
+            className={`flex items-center justify-between p-2 ${
+                isSelected
+                    ? 'bg-gray-100 dark:bg-gray-500'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-600'
+            }`}
+            {...innerProps}
+        >
+            <div className="flex items-center">
+                {/* <Badge className="bg-red-300" /> */}
+                <span className="ml-2 rtl:mr-2 capitalize">{label}</span>
+            </div>
+            {isSelected && <HiCheck className="text-emerald-500 text-xl" />}
+        </div>
+    )
+}
+
 const CustomSelectOption = ({
     innerProps,
     label,
@@ -171,17 +208,26 @@ const CustomSelectOption = ({
     )
 }
 
-const CustomControl = ({ children, ...props }: ControlProps<ColorOption>) => {
+const CustomControl = ({
+    children,
+    ...props
+}: ControlProps<selectOptionType>) => {
     const selected = props.getValue()[0]
 
     return (
         <Control className="capitalize" {...props}>
-            {selected && (
-                <Badge className={`${selected.color} ltr:ml-4 rtl:mr-4`} />
-            )}
+            {selected && <Badge className={`red-100 ltr:ml-4 rtl:mr-4`} />}
             {children}
         </Control>
     )
+}
+
+const validatePerson = (value: number) => {
+    let errors
+    if (value === 0) {
+        errors = '보증 인원을 입력하세요'
+    }
+    return errors
 }
 
 const validationSchema = Yup.object().shape({
@@ -192,6 +238,11 @@ const validationSchema = Yup.object().shape({
     brideContact: Yup.string().required('신부 연락처를 입력하세요'),
     brideEmail: Yup.string().required('신부 이메일을 입력하세요'),
     weddingDate: Yup.string().required('예식 날짜를 입력하세요'),
+    scheduleDate: Yup.string().required('일정을 등록할 날짜를 입력하세요'),
+    customerStatus: Yup.string().required('고객 상태를 선택해주세요'),
+    weddingHall: Yup.string().required('웨딩홀을 선택해주세요'),
+    weddingTime: Yup.string().required('시작 시간을 입력하세요'),
+    guaranteePerson: Yup.string().required('보증 인원을 입력하세요'),
     // title: Yup.string().required('Event title Required'),
     // startDate: Yup.date().required('Start Date Required'),
     // endDate: Yup.date(),
@@ -208,6 +259,8 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
     const open = useAppSelector((state) => state.crmCalendar.data.dialogOpen)
     const selected = useAppSelector((state) => state.crmCalendar.data.selected)
     const newId = useUniqueId('event-')
+
+    console.log('selected : ', selected)
 
     const onCertainPeriodChange = (date: Date) => {
         setDateValue(date)
@@ -231,6 +284,10 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
             brideEmail: values.brideEmail,
             weddingDate: values.weddingDate,
             scheduleDate: values.scheduleDate,
+            customerStatus: values.customerStatus,
+            weddingHall: values.weddingHall,
+            weddingTime: values.weddingTime,
+            guaranteePerson: values.guaranteePerson,
             id: selected.id || newId,
         }
         //     title: values.title,
@@ -260,13 +317,6 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                 <Formik
                     enableReinitialize
                     initialValues={{
-                        // title: selected.title || '',
-                        // startDate: selected.start
-                        //     ? dayjs(selected.start).toDate()
-                        //     : '',
-                        // endDate: selected.end
-                        //     ? dayjs(selected.end).toDate()
-                        //     : '',
                         // color: selected.eventColor || colorOptions[0].value,
                         groom: selected.groom || '',
                         groomContact: selected.groomContact || '',
@@ -274,11 +324,20 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                         bride: selected.bride || '',
                         brideContact: selected.brideContact || '',
                         brideEmail: selected.brideEmail || '',
-                        weddingDate: selected.weddingDate || '',
-                        scheduleDate: selected.scheduleDate || '',
+                        weddingDate: selected.weddingDate
+                            ? dayjs(selected.weddingDate).toDate()
+                            : '',
+                        scheduleDate: selected.scheduleDate
+                            ? dayjs(selected.scheduleDate).toDate()
+                            : '',
+                        customerStatus: selected.customerStatus || '',
+                        weddingHall: selected.weddingHall || '',
+                        weddingTime: selected.weddingTime || '',
+                        guaranteePerson: selected.guaranteePerson || 0,
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
+                        console.log('values : ', values)
                         handleSubmit(values, setSubmitting)
                     }}
                 >
@@ -383,20 +442,38 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                 {/* 신부 정보 */}
                                 <div className="flex">
                                     <div className="w-1/3">
-                                        <FormItem label="고객 상태">
+                                        <FormItem
+                                            label="고객 상태"
+                                            invalid={
+                                                errors.customerStatus &&
+                                                touched.customerStatus
+                                            }
+                                            errorMessage={errors.customerStatus}
+                                        >
                                             <Field name="customerStatus">
                                                 {({
                                                     field,
                                                     form,
                                                 }: FieldProps) => (
-                                                    <Select
+                                                    <Select<selectOptionType>
+                                                        field={field}
+                                                        form={form}
                                                         options={weddingOptions}
-                                                        // components={{
-                                                        //     Option: CustomSelectOption,
-                                                        //     Control: CustomControl,
-                                                        // }}
-                                                        defaultValue={
-                                                            field.value
+                                                        value={weddingOptions.filter(
+                                                            (option) =>
+                                                                option.value ===
+                                                                values.customerStatus
+                                                        )}
+                                                        components={{
+                                                            Option: selectOption,
+                                                            Control:
+                                                                CustomControl,
+                                                        }}
+                                                        onChange={(option) =>
+                                                            form.setFieldValue(
+                                                                field.name,
+                                                                option?.value
+                                                            )
                                                         }
                                                         className="mb-4"
                                                     />
@@ -405,7 +482,14 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <FormItem label="일정 등록">
+                                        <FormItem
+                                            label="일정 등록"
+                                            invalid={
+                                                errors.scheduleDate &&
+                                                touched.scheduleDate
+                                            }
+                                            errorMessage={errors.scheduleDate}
+                                        >
                                             <Field name="scheduleDate">
                                                 {({
                                                     field,
@@ -435,7 +519,14 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/3">
-                                        <FormItem label="예식 예정일">
+                                        <FormItem
+                                            label="예식 예정일"
+                                            invalid={
+                                                errors.weddingDate &&
+                                                touched.weddingDate
+                                            }
+                                            errorMessage={errors.weddingDate}
+                                        >
                                             <Field name="weddingDate">
                                                 {({
                                                     field,
@@ -458,21 +549,42 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <FormItem label="웨딩홀">
+                                        <FormItem
+                                            label="웨딩홀"
+                                            invalid={
+                                                errors.weddingHall &&
+                                                touched.weddingHall
+                                            }
+                                            errorMessage={errors.weddingHall}
+                                        >
                                             <Field name="weddingHall">
                                                 {({
                                                     field,
                                                     form,
                                                 }: FieldProps) => (
-                                                    <Select
+                                                    <Select<selectOptionType>
+                                                        field={field}
+                                                        form={form}
                                                         options={weddingOptions}
-                                                        // components={{
-                                                        //     Option: CustomSelectOption,
-                                                        //     Control: CustomControl,
-                                                        // }}
-                                                        defaultValue={
-                                                            field.value
+                                                        components={{
+                                                            Option: selectOption,
+                                                            Control:
+                                                                CustomControl,
+                                                        }}
+                                                        value={weddingOptions.filter(
+                                                            (option) =>
+                                                                option.value ===
+                                                                values.weddingHall
+                                                        )}
+                                                        onChange={(option) =>
+                                                            form.setFieldValue(
+                                                                field.name,
+                                                                option?.value
+                                                            )
                                                         }
+                                                        // defaultValue={
+                                                        //     field.value
+                                                        // }
                                                         className="mb-4"
                                                     />
                                                 )}
@@ -480,16 +592,43 @@ const CalendarEdit = ({ submit }: EventDialogProps) => {
                                         </FormItem>
                                     </div>
                                     <div className="w-1/3">
-                                        <FormItem label="시작 시간">
-                                            <TimeInput />
+                                        <FormItem
+                                            label="시작 시간"
+                                            invalid={
+                                                errors.weddingTime &&
+                                                touched.weddingTime
+                                            }
+                                            errorMessage={errors.weddingTime}
+                                        >
+                                            <Field name="weddingTime">
+                                                {({
+                                                    field,
+                                                    form,
+                                                }: FieldProps) => (
+                                                    <TimeInput
+                                                        field={field}
+                                                        form={form}
+                                                        value={field.value}
+                                                        onChange={(date) => {
+                                                            form.setFieldValue(
+                                                                field.name,
+                                                                date
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            </Field>
                                         </FormItem>
                                     </div>
                                 </div>
                                 <div className="-mt-4">
                                     <FormItem
                                         label="보증 인원"
-                                        // invalid={errors.email && touched.email}
-                                        // errorMessage={errors.email}
+                                        invalid={
+                                            errors.guaranteePerson &&
+                                            touched.guaranteePerson
+                                        }
+                                        errorMessage={errors.guaranteePerson}
                                     >
                                         <Field
                                             type="number"

@@ -88,6 +88,10 @@ const Calendar = () => {
                     brideEmail,
                     weddingDate,
                     scheduleDate,
+                    customerStatus,
+                    weddingHall,
+                    weddingTime,
+                    guaranteePerson,
                 } = arg.event
                 event = {
                     id,
@@ -99,6 +103,10 @@ const Calendar = () => {
                     brideEmail,
                     weddingDate,
                     scheduleDate,
+                    customerStatus,
+                    weddingHall,
+                    weddingTime,
+                    guaranteePerson,
                     // start: dayjs(start).format(),
                     // end: dayjs(end).format(),
                     // title,

@@ -15,7 +15,7 @@ export const protectedRoutes = [
     {
         key: 'organization',
         path: '/organization',
-        component: lazy(() => import('@/views/Menu/Organization')),
+        component: lazy(() => import('@/views/Menu/Organization/Organization')),
         authority: [],
     },
     {
