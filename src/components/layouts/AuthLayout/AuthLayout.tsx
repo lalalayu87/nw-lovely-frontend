@@ -9,7 +9,7 @@ const AuthLayout = () => {
     const layoutType = useAppSelector((state) => state.theme.layout.type)
 
     const { token, signedIn } = useAppSelector((state) => state.auth.session)
-    console.log('token, signedIn : ', token, signedIn)
+
     return (
         <div className="app-layout-blank flex flex-auto flex-col h-[100vh]">
             {layoutType === LAYOUT_TYPE_BLANK ? (

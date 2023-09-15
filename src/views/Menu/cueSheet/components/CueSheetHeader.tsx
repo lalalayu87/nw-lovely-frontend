@@ -42,7 +42,7 @@ const CueSheetHeader = () => {
                 accessorKey: 'name',
             },
             {
-                header: '대본',
+                header: '절차',
                 accessorKey: 'category',
             },
             {
@@ -50,6 +50,11 @@ const CueSheetHeader = () => {
                 accessorKey: 'stock',
                 sortable: true,
             },
+            {
+                header: '내용',
+                accessorKey: 'category',
+            },
+
             {
                 header: '비고',
                 accessorKey: 'status',

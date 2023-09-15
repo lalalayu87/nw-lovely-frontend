@@ -192,7 +192,7 @@ const CueSheetTable = () => {
 
     return (
         <>
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                 <Droppable droppableId="CueSheetTableList">
                     {(provided) => (
                         <div
@@ -212,7 +212,7 @@ const CueSheetTable = () => {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                         >
-                                            {item.name}
+                                            {/* {item.name} */}
                                         </div>
                                     )}
                                 </Draggable>
@@ -222,25 +222,25 @@ const CueSheetTable = () => {
                     )}
                 </Droppable>
             </DragDropContext>
+            {/* <DataTable
+                ref={tableRef}
+                columns={columns}
+                skeletonAvatarColumns={[0]}
+                skeletonAvatarProps={{
+                    className: 'rounded-md',
+                }}
+                loading={loading}
+                pagingData={{
+                    total: tableData.total as number,
+                    pageIndex: tableData.pageIndex as number,
+                    pageSize: tableData.pageSize as number,
+                }}
+                onPaginationChange={onPaginationChange}
+                onSelectChange={onSelectChange}
+                onSort={onSort}
+            />
+            <ProductDeleteConfirmation /> */}
         </>
-        // {/* <DataTable
-        //     ref={tableRef}
-        //     columns={columns}
-        //     // skeletonAvatarColumns={[0]}
-        //     // skeletonAvatarProps={{
-        //     //     className: 'rounded-md',
-        //     // }}
-        //     loading={loading}
-        //     pagingData={{
-        //         total: tableData.total as number,
-        //         pageIndex: tableData.pageIndex as number,
-        //         pageSize: tableData.pageSize as number,
-        //     }}
-        //     onPaginationChange={onPaginationChange}
-        //     onSelectChange={onSelectChange}
-        //     onSort={onSort}
-        // /> */}
-        // <ProductDeleteConfirmation />
     )
 }
 

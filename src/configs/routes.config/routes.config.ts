@@ -39,7 +39,7 @@ export const protectedRoutes = [
     {
         key: 'mypage',
         path: '/mypage',
-        component: lazy(() => import('@/views/Menu/Mypage')),
+        component: lazy(() => import('@/views/Menu/mypage/CustomerDetail')),
         authority: [],
     },
     // {
