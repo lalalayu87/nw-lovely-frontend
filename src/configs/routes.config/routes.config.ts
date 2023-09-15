@@ -15,7 +15,7 @@ export const protectedRoutes = [
     {
         key: 'organization',
         path: '/organization',
-        component: lazy(() => import('@/views/Menu/Organization')),
+        component: lazy(() => import('@/views/Menu/Organization/Organization')),
         authority: [],
     },
     {
@@ -31,16 +31,15 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'appsSales.orderList',
-        path: `/cuesheet`,
-        component: lazy(() => import('@/views/cueSheet/OrderList')),
-        // authority: [ADMIN, USER],
-        authority: []
+        key: 'cuesheet',
+        path: '/cuesheet',
+        component: lazy(() => import('@/views/Menu/cueSheet/CueSheetList')),
+        authority: [],
     },
     {
         key: 'mypage',
         path: '/mypage',
-        component: lazy(() => import('@/views/Menu/Mypage')),
+        component: lazy(() => import('@/views/Menu/mypage/CustomerDetail')),
         authority: [],
     },
     // {

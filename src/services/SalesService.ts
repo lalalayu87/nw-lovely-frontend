@@ -64,8 +64,9 @@ export async function apiCreateSalesProduct<
 export async function apiGetSalesOrders<T, U extends Record<string, unknown>>(
     params: U
 ) {
+    console.log('step 2', params)
     return ApiService.fetchData<T>({
-        url: '/sales/orders',
+        url: '/cuesheet',
         method: 'get',
         params,
     })

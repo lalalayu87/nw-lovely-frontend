@@ -30,11 +30,11 @@ const Logo = (props: LogoProps) => {
             }}
         >
             {/* 로고 */}
-            {/* <img
+            <img
                 className={imgClass}
-                src={`${LOGO_SRC_PATH}logo-${mode}-${type}.png`}
+                src={`${LOGO_SRC_PATH}logo-${mode}-${type}.JPG`}
                 alt={`${APP_NAME} logo`}
-            /> */}
+            />
         </div>
     )
 }
