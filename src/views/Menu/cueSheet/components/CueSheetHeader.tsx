@@ -5,6 +5,7 @@ import type {
     DataTableResetHandle,
     ColumnDef,
 } from '@/components/shared/DataTable'
+import CueSheetDataTable from './CueSheetDataTable'
 
 type cueSheet = {
     id: string
@@ -39,7 +40,7 @@ const CueSheetHeader = () => {
         () => [
             {
                 header: '순서',
-                accessorKey: 'name',
+                accessorKey: 'id',
             },
             {
                 header: '절차',
@@ -56,12 +57,12 @@ const CueSheetHeader = () => {
             },
 
             {
-                header: '비고',
-                accessorKey: 'status',
-            },
-            {
                 header: '파일',
                 accessorKey: 'price',
+            },
+            {
+                header: '비고',
+                accessorKey: 'status',
             },
             {
                 header: '',
@@ -72,13 +73,13 @@ const CueSheetHeader = () => {
     )
 
     return (
-        <DataTable
+        <CueSheetDataTable
             ref={tableRef}
             columns={columns}
-            skeletonAvatarColumns={[0]}
-            skeletonAvatarProps={{
-                className: 'rounded-md',
-            }}
+            // skeletonAvatarColumns={[0]}
+            // skeletonAvatarProps={{
+            //     className: 'rounded-md',
+            // }}
         />
     )
 }
