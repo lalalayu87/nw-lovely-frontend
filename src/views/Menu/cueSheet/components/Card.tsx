@@ -75,6 +75,7 @@ export const Card = ({ id, text, index, moveCard }) => {
             style={{ ...style, opacity }}
             data-handler-id={handlerId}
         >
+            {id}
             {text}
         </div>
     )

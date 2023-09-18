@@ -15,15 +15,15 @@ const CueSheetList = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Products</h3>
+                <h3 className="mb-4 lg:mb-0">큐시트</h3>
                 <CueSheetTableTools />
             </div>
             <CueSheetHeader />
 
-            {/* <DndProvider backend={HTML5Backend}> */}
-            {/* <Example /> */}
-            <CueSheetTable />
-            {/* </DndProvider> */}
+            <DndProvider backend={HTML5Backend}>
+                {/* <Example /> */}
+                <CueSheetTable />
+            </DndProvider>
         </AdaptableCard>
     )
 }
