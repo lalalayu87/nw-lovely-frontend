@@ -47,7 +47,9 @@ const AllRoutes = (props: AllRoutesProps) => {
                                     userAuthority={userAuthority}
                                     authority={route.authority}
                                 >
-                                    <PageContainer {...props} {...route.meta}>
+                                    <PageContainer {...props}
+                                        // {...route.meta}
+                                    >
                                         {/* {console.log(
                                               'props in View : ',
                                               props
@@ -56,7 +58,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                                         <AppRoute
                                             routeKey={route.key}
                                             component={route.component}
-                                            {...route.meta}
+                                            // {...route.meta}
                                         />
                                     </PageContainer>
                                 </AuthorityGuard>
@@ -103,12 +105,12 @@ const AllRoutes = (props: AllRoutesProps) => {
                                 >
                                     <PageContainerUser
                                         {...props}
-                                        {...route.meta}
+                                        // {...route.meta}
                                     >
                                         <AppRoute
                                             routeKey={route.key}
                                             component={route.component}
-                                            {...route.meta}
+                                            // {...route.meta}
                                         />
                                     </PageContainerUser>
                                 </AuthorityGuard>
