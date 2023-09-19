@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    Suspense,
+    lazy,
+} from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
 import DataTable from '@/components/shared/DataTable'
@@ -11,6 +19,7 @@ import {
     toggleDeleteConfirmation,
     useAppDispatch,
     useAppSelector,
+    closeDialog,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import ProductDeleteConfirmation from './CueSheetDeleteConfirmation'
@@ -29,6 +38,8 @@ import {
     Draggable,
 } from 'react-beautiful-dnd'
 import CueSheetDataTable from './CueSheetDataTable'
+import CueSheetHeader from './CueSheetHeader'
+import Dialog from '@/components/ui/Dialog'
 
 const style = {
     border: '1px dashed gray',
@@ -38,74 +49,73 @@ const style = {
     cursor: 'move',
 }
 
-type cueSheet = {
-    id: string
-    name: string
-    productCode: string
-    img: string
-    category: string
-    price: number
-    stock: number
-    status: number
-}
+// type cueSheet = {
+//     id: string
+//     process: string
+//     performer: string
+//     text: string
+//     file: string
+//     note: string
+// }
 
-const inventoryStatusColor: Record<
-    number,
-    {
-        label: string
-        dotClass: string
-        textClass: string
-    }
-> = {
-    0: {
-        label: 'In Stock',
-        dotClass: 'bg-emerald-500',
-        textClass: 'text-emerald-500',
-    },
-    1: {
-        label: 'Limited',
-        dotClass: 'bg-amber-500',
-        textClass: 'text-amber-500',
-    },
-    2: {
-        label: 'Out of Stock',
-        dotClass: 'bg-red-500',
-        textClass: 'text-red-500',
-    },
-}
+// const inventoryStatusColor: Record<
+//     number,
+//     {
+//         label: string
+//         dotClass: string
+//         textClass: string
+//     }
+// > = {
+//     0: {
+//         label: 'In Stock',
+//         dotClass: 'bg-emerald-500',
+//         textClass: 'text-emerald-500',
+//     },
+//     1: {
+//         label: 'Limited',
+//         dotClass: 'bg-amber-500',
+//         textClass: 'text-amber-500',
+//     },
+//     2: {
+//         label: 'Out of Stock',
+//         dotClass: 'bg-red-500',
+//         textClass: 'text-red-500',
+//     },
+// }
 
 // const ActionColumn = ({ row }: { row: cueSheet }) => {
-const ActionColumn = ({ row }: { row: cueSheet }) => {
-    const dispatch = useAppDispatch()
-    const { textTheme } = useThemeClass()
-    const navigate = useNavigate()
+//     const dispatch = useAppDispatch()
+//     const { textTheme } = useThemeClass()
+//     const navigate = useNavigate()
 
-    const onEdit = () => {
-        navigate(`/app/sales/product-edit/${row.id}`)
-    }
+//     const onEdit = () => {
+//         navigate(`/app/sales/product-edit/${row.id}`)
+//     }
 
-    const onDelete = () => {
-        dispatch(toggleDeleteConfirmation(true))
-        dispatch(setSelectedProduct(row.id))
-    }
+//     const onDelete = () => {
+//         dispatch(toggleDeleteConfirmation(true))
+//         dispatch(setSelectedProduct(row.id))
+//     }
 
-    return (
-        <div className="flex justify-end text-lg">
-            <span
-                className={`cursor-pointer p-2 hover:${textTheme}`}
-                onClick={onEdit}
-            >
-                <HiOutlinePencil />
-            </span>
-            <span
-                className="cursor-pointer p-2 hover:text-red-500"
-                onClick={onDelete}
-            >
-                <HiOutlineTrash />
-            </span>
-        </div>
-    )
-}
+//     return (
+//         <div className="flex justify-end text-lg">
+//             <span
+//                 className={`cursor-pointer p-2 hover:${textTheme}`}
+//                 onClick={onEdit}
+//             >
+//                 <HiOutlinePencil />
+//             </span>
+//             <span
+//                 className="cursor-pointer p-2 hover:text-red-500"
+//                 onClick={onDelete}
+//             >
+//                 <HiOutlineTrash />
+//             </span>
+//         </div>
+//     )
+// }
+
+const AddCueSheetContent = lazy(() => import('./AddCueSheetContent'))
 
 const CueSheetTable = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
@@ -128,6 +138,18 @@ const CueSheetTable = () => {
         (state) => state.salesProductList.data.productList
     )
 
+    const dialogOpen = useAppSelector(
+        (state) => state.salesProductList.data.dialogOpen
+    )
+
+    const dialogView = useAppSelector(
+        (state) => state.salesProductList.data.dialogView
+    )
+
+    const onDialogClose = () => {
+        dispatch(closeDialog())
+    }
+
     const [newData, setNewData] = useState(data)
 
     useEffect(() => {
@@ -146,45 +168,45 @@ const CueSheetTable = () => {
         [pageIndex, pageSize, sort, query, total]
     )
 
-    const columns: ColumnDef<cueSheet>[] = useMemo(
-        () => [
-            {
-                header: '절차',
-                accessorKey: 'process',
-            },
-            {
-                header: '행위자',
-                accessorKey: 'performer: ',
-                sortable: true,
-            },
-            {
-                header: '내용',
-                accessorKey: 'text: ',
-            },
+    // const columns: ColumnDef<cueSheet>[] = useMemo(
+    //     () => [
+    //         {
+    //             header: '절차',
+    //             accessorKey: 'process',
+    //         },
+    //         {
+    //             header: '행위자',
+    //             accessorKey: 'performer: ',
+    //             sortable: true,
+    //         },
+    //         {
+    //             header: '내용',
+    //             accessorKey: 'text: ',
+    //         },
 
-            {
-                header: '파일',
-                accessorKey: 'file: ',
-            },
-            {
-                header: '비고',
-                accessorKey: 'note: ',
-            },
+    //         {
+    //             header: '파일',
+    //             accessorKey: 'file: ',
+    //         },
+    //         {
+    //             header: '비고',
+    //             accessorKey: 'note: ',
+    //         },
 
-            {
-                header: '',
-                id: 'action',
-                cell: (props) => <ActionColumn row={props.row.original} />,
-            },
-        ],
-        []
-    )
+    //         {
+    //             header: '',
+    //             accessorKey: 'action',
+    //             // cell: (props) => <ActionColumn row={props.row.original} />,
+    //         },
+    //     ],
+    //     []
+    // )
 
     const [cards, setCards] = useState([
         {
             id: 1,
-            process: '개식예고',
-            performer: '신랑, 신부',
+            process: '식전',
+            performer: '사회자',
             text: '잠시 후 신랑 xxx군과 신부 xxx양의 결혼식을 거행하려 하오니 양가 가족 및 내빈 여러분께서는 식장 안으로 입장하셔서 자리에 착석하여 주시기 바랍니다. 또한 성스러운 결혼식 진행을 위해 소지하고 계신 휴대폰은 모두 진동으로 바꿔주시면 감사하겠습니다. (반복 안내)',
             file: '',
             note: '',
@@ -192,7 +214,7 @@ const CueSheetTable = () => {
         {
             id: 2,
             process: '개식사',
-            performer: '신랑, 신부',
+            performer: '사회자',
             text: '지금부터 양가 어르신들과 일가친척 그리고 내빈 여러분을 모신 가운데 신랑 xxx군과 신부 xxx양의 성스러운 결혼식을 시작하겠습니다. 경건한 마음으로 지켜봐 주시기 바랍니다. 아울러 바쁘신 중에도 신랑, 신부의 결혼을 축하해 주시기 위해 이 자리에 참석해 주신 모든 분들께 감사드립니다.',
             file: '',
             note: '',
@@ -247,8 +269,16 @@ const CueSheetTable = () => {
         },
         {
             id: 9,
+            process: '예물교환',
+            performer: '신랑, 신부',
+            text: '사랑의 증표로 삼을 예물교환이 있겠습니다. 먼저 신랑이 신부에게 반지를 전달하겠습니다. 이어서 신부가 신랑에게 반지를 전달하겠습니다.',
+            file: '',
+            note: '',
+        },
+        {
+            id: 10,
             process: '성혼선언문',
-            performer: '주례자',
+            performer: '신랑, 신부, 주례자',
             text: '이어 두 사람이 완전한 부부 됨을 선언하는 성혼선언문 낭독이 있겠습니다. (주례 진행 : 성혼선언문 낭독)',
             file: '',
             note: '',
@@ -272,7 +302,7 @@ const CueSheetTable = () => {
         {
             id: 12,
             process: '인사',
-            performer: '신랑, 신부',
+            performer: '신랑, 신부, 양가 부모님',
             text: '(신부 부모님께 인사 → 신랑 부모님께 인사 → 내빈께 인사) 이제 오늘이 있기까지 길러주신 부모님과 바쁘신중에도 참석해주신 하객여러분께 감사의 인사를 드리겠습니다.(사회자 멘트)먼저 신부 부모님께 오늘이 있기까지 낳아주시고 키워주신 은혜에 감사하며 인사를 올리겠습니다. 신랑, 신부 부모님께 인사 다음은 신랑 부모님께 많은 사랑을 쏟아 키워주신 은혜에 감사하며 인사를 올리겠습니다. 신랑, 신부 부모님께 인사 / 신랑신부는 내빈석을 향해 서주시길 바랍니다. 바쁘신 와중에도 오늘처럼 기쁘고 소중한 날을 함께 해주신 내빈 여러분께 감사드리며 인사드리겠습니다. 내빈 여러분께서는 큰 박수로 답례하여 주시면 감사하겠습니다. 신랑, 신부 내빈 여러분께 인사',
             file: '',
             note: '',
@@ -288,7 +318,7 @@ const CueSheetTable = () => {
         {
             id: 14,
             process: '폐회식',
-            performer: '',
+            performer: '사회자',
             text: '이상으로 결혼식을 모두 마치겠습니다. 참석해 주신 하객 여러분 가정에도 만복이 항상 함께 하기를 기원합니다. 대단히 감사합니다. 곧이어 사진 촬영이 있을 예정이오니 일가친척, 친구, 직장동료께서는 잠시 기다리셔서 기념사진 촬영에 협조 부탁드리겠습니다.  식사를 하실 분들께서는 식권을 지참하시고 같은 층에 마련된 피로연장을 이용하시기 바랍니다. 감사합니다.',
             file: '',
             note: '',
@@ -316,18 +346,21 @@ const CueSheetTable = () => {
         // 드래그가 취소된 경우
         if (!result.destination) return
 
-        const newItems = [...newData]
-        console.log(newItems)
+        // const newItems = [...newData]
+        // const [reorderedItem] = newItems.splice(result.source.index, 1)
+        // newItems.splice(result.destination.index, 0, reorderedItem)
+        // setNewData(newItems)
+
+        const newItems = [...cards]
         const [reorderedItem] = newItems.splice(result.source.index, 1)
         newItems.splice(result.destination.index, 0, reorderedItem)
-
-        setNewData(newItems)
+        setCards(newItems)
     }
 
-    useEffect(() => {
-        // data가 변경될 때마다 newData를 업데이트
-        setNewData(data)
-    }, [data]) // data가 변경될 때만 useEffect 내부 코드가 실행됨
+    // useEffect(() => {
+    //     // data가 변경될 때마다 newData를 업데이트
+    //     setNewData(data)
+    // }, [data]) // data가 변경될 때만 useEffect 내부 코드가 실행됨
 
     return (
         <>
@@ -339,10 +372,10 @@ const CueSheetTable = () => {
                             {...provided.droppableProps}
                             className="pt-3"
                         >
-                            {newData.map((item, index) => (
+                            {cards.map((item, index) => (
                                 <Draggable
                                     key={item.id}
-                                    draggableId={item.id}
+                                    draggableId={item.id.toString()}
                                     index={index}
                                 >
                                     {(provided) => (
@@ -352,10 +385,8 @@ const CueSheetTable = () => {
                                             {...provided.dragHandleProps}
                                         >
                                             <div style={style}>
-                                                <>
-                                                    <span>{item.name}</span>
-                                                    <span> {item.price}</span>
-                                                </>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <span>{item.process}</span>
                                             </div>
                                         </div>
                                     )}
@@ -366,22 +397,35 @@ const CueSheetTable = () => {
                     )}
                 </Droppable>
             </DragDropContext>
+            <Dialog
+                isOpen={dialogOpen}
+                width={500}
+                // closable={dialogView !== 'TICKET'}
+                onClose={onDialogClose}
+                // onRequestClose={onDialogClose}
+            >
+                <Suspense fallback={<></>}>
+                    {dialogView === 'NEW_COLUMN' && <AddCueSheetContent />}
+                </Suspense>
+            </Dialog>
             {/* <DataTable
                 ref={tableRef}
-                columns={newData}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{
-                    className: 'rounded-md',
-                }}
-                loading={loading}
-                pagingData={{
-                    total: tableData.total as number,
-                    pageIndex: tableData.pageIndex as number,
-                    pageSize: tableData.pageSize as number,
-                }}
-                onPaginationChange={onPaginationChange}
-                onSelectChange={onSelectChange}
-                onSort={onSort}
+                columns={columns}
+                data={cards}
+
+                // skeletonAvatarColumns={[0]}
+                // skeletonAvatarProps={{
+                //     className: 'rounded-md',
+                // }}
+                // loading={loading}
+                // pagingData={{
+                //     total: tableData.total as number,
+                //     pageIndex: tableData.pageIndex as number,
+                //     pageSize: tableData.pageSize as number,
+                // }}
+                // onPaginationChange={onPaginationChange}
+                // onSelectChange={onSelectChange}
+                // onSort={onSort}
             />
             <ProductDeleteConfirmation /> */}
         </>

@@ -37,6 +37,8 @@ export type SalesProductListState = {
     tableData: TableQueries
     filterData: FilterQueries
     productList: Product[]
+    dialogOpen: boolean
+    dialogView: 'NEW_COLUMN' | ''
 }
 
 type GetSalesProductsRequest = TableQueries & { filterData?: FilterQueries }
@@ -85,6 +87,8 @@ const initialState: SalesProductListState = {
         status: [0, 1, 2],
         productStatus: 0,
     },
+    dialogOpen: false,
+    dialogView: '',
 }
 
 const cueSheetListSlice = createSlice({
@@ -106,6 +110,19 @@ const cueSheetListSlice = createSlice({
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload
         },
+        openDialog: (state) => {
+            state.dialogOpen = true
+        },
+        closeDialog: (state) => {
+            console.log(state)
+            state.dialogOpen = false
+            // state.ticketId = ''
+            // state.board = ''
+            state.dialogView = ''
+        },
+        updateDialogView: (state, action) => {
+            state.dialogView = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -126,6 +143,9 @@ export const {
     setFilterData,
     toggleDeleteConfirmation,
     setSelectedProduct,
+    openDialog,
+    updateDialogView,
+    closeDialog,
 } = cueSheetListSlice.actions
 
 export default cueSheetListSlice.reducer
