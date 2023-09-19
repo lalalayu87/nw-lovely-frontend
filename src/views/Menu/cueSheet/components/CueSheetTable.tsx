@@ -399,7 +399,7 @@ const CueSheetTable = () => {
             </DragDropContext>
             <Dialog
                 isOpen={dialogOpen}
-                width={500}
+                width={400}
                 // closable={dialogView !== 'TICKET'}
                 onClose={onDialogClose}
                 // onRequestClose={onDialogClose}

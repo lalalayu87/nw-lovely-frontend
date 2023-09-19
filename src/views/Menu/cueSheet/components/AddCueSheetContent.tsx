@@ -42,7 +42,7 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                 >
                     {({ errors, touched }) => (
                         <Form>
-                            <FormContainer layout="inline">
+                            <FormContainer layout="block">
                                 <FormItem
                                     label="Column title"
                                     invalid={errors.title && touched.title}
@@ -59,6 +59,84 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                                 'Ticket title is required!'
                                             )
                                         }
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="Column title"
+                                    invalid={errors.title && touched.title}
+                                    errorMessage={errors.title}
+                                >
+                                    <Field
+                                        type="text"
+                                        name="process"
+                                        placeholder="절차"
+                                        component={Input}
+                                        validate={(value: string) =>
+                                            requiredFieldValidation(
+                                                value,
+                                                '절차를 기입해주세요.'
+                                            )
+                                        }
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="Column title"
+                                    invalid={errors.title && touched.title}
+                                    errorMessage={errors.title}
+                                >
+                                    <Field
+                                        type="text"
+                                        name="performer"
+                                        placeholder="행위자"
+                                        component={Input}
+                                        validate={(value: string) =>
+                                            requiredFieldValidation(
+                                                value,
+                                                '행위자를 기입해주세요.'
+                                            )
+                                        }
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="Column title"
+                                    invalid={errors.title && touched.title}
+                                    errorMessage={errors.title}
+                                >
+                                    <Field
+                                        type="text"
+                                        name="text"
+                                        placeholder="내용"
+                                        component={Input}
+                                        validate={(value: string) =>
+                                            requiredFieldValidation(
+                                                value,
+                                                '내용을 기입해주세요.'
+                                            )
+                                        }
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="Column title"
+                                    invalid={errors.title && touched.title}
+                                    errorMessage={errors.title}
+                                >
+                                    <Field
+                                        type="file"
+                                        name="file"
+                                        placeholder="파일"
+                                        component={Input}
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="Column title"
+                                    invalid={errors.title && touched.title}
+                                    errorMessage={errors.title}
+                                >
+                                    <Field
+                                        type="text"
+                                        name="note"
+                                        placeholder="비고"
+                                        component={Input}
                                     />
                                 </FormItem>
                                 <FormItem>

@@ -87,32 +87,31 @@ const CueSheetHeader = () => {
             //     header: '순서',
             //     accessorKey: 'id',
             // },
-            {
-                header: '절차',
-                accessorKey: 'category',
-            },
+
+            { header: '절차', accessorKey: 'process' },
             {
                 header: '행위자',
-                accessorKey: 'stock',
+                accessorKey: 'performer: ',
                 sortable: true,
             },
             {
                 header: '내용',
-                accessorKey: 'category',
+                accessorKey: 'text: ',
             },
 
             {
                 header: '파일',
-                accessorKey: 'price',
+                accessorKey: 'file: ',
             },
             {
                 header: '비고',
-                accessorKey: 'status',
+                accessorKey: 'note: ',
             },
+
             {
                 header: '',
-                id: 'action',
-                cell: (props) => <ActionColumn row={props.row.original} />,
+                accessorKey: 'action',
+                // cell: (props) => <ActionColumn row={props.row.original} />,
             },
         ],
         []

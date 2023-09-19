@@ -7,18 +7,6 @@ import AddCueSheetDialog from './AddCueSheetDialog'
 import { useState } from 'react'
 
 const CueSheetTableTools = () => {
-    // const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-
-    // const openAddDialog = () => {
-    //     setIsAddDialogOpen(true)
-    //     console.log('열린다')
-    // }
-
-    // const closeAddDialog = () => {
-    //     setIsAddDialogOpen(false)
-    //     console.log('닫히냐')
-    // }
-
     return (
         <div className="flex flex-col lg:flex-row lg:items-center">
             {/* <ProductTableSearch />
