@@ -5,7 +5,7 @@ import React, {
     useRef,
     useState,
     Suspense,
-    lazy,
+    lazy
 } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
@@ -19,7 +19,7 @@ import {
     toggleDeleteConfirmation,
     useAppDispatch,
     useAppSelector,
-    closeDialog,
+    closeDialog
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import ProductDeleteConfirmation from './CueSheetDeleteConfirmation'
@@ -28,14 +28,14 @@ import cloneDeep from 'lodash/cloneDeep'
 import type {
     DataTableResetHandle,
     OnSortParam,
-    ColumnDef,
+    ColumnDef
 } from '@/components/shared/DataTable'
 import {
     DragDropContext,
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable,
+    Draggable
 } from 'react-beautiful-dnd'
 import CueSheetDataTable from './CueSheetDataTable'
 import CueSheetHeader from './CueSheetHeader'
@@ -46,7 +46,7 @@ const style = {
     padding: '2.5rem 1rem',
     marginBottom: '.5rem',
     backgroundColor: 'white',
-    cursor: 'move',
+    cursor: 'move'
 }
 
 // type cueSheet = {
@@ -57,6 +57,15 @@ const style = {
 //     file: string
 //     note: string
 // }
+
+type cards = {
+    id: string
+    process: string
+    performer: string
+    text: string
+    file: File
+    note: string
+}
 
 // const inventoryStatusColor: Record<
 //     number,
@@ -81,38 +90,6 @@ const style = {
 //         dotClass: 'bg-red-500',
 //         textClass: 'text-red-500',
 //     },
-// }
-
-// const ActionColumn = ({ row }: { row: cueSheet }) => {
-//     const dispatch = useAppDispatch()
-//     const { textTheme } = useThemeClass()
-//     const navigate = useNavigate()
-
-//     const onEdit = () => {
-//         navigate(`/app/sales/product-edit/${row.id}`)
-//     }
-
-//     const onDelete = () => {
-//         dispatch(toggleDeleteConfirmation(true))
-//         dispatch(setSelectedProduct(row.id))
-//     }
-
-//     return (
-//         <div className="flex justify-end text-lg">
-//             <span
-//                 className={`cursor-pointer p-2 hover:${textTheme}`}
-//                 onClick={onEdit}
-//             >
-//                 <HiOutlinePencil />
-//             </span>
-//             <span
-//                 className="cursor-pointer p-2 hover:text-red-500"
-//                 onClick={onDelete}
-//             >
-//                 <HiOutlineTrash />
-//             </span>
-//         </div>
-//     )
 // }
 
 const AddCueSheetContent = lazy(() => import('./AddCueSheetContent'))
@@ -209,7 +186,7 @@ const CueSheetTable = () => {
             performer: '사회자',
             text: '잠시 후 신랑 xxx군과 신부 xxx양의 결혼식을 거행하려 하오니 양가 가족 및 내빈 여러분께서는 식장 안으로 입장하셔서 자리에 착석하여 주시기 바랍니다. 또한 성스러운 결혼식 진행을 위해 소지하고 계신 휴대폰은 모두 진동으로 바꿔주시면 감사하겠습니다. (반복 안내)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 2,
@@ -217,7 +194,7 @@ const CueSheetTable = () => {
             performer: '사회자',
             text: '지금부터 양가 어르신들과 일가친척 그리고 내빈 여러분을 모신 가운데 신랑 xxx군과 신부 xxx양의 성스러운 결혼식을 시작하겠습니다. 경건한 마음으로 지켜봐 주시기 바랍니다. 아울러 바쁘신 중에도 신랑, 신부의 결혼을 축하해 주시기 위해 이 자리에 참석해 주신 모든 분들께 감사드립니다.',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 3,
@@ -225,7 +202,7 @@ const CueSheetTable = () => {
             performer: '양가 어머님',
             text: '먼저 신랑신부의 앞길을 밝힐 화촉점화 순서가 있겠습니다. 양가 어머님께서 초에 불을 밝히실 때 축하의 마음으로 많은 박수 부탁드립니다. 양가 어머님 입장!! (박수 유도)(화촉점화 후) 멋진 신랑과 아름다운 신부를 훌륭하게 키워주신 양가 어머님께 다시 한 번 큰 박수 부탁드리겠습니다.',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 4,
@@ -233,7 +210,7 @@ const CueSheetTable = () => {
             performer: '주례자',
             text: '다음은 오늘 결혼식의 주례를 맡아 주실 xxx 선생님을 소개하겠습니다. (주례 선생님 약력 및 직함 소개)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 5,
@@ -241,7 +218,7 @@ const CueSheetTable = () => {
             performer: '신랑',
             text: '자, 이어 오늘의 주인공 중 한 사람인 신랑 입장이 있겠습니다. 하객 여러분들은 뜨거운 박수로 오늘의 신랑을 축하해 주시기 바랍니다. 신랑 입장! (박수 유도)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 6,
@@ -249,7 +226,7 @@ const CueSheetTable = () => {
             performer: '신부',
             text: '다음으로 오늘의 주인공인 아름다운 신부를 소개해드리겠습니다. 오늘 그 누구보다 빛날, 아름다운 신부가 입장할 때 뜨거운 박수로 맞이하여 주십시오. 신부 입장! (박수 유도)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 7,
@@ -257,7 +234,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부',
             text: '방금 입장을 마친 신랑, 신부가 세상에서 가장 중요하고 아름다운 약속 장소에 섰습니다. 가족분들과 내빈여러분 앞에서 성인의 예를 드리는 맞절 순서가 있겠습니다.  신랑 신부는 서로 마주봐 주시기 바랍니다. 신랑 신부 맞절~!',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 8,
@@ -265,7 +242,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부, 주례자',
             text: '이번 순서는 신랑, 신부 혼인서약이 있겠습니다. 먼저 주례 선생님께서 혼인 서약서를 낭독해 주시겠습니다. (주례 진행 : 혼인서약 문답)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 9,
@@ -273,7 +250,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부',
             text: '사랑의 증표로 삼을 예물교환이 있겠습니다. 먼저 신랑이 신부에게 반지를 전달하겠습니다. 이어서 신부가 신랑에게 반지를 전달하겠습니다.',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 10,
@@ -281,7 +258,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부, 주례자',
             text: '이어 두 사람이 완전한 부부 됨을 선언하는 성혼선언문 낭독이 있겠습니다. (주례 진행 : 성혼선언문 낭독)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 10,
@@ -289,7 +266,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부',
             text: '이제 주례선생님께서 새롭게 시작하는 신랑, 신부를 위해 소중한 말씀을 해주시겠습니다. (주례사 끝난 후) 두 사람의 앞날에 귀감이 될 소중한 말씀해 주신 주례선생님께 감사의 박수 부탁드립니다.',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 11,
@@ -297,7 +274,7 @@ const CueSheetTable = () => {
             performer: '축가자',
             text: '이어서 두 사람이 하나가 된 기쁜 순간을 축하하기 위한 축하무대가 있겠습니다. 큰 박수로 맞이해 주세요.',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 12,
@@ -305,7 +282,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부, 양가 부모님',
             text: '(신부 부모님께 인사 → 신랑 부모님께 인사 → 내빈께 인사) 이제 오늘이 있기까지 길러주신 부모님과 바쁘신중에도 참석해주신 하객여러분께 감사의 인사를 드리겠습니다.(사회자 멘트)먼저 신부 부모님께 오늘이 있기까지 낳아주시고 키워주신 은혜에 감사하며 인사를 올리겠습니다. 신랑, 신부 부모님께 인사 다음은 신랑 부모님께 많은 사랑을 쏟아 키워주신 은혜에 감사하며 인사를 올리겠습니다. 신랑, 신부 부모님께 인사 / 신랑신부는 내빈석을 향해 서주시길 바랍니다. 바쁘신 와중에도 오늘처럼 기쁘고 소중한 날을 함께 해주신 내빈 여러분께 감사드리며 인사드리겠습니다. 내빈 여러분께서는 큰 박수로 답례하여 주시면 감사하겠습니다. 신랑, 신부 내빈 여러분께 인사',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 13,
@@ -313,7 +290,7 @@ const CueSheetTable = () => {
             performer: '신랑, 신부',
             text: '이제 신랑, 신부가 하객 여러분의 축복을 받으며 인생의 새로운 출발을 위해 힘찬 행진을 하겠습니다. 내빈 여러분께서는 새로운 인생을 시작하는 이들 부부의 첫 출발에 아낌없는 격려와 뜨거운 축복의 박수를 부탁드립니다. 신랑,신부행진! (박수 유도)',
             file: '',
-            note: '',
+            note: ''
         },
         {
             id: 14,
@@ -321,8 +298,8 @@ const CueSheetTable = () => {
             performer: '사회자',
             text: '이상으로 결혼식을 모두 마치겠습니다. 참석해 주신 하객 여러분 가정에도 만복이 항상 함께 하기를 기원합니다. 대단히 감사합니다. 곧이어 사진 촬영이 있을 예정이오니 일가친척, 친구, 직장동료께서는 잠시 기다리셔서 기념사진 촬영에 협조 부탁드리겠습니다.  식사를 하실 분들께서는 식권을 지참하시고 같은 층에 마련된 피로연장을 이용하시기 바랍니다. 감사합니다.',
             file: '',
-            note: '',
-        },
+            note: ''
+        }
     ])
 
     const fetchData = () => {
@@ -362,6 +339,58 @@ const CueSheetTable = () => {
     //     setNewData(data)
     // }, [data]) // data가 변경될 때만 useEffect 내부 코드가 실행됨
 
+    const ActionColumn = ({
+        row,
+        onDelete
+    }: {
+        row: cards
+        onDelete: (cardId: string) => void
+    }) => {
+        const dispatch = useAppDispatch()
+        const { textTheme } = useThemeClass()
+        const navigate = useNavigate()
+
+        const onEdit = () => {
+            navigate(`/app/sales/product-edit/${row.id}`)
+        }
+
+        const onDeleteClick = (index) => {
+            // 삭제 버튼 클릭 시 onDelete 함수 호출
+            // onDelete(row.id)
+            console.log('onDeleteClick')
+            dispatch(toggleDeleteConfirmation(true))
+            dispatch(setSelectedProduct(row.id))
+            console.log('onDeleteClick22222222')
+            console.log(index)
+            const updatedCards = cards.filter((card) => card.id !== index)
+            console.log(updatedCards)
+            setCards(updatedCards)
+        }
+
+        // const onDelete = () => {
+        //     dispatch(toggleDeleteConfirmation(true))
+        //     dispatch(setSelectedProduct(row.id))
+        // }
+
+        return (
+            <div className="flex justify-end text-lg">
+                <span
+                    className={`cursor-pointer p-2 hover:${textTheme}`}
+                    onClick={onEdit}
+                >
+                    <HiOutlinePencil />
+                </span>
+                <span
+                    className="cursor-pointer p-2 hover:text-red-500"
+                    // onClick={onDelete}
+                    onClick={onDeleteClick}
+                >
+                    <HiOutlineTrash />
+                </span>
+            </div>
+        )
+    }
+
     return (
         <>
             <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
@@ -387,6 +416,12 @@ const CueSheetTable = () => {
                                             <div style={style}>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <span>{item.process}</span>
+                                                {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
+                                                <ActionColumn
+                                                    row={item}
+                                                    // onClick={onDeleteClick}
+                                                    index={index}
+                                                />
                                             </div>
                                         </div>
                                     )}

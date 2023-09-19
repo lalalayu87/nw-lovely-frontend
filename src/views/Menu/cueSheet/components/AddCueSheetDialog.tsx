@@ -11,7 +11,6 @@ const AddCueSheetDialog = () => {
     const handleOpen = () => {
         dispatch(updateDialogView('NEW_COLUMN'))
         dispatch(openDialog())
-        console.log('되냐')
     }
 
     return (

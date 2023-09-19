@@ -13,11 +13,18 @@ interface AddCueSheetDialogProps {
 
 const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
     onClick,
-    onClose,
+    onClose
 }) => {
     const dispatch = useAppDispatch()
 
-    const onFormSubmit = (title: string) => {
+    const onFormSubmit = (
+        title: string
+        // process: string,
+        // performer: string,
+        // text: string,
+        // file: File,
+        // note: string
+    ) => {
         console.log('기둘')
         // const data = cloneDeep(columns)
         // data[title ? title : 'Untitled Board'] = []
@@ -42,7 +49,7 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                 >
                     {({ errors, touched }) => (
                         <Form>
-                            <FormContainer layout="block">
+                            <FormContainer layout="horizontal">
                                 <FormItem
                                     label="Column title"
                                     invalid={errors.title && touched.title}
@@ -61,15 +68,15 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                         }
                                     />
                                 </FormItem>
-                                <FormItem
-                                    label="Column title"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
+                                {/* <FormItem
+                                    label="절차"
+                                    invalid={errors.process && touched.process}
+                                    errorMessage={errors.process}
                                 >
                                     <Field
                                         type="text"
                                         name="process"
-                                        placeholder="절차"
+                                        placeholder="예) 개식사"
                                         component={Input}
                                         validate={(value: string) =>
                                             requiredFieldValidation(
@@ -80,14 +87,16 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                     />
                                 </FormItem>
                                 <FormItem
-                                    label="Column title"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
+                                    label="행위자"
+                                    invalid={
+                                        errors.performer && touched.performer
+                                    }
+                                    errorMessage={errors.performer}
                                 >
                                     <Field
                                         type="text"
                                         name="performer"
-                                        placeholder="행위자"
+                                        placeholder="예) 신랑, 신부"
                                         component={Input}
                                         validate={(value: string) =>
                                             requiredFieldValidation(
@@ -98,14 +107,15 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                     />
                                 </FormItem>
                                 <FormItem
-                                    label="Column title"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
+                                    label="내용"
+                                    invalid={errors.text && touched.text}
+                                    errorMessage={errors.text}
                                 >
                                     <Field
+                                        style={{ height: 100 }}
                                         type="text"
                                         name="text"
-                                        placeholder="내용"
+                                        placeholder="예) 결혼식을 시작하겠습니다."
                                         component={Input}
                                         validate={(value: string) =>
                                             requiredFieldValidation(
@@ -116,21 +126,20 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                     />
                                 </FormItem>
                                 <FormItem
-                                    label="Column title"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
+                                    label="파일"
+                                    invalid={errors.file && touched.file}
+                                    errorMessage={errors.file}
                                 >
                                     <Field
                                         type="file"
                                         name="file"
-                                        placeholder="파일"
                                         component={Input}
                                     />
                                 </FormItem>
                                 <FormItem
-                                    label="Column title"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
+                                    label="비고"
+                                    invalid={errors.note && touched.note}
+                                    errorMessage={errors.note}
                                 >
                                     <Field
                                         type="text"
@@ -138,7 +147,7 @@ const AddCueSheetContent: React.FC<AddCueSheetDialogProps> = ({
                                         placeholder="비고"
                                         component={Input}
                                     />
-                                </FormItem>
+                                </FormItem> */}
                                 <FormItem>
                                     <Button variant="solid" type="submit">
                                         추가

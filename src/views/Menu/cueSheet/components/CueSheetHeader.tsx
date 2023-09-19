@@ -3,7 +3,7 @@ import DataTable from '@/components/shared/DataTable'
 import { getProducts, useAppDispatch, useAppSelector } from '../store'
 import type {
     DataTableResetHandle,
-    ColumnDef,
+    ColumnDef
 } from '@/components/shared/DataTable'
 import CueSheetDataTable from './CueSheetDataTable'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
@@ -11,7 +11,7 @@ import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
 import {
     setSelectedProduct,
-    toggleDeleteConfirmation,
+    toggleDeleteConfirmation
 } from '../store/CueSheetListSlice'
 
 type cueSheet = {
@@ -92,27 +92,27 @@ const CueSheetHeader = () => {
             {
                 header: '행위자',
                 accessorKey: 'performer: ',
-                sortable: true,
+                sortable: true
             },
             {
                 header: '내용',
-                accessorKey: 'text: ',
+                accessorKey: 'text: '
             },
 
             {
                 header: '파일',
-                accessorKey: 'file: ',
+                accessorKey: 'file: '
             },
             {
                 header: '비고',
-                accessorKey: 'note: ',
-            },
+                accessorKey: 'note: '
+            }
 
-            {
-                header: '',
-                accessorKey: 'action',
-                // cell: (props) => <ActionColumn row={props.row.original} />,
-            },
+            // {
+            //     header: '',
+            //     accessorKey: 'action',
+            //     // cell: (props) => <ActionColumn row={props.row.original} />,
+            // },
         ],
         []
     )
