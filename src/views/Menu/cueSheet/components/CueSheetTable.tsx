@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
@@ -200,7 +201,7 @@ const CueSheetTable = () => {
         {
             id: 3,
             process: '화촉점화',
-            performer: '양가 어머님',
+            performer: '신랑 어머니, 신부 어머니',
             text: '먼저 신랑신부의 앞길을 밝힐 화촉점화 순서가 있겠습니다. 양가 어머님께서 초에 불을 밝히실 때 축하의 마음으로 많은 박수 부탁드립니다. 양가 어머님 입장!! (박수 유도)(화촉점화 후) 멋진 신랑과 아름다운 신부를 훌륭하게 키워주신 양가 어머님께 다시 한 번 큰 박수 부탁드리겠습니다.',
             file: '',
             note: '',
@@ -288,12 +289,33 @@ const CueSheetTable = () => {
         {
             id: 14,
             process: '폐회식',
-            performer: '',
+            performer: '사회자',
             text: '이상으로 결혼식을 모두 마치겠습니다. 참석해 주신 하객 여러분 가정에도 만복이 항상 함께 하기를 기원합니다. 대단히 감사합니다. 곧이어 사진 촬영이 있을 예정이오니 일가친척, 친구, 직장동료께서는 잠시 기다리셔서 기념사진 촬영에 협조 부탁드리겠습니다.  식사를 하실 분들께서는 식권을 지참하시고 같은 층에 마련된 피로연장을 이용하시기 바랍니다. 감사합니다.',
             file: '',
             note: '',
         },
     ])
+
+    const fontColor = (e: string | void) => {
+        if (e === '신랑') {
+            return 'm-2 bg-blue-200 border-blue-500 w-10 rounded-lg border-2 text-blue-500 text-center'
+        } else if (e === '신부') {
+            return 'm-2 bg-red-200 border-red-500 w-10 rounded-lg border-2 text-red-500 text-center'
+        } else if (e === '신부 어머니') {
+            return 'm-2 bg-amber-100 border-amber-500 w-20 rounded-lg border-2 text-amber-500 text-center'
+        } else if (e === '신랑 어머니') {
+            return 'm-2 bg-indigo-200 border-indigo-500 w-20 rounded-lg border-2 text-indigo-500 text-center'
+        } else if (e === '신부 아버지') {
+            return
+        } else if (e === '신랑 아버지') {
+            return
+            // eslint-disable-next-line no-constant-condition
+        } else if (e === '사회자' || '축가자' || '주례자') {
+            return 'm-2 bg-violet-200 border-violet-500 w-12 rounded-lg border-2 text-violet-500 text-center'
+        } else {
+            return 'text-purple-600'
+        }
+    }
 
     const fetchData = () => {
         dispatch(getProducts({ pageIndex, pageSize, sort, query, filterData }))
@@ -316,12 +338,15 @@ const CueSheetTable = () => {
         // 드래그가 취소된 경우
         if (!result.destination) return
 
-        const newItems = [...newData]
-        console.log(newItems)
+        // const newItems = [...newData]
+        // const [reorderedItem] = newItems.splice(result.source.index, 1)
+        // newItems.splice(result.destination.index, 0, reorderedItem)
+        // setNewData(newItems)
+
+        const newItems = [...cards]
         const [reorderedItem] = newItems.splice(result.source.index, 1)
         newItems.splice(result.destination.index, 0, reorderedItem)
-
-        setNewData(newItems)
+        setCards(newItems)
     }
 
     useEffect(() => {
@@ -339,10 +364,10 @@ const CueSheetTable = () => {
                             {...provided.droppableProps}
                             className="pt-3"
                         >
-                            {newData.map((item, index) => (
+                            {cards.map((item, index) => (
                                 <Draggable
                                     key={item.id}
-                                    draggableId={item.id}
+                                    draggableId={item.id.toString()}
                                     index={index}
                                 >
                                     {(provided) => (
@@ -352,10 +377,36 @@ const CueSheetTable = () => {
                                             {...provided.dragHandleProps}
                                         >
                                             <div style={style}>
-                                                <>
-                                                    <span>{item.name}</span>
-                                                    <span> {item.price}</span>
-                                                </>
+                                                <div className="flex">
+                                                    <div className="w-1/12 font-semibold">
+                                                        {item.process}
+                                                    </div>
+                                                    <div className="w-1/12">
+                                                        {item.performer
+                                                            .split(', ')
+                                                            .map(
+                                                                (e) => (
+                                                                    <div
+                                                                        className={fontColor(
+                                                                            e
+                                                                        )}
+                                                                    >
+                                                                        {e}
+                                                                    </div>
+                                                                )
+                                                                // </div>
+                                                            )}
+                                                    </div>
+                                                    <div className="w-6/12">
+                                                        {item.text}
+                                                    </div>
+                                                    <div className="w-2/12">
+                                                        {item.file}
+                                                    </div>
+                                                    <div className="w-2/12">
+                                                        {item.note}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     )}

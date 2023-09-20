@@ -8,7 +8,9 @@ import { LAYOUT_TYPE_BLANK } from '@/constants/theme.constant'
 const AuthLayout = () => {
     const layoutType = useAppSelector((state) => state.theme.layout.type)
 
-    const { token, signedIn } = useAppSelector((state) => state.auth.session)
+    const { accessToken, signedIn } = useAppSelector(
+        (state) => state.auth.session
+    )
 
     return (
         <div className="app-layout-blank flex flex-auto flex-col h-[100vh]">
