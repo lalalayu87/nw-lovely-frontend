@@ -32,7 +32,7 @@ const {
 } = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {
-    const userAuthority = useAppSelector((state) => state.auth.user.userId)
+    const userAuthority = useAppSelector((state) => state.auth.user.userRole?.roleName)
     console.log('userAuthority : ', userAuthority)
     if (userAuthority) {
         return (
@@ -41,7 +41,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                     <Route
                         path="/"
                         element={
-                            <Navigate replace to={unAuthenticatedEntryPath} />
+                            <Navigate replace to={authenticatedEntryPath} />
                         }
                     />
                     {protectedRoutes.map((route, index) => (
@@ -53,7 +53,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                                     userAuthority={userAuthority}
                                     authority={route.authority}
                                 >
-                                    {userAuthority === 'admin' ? (
+                                    {userAuthority === 'ROLE_ADMIN' ? (
                                         <PageContainer
                                             {...props}
                                             // {...route.meta}
@@ -90,7 +90,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                 <Route
                     path="/"
                     element={
-                        userAuthority === 'admin' ? (
+                        userAuthority === 'ROLE_ADMIN' ? (
                             <PublicRoute />
                         ) : (
                             <PublicRouteUser />
@@ -123,7 +123,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                             <Navigate replace to={unAuthenticatedEntryPath} />
                         }
                     /> */}
-                <Route path="*" element={<Navigate replace to="/sign-in" />} />
+                <Route path="*" element={<Navigate replace to={unAuthenticatedEntryPath} />} />
                 {publicRoutes.map((route) => (
                     <Route
                         key={route.path}

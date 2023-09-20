@@ -6,12 +6,14 @@ export type UserState = {
     // userName?: string
     // email?: string
     // authority?: string
-    userId: string
-    userName: string
+    userId?: string
+    userName?: string
     userRole: {
-        roleSeq: string
-        roleName: string
+        roleSeq?: string
+        roleName?: string
     }
+    accessToken?: string
+
 }
 
 const initialState: UserState = {
@@ -22,29 +24,34 @@ const initialState: UserState = {
     userId: '',
     userName: '',
     userRole: {
-        roleSeq: '',
+        roleSeq: 'ROLE_ADMIN',
         roleName: '',
     },
+    accessToken: '',
 }
 
-const userSlice = createSlice({
+const userSlice = createSlice(
+    {
     name: `${SLICE_BASE_NAME}/user`,
     initialState,
     reducers: {
         setUser(state, action: PayloadAction<UserState>) {
+            console.log('action : ', typeof(action.payload.userRole.roleSeq))
+            console.log('state : ', state.userRole)
             // state.avatar = action.payload?.avatar
             // state.email = action.payload?.email
             // state.userName = action.payload?.userName
             // state.authority = action.payload?.authority
             state.userId = action.payload?.userId
             state.userName = action.payload?.userName
-            state.userRole.roleSeq = action.payload?.userRole.roleSeq
-            state.userRole.roleName = action.payload?.userRole.roleName
-            console.log('action : ', action)
-            console.log('state : ', state)
+            // state.userRole.roleSeq = action.payload?.userRole?.roleSeq
+            // state.userRole.roleName = action.payload?.userRole?.roleName
+            state.userRole = action.payload.userRole
+            state.accessToken = action.payload?.accessToken
         },
-    },
-})
+        },
+    }
+)
 
 export const { setUser } = userSlice.actions
 export default userSlice.reducer

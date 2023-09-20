@@ -40,8 +40,10 @@ function useAuth() {
             console.log(resp)
             if (resp.data) {
                 const { accessToken } = resp.data
+                console.log("accessToken : ", accessToken)
                 dispatch(signInSuccess(accessToken))
                 if (resp.data) {
+                    console.log("resp.data : ", resp.data)
                     dispatch(
                         setUser(
                             resp.data || {
@@ -53,8 +55,9 @@ function useAuth() {
                                 userName: '',
                                 userRole: {
                                     roleSeq: '',
-                                    roleName: '',
+                                    roleName: 'ROLE_ADMIN',
                                 },
+                                accessToken: ''
                             }
                         )
                     )
@@ -99,6 +102,7 @@ function useAuth() {
                                     roleSeq: '',
                                     roleName: '',
                                 },
+                                accessToken: ''
                             }
                         )
                     )
@@ -134,7 +138,7 @@ function useAuth() {
                     roleSeq: '',
                     roleName: '',
                 },
-                // accessToken: '',
+                accessToken: '',
             })
         )
         navigate(appConfig.unAuthenticatedEntryPath)
