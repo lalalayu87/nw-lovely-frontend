@@ -3,7 +3,7 @@ import Loading from '@/components/shared/Loading'
 import {
     protectedRoutes,
     publicRoutes,
-    protectedUserRoutes,
+    protectedUserRoutes
 } from '@/configs/routes.config'
 import appConfig from '@/configs/app.config'
 import PageContainer from '@/components/template/PageContainer'
@@ -28,11 +28,13 @@ const {
     authenticatedEntryPath,
     authenticatedEntryPathUser,
     unAuthenticatedEntryPath,
-    tourPath,
+    tourPath
 } = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {
-    const userAuthority = useAppSelector((state) => state.auth.user.userRole?.roleName)
+    const userAuthority = useAppSelector(
+        (state) => state.auth.user.userRole?.roleName
+    )
     console.log('userAuthority : ', userAuthority)
     if (userAuthority) {
         return (
@@ -123,7 +125,10 @@ const AllRoutes = (props: AllRoutesProps) => {
                             <Navigate replace to={unAuthenticatedEntryPath} />
                         }
                     /> */}
-                <Route path="*" element={<Navigate replace to={unAuthenticatedEntryPath} />} />
+                <Route
+                    path="*"
+                    element={<Navigate replace to={unAuthenticatedEntryPath} />}
+                />
                 {publicRoutes.map((route) => (
                     <Route
                         key={route.path}

@@ -3,12 +3,14 @@ import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import ProductTableSearch from './CueSheetTableSearch'
 import ProductFilter from './CueSheetFilter'
 import { Link } from 'react-router-dom'
+import AddCueSheetDialog from './AddCueSheetDialog'
+import { useState } from 'react'
 
 const CueSheetTableTools = () => {
     return (
         <div className="flex flex-col lg:flex-row lg:items-center">
-            <ProductTableSearch />
-            <ProductFilter />
+            {/* <ProductTableSearch />
+            <ProductFilter /> */}
             <Link
                 download
                 className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
@@ -19,14 +21,9 @@ const CueSheetTableTools = () => {
                     Export
                 </Button>
             </Link>
-            <Link
-                className="block lg:inline-block md:mb-0 mb-4"
-                to="/app/sales/product-new"
-            >
-                <Button block variant="solid" size="sm" icon={<HiPlusCircle />}>
-                    추가
-                </Button>
-            </Link>
+            <span>
+                <AddCueSheetDialog />
+            </span>
         </div>
     )
 }

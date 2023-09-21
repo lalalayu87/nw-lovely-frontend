@@ -31,8 +31,8 @@ type Product = {
     text: string
     file: string
     note: string
-    // stock: number
-    // status: number
+    stock: number
+    status: number
 }
 
 const inventoryStatusColor: Record<
@@ -392,7 +392,6 @@ export const Container = () => {
         setCards(newCards)
     }
 
-    console.log(cards.map((item, index) => item))
     return (
         <>
             {/* {(provided) => <DataTable columns={columns} data={cards} />} */}
