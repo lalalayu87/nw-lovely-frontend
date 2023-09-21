@@ -22,13 +22,13 @@ interface SignInFormProps extends CommonProps {
 type SignInFormSchema = {
     userId: string
     userPassword: string
-    rememberMe: boolean
+    // rememberMe: boolean
 }
 
 const validationSchema = Yup.object().shape({
     userId: Yup.string().required('아이디를 입력해주세요'),
     userPassword: Yup.string().required('비밀번호를 입력해주세요'),
-    rememberMe: Yup.bool(),
+    rememberMe: Yup.bool()
 })
 
 const SignInForm = (props: SignInFormProps) => {
@@ -37,7 +37,7 @@ const SignInForm = (props: SignInFormProps) => {
         className,
         forgotPasswordUrl = '/forgot-password',
         companySignUpUrl = '/company-sign-up',
-        userSignUpUrl = '/sign-up',
+        userSignUpUrl = '/sign-up'
         // signUpUrl = '/sign-up',
     } = props
 
@@ -49,13 +49,16 @@ const SignInForm = (props: SignInFormProps) => {
         values: SignInFormSchema,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
+        console.log('onSignIn values : ', values)
         const { userId, userPassword } = values
         setSubmitting(true)
 
         const result = await signIn({ userId, userPassword })
+        console.log('result', result)
 
         if (result?.status === 'failed') {
             setMessage(result.message)
+            console.log('message : ', message)
         }
 
         setSubmitting(false)
@@ -70,15 +73,15 @@ const SignInForm = (props: SignInFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    userId: '',
-                    userPassword: '',
-                    // password: '123Qwe',
-                    rememberMe: true,
+                    userId: 'admin',
+                    userPassword: 'admin',
+                    rememberMe: true
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
                     if (!disableSubmit) {
                         onSignIn(values, setSubmitting)
+                        console.log('signIn values', values)
                     } else {
                         setSubmitting(false)
                     }

@@ -21,7 +21,9 @@ function useAuth() {
 
     const query = useQuery()
 
-    const { token, signedIn } = useAppSelector((state) => state.auth.session)
+    const { accessToken, signedIn } = useAppSelector(
+        (state) => state.auth.session
+    )
 
     const signIn = async (
         values: SignInCredential
@@ -33,21 +35,29 @@ function useAuth() {
         | undefined
     > => {
         try {
+            console.log('확인')
             const resp = await apiSignIn(values)
+            console.log(resp)
             if (resp.data) {
-                console.log(resp.data)
                 const { accessToken } = resp.data
-
+                console.log("accessToken : ", accessToken)
                 dispatch(signInSuccess(accessToken))
-
-                if (resp.data.userRole.roleName === 'ROLE_ADMIN') {
+                if (resp.data) {
+                    console.log("resp.data : ", resp.data)
                     dispatch(
                         setUser(
                             resp.data || {
+                                // avatar: '',
+                                // userId: 'Anonymous',
+                                // authority: 'USER',
+                                // email: '',
                                 userId: '',
                                 userName: '',
-                                authority: 'ADMIN',
-                                // email: '',
+                                userRole: {
+                                    roleSeq: '',
+                                    roleName: 'ROLE_ADMIN',
+                                },
+                                accessToken: ''
                             }
                             // resp.data.user || {
                             //     avatar: '',
@@ -59,6 +69,7 @@ function useAuth() {
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
+                console.log('redirectUrl : ', redirectUrl)
 
                 navigate(
                     redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
@@ -81,23 +92,33 @@ function useAuth() {
         try {
             const resp = await apiSignUp(values)
             if (resp.data) {
-                const { token } = resp.data
-                dispatch(signInSuccess(token))
-                if (resp.data.user) {
+                const { accessToken } = resp.data
+                dispatch(signInSuccess(accessToken))
+                if (resp.data) {
                     dispatch(
                         setUser(
-                            resp.data.user || {
-                                avatar: '',
-                                userName: 'Anonymous',
-                                authority: 'USER',
-                                email: '',
+                            resp.data || {
+                                // avatar: '',
+                                // userId: 'Anonymous',
+                                // authority: 'USER',
+                                // email: '',
+                                userId: '',
+                                userName: '',
+                                userRole: {
+                                    roleSeq: '',
+                                    roleName: '',
+                                },
+                                accessToken: ''
                             }
                         )
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
                 navigate(
-                    redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
+                    // redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
+                    redirectUrl
+                        ? redirectUrl
+                        : appConfig.unAuthenticatedEntryPath
                 )
                 return {
                     status: 'success',
@@ -117,10 +138,13 @@ function useAuth() {
         dispatch(signOutSuccess())
         dispatch(
             setUser({
-                avatar: '',
+                userId: '',
                 userName: '',
-                email: '',
-                authority: '',
+                userRole: {
+                    roleSeq: '',
+                    roleName: '',
+                },
+                accessToken: '',
             })
         )
         navigate(appConfig.unAuthenticatedEntryPath)
@@ -132,7 +156,7 @@ function useAuth() {
     }
 
     return {
-        authenticated: token && signedIn,
+        authenticated: accessToken && signedIn,
         signIn,
         signUp,
         signOut,

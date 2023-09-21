@@ -28,6 +28,7 @@ import {
 import type { SkeletonProps } from '@/components/ui/Skeleton'
 import type { ForwardedRef, ChangeEvent } from 'react'
 import type { CheckboxProps } from '@/components/ui/Checkbox'
+import { cueSheet } from './CueSheetHeader'
 
 export type OnSortParam = { order: 'asc' | 'desc' | ''; key: string | number }
 
@@ -220,7 +221,10 @@ function _CueSheetDataTable<T>(
     const table = useReactTable({
         data,
         // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        columns: finalColumns as ColumnDef<unknown | object | any[], any>[],
+        columns: finalColumns as ColumnDef<
+            unknown | object | any[],
+            any | cueSheet
+        >[],
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -259,6 +263,9 @@ function _CueSheetDataTable<T>(
                                     <Th
                                         key={header.id}
                                         colSpan={header.colSpan}
+                                        className={
+                                            header.column.columnDef.width
+                                        }
                                     >
                                         {header.isPlaceholder ? null : (
                                             <div

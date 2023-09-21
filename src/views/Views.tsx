@@ -3,7 +3,7 @@ import Loading from '@/components/shared/Loading'
 import {
     protectedRoutes,
     publicRoutes,
-    protectedUserRoutes,
+    protectedUserRoutes
 } from '@/configs/routes.config'
 import appConfig from '@/configs/app.config'
 import PageContainer from '@/components/template/PageContainer'
@@ -24,13 +24,19 @@ interface ViewsProps {
 
 type AllRoutesProps = ViewsProps
 
-const { authenticatedEntryPath, authenticatedEntryPathUser } = appConfig
+const {
+    authenticatedEntryPath,
+    authenticatedEntryPathUser,
+    unAuthenticatedEntryPath,
+    tourPath
+} = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {
-    // const userAuthority = useAppSelector((state) => state.auth.user.authority)
-    const userAuthority = 'admin'
-    console.log(userAuthority)
-    if (userAuthority === 'admin') {
+    const userAuthority = useAppSelector(
+        (state) => state.auth.user.userRole?.roleName
+    )
+    console.log('userAuthority : ', userAuthority)
+    if (userAuthority) {
         return (
             <Routes>
                 <Route path="/" element={<ProtectedRoute />}>
@@ -49,25 +55,50 @@ const AllRoutes = (props: AllRoutesProps) => {
                                     userAuthority={userAuthority}
                                     authority={route.authority}
                                 >
-                                    <PageContainer {...props} {...route.meta}>
-                                        {/* {console.log(
+                                    {userAuthority === 'ROLE_ADMIN' ? (
+                                        <PageContainer
+                                            {...props}
+                                            // {...route.meta}
+                                        >
+                                            {/* {console.log(
                                               'props in View : ',
                                               props
                                           )} */}
 
-                                        <AppRoute
-                                            routeKey={route.key}
-                                            component={route.component}
-                                            {...route.meta}
-                                        />
-                                    </PageContainer>
+                                            <AppRoute
+                                                routeKey={route.key}
+                                                component={route.component}
+                                                // {...route.meta}
+                                            />
+                                        </PageContainer>
+                                    ) : (
+                                        <PageContainerUser
+                                            {...props}
+                                            // {...route.meta}
+                                        >
+                                            <AppRoute
+                                                routeKey={route.key}
+                                                component={route.component}
+                                                // {...route.meta}
+                                            />
+                                        </PageContainerUser>
+                                    )}
                                 </AuthorityGuard>
                             }
                         />
                     ))}
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Route>
-                <Route path="/" element={<PublicRoute />}>
+                <Route
+                    path="/"
+                    element={
+                        userAuthority === 'ROLE_ADMIN' ? (
+                            <PublicRoute />
+                        ) : (
+                            <PublicRouteUser />
+                        )
+                    }
+                >
                     {publicRoutes.map((route) => (
                         <Route
                             key={route.path}
@@ -87,53 +118,31 @@ const AllRoutes = (props: AllRoutesProps) => {
     } else {
         return (
             <Routes>
-                <Route path="/" element={<ProtectedRoute />}>
-                    <Route
+                {/* <Route path="/" element={<ProtectedRoute />}> */}
+                {/* <Route
                         path="/"
                         element={
-                            <Navigate replace to={authenticatedEntryPathUser} />
+                            <Navigate replace to={unAuthenticatedEntryPath} />
+                        }
+                    /> */}
+                <Route
+                    path="*"
+                    element={<Navigate replace to={unAuthenticatedEntryPath} />}
+                />
+                {publicRoutes.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={
+                            <AppRoute
+                                routeKey={route.key}
+                                component={route.component}
+                                {...route.meta}
+                            />
                         }
                     />
-                    {protectedUserRoutes.map((route, index) => (
-                        <Route
-                            key={route.key + index}
-                            path={route.path}
-                            element={
-                                <AuthorityGuard
-                                    userAuthority={userAuthority}
-                                    authority={route.authority}
-                                >
-                                    <PageContainerUser
-                                        {...props}
-                                        {...route.meta}
-                                    >
-                                        <AppRoute
-                                            routeKey={route.key}
-                                            component={route.component}
-                                            {...route.meta}
-                                        />
-                                    </PageContainerUser>
-                                </AuthorityGuard>
-                            }
-                        />
-                    ))}
-                    <Route path="*" element={<Navigate replace to="/" />} />
-                </Route>
-                <Route path="/" element={<PublicRouteUser />}>
-                    {publicRoutes.map((route) => (
-                        <Route
-                            key={route.path}
-                            path={route.path}
-                            element={
-                                <AppRoute
-                                    routeKey={route.key}
-                                    component={route.component}
-                                    {...route.meta}
-                                />
-                            }
-                        />
-                    ))}
-                </Route>
+                ))}
+                {/* </Route> */}
             </Routes>
         )
     }

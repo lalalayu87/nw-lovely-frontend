@@ -15,6 +15,7 @@ const ProtectedRoute = () => {
             <Navigate
                 replace
                 to={`${unAuthenticatedEntryPath}?${REDIRECT_URL_KEY}=${location.pathname}`}
+                // to={`/sign-in`}
             />
         )
     }
