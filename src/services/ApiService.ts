@@ -6,12 +6,15 @@ const ApiService = {
         param: AxiosRequestConfig<Request>
     ) {
         return new Promise<AxiosResponse<Response>>((resolve, reject) => {
+            console.log('param : ', param)
             BaseService(param)
                 .then((response: AxiosResponse<Response>) => {
                     resolve(response)
+                    console.log('resolve : ', response)
                 })
                 .catch((errors: AxiosError) => {
                     reject(errors)
+                    console.log('reject : ', errors)
                 })
         })
     },

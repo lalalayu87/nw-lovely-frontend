@@ -5,8 +5,9 @@ import type {
     DataTableResetHandle,
     ColumnDef,
 } from '@/components/shared/DataTable'
+import CueSheetDataTable from './CueSheetDataTable'
 
-type cueSheet = {
+export type cueSheet = {
     id: string
     name: string
     productCode: string
@@ -15,6 +16,7 @@ type cueSheet = {
     price: number
     stock: number
     status: number
+    width: string
 }
 const CueSheetHeader = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
@@ -37,48 +39,53 @@ const CueSheetHeader = () => {
 
     const columns: ColumnDef<cueSheet>[] = useMemo(
         () => [
-            {
-                header: '순서',
-                accessorKey: 'name',
-            },
+            // {
+            //     header: '순서',
+            //     accessorKey: 'id',
+            // },
             {
                 header: '절차',
                 accessorKey: 'category',
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'stock',
                 sortable: true,
+                width: 'w-1/12',
             },
             {
                 header: '내용',
                 accessorKey: 'category',
+                width: 'w-6/12',
             },
 
             {
-                header: '비고',
-                accessorKey: 'status',
-            },
-            {
                 header: '파일',
                 accessorKey: 'price',
+                width: 'w-2/12',
             },
             {
-                header: '',
-                id: 'action',
+                header: '비고',
+                accessorKey: 'status',
+                width: 'w-2/12',
             },
+            // {
+            //     header: '',
+            //     id: 'action',
+            // },
         ],
         []
     )
 
     return (
-        <DataTable
+        <CueSheetDataTable
             ref={tableRef}
             columns={columns}
-            skeletonAvatarColumns={[0]}
-            skeletonAvatarProps={{
-                className: 'rounded-md',
-            }}
+            // skeletonAvatarColumns={[0]}
+            // skeletonAvatarProps={{
+            //     className: 'rounded-md',
+            // }}
         />
     )
 }

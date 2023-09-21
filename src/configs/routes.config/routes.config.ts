@@ -82,7 +82,9 @@ export const protectedUserRoutes = [
     {
         key: 'Userhome',
         path: '/userhome',
-        component: lazy(() => import('@/views/Dashboard/UserHome')),
+        component: lazy(
+            () => import('@/views/Dashboard/UserDashboard/UserHome')
+        ),
         authority: [],
     },
     {
@@ -94,7 +96,7 @@ export const protectedUserRoutes = [
     {
         key: 'CommunityUser',
         path: '/communityUser',
-        component: lazy(() => import('@/views/UserMenu/CommunityUser')),
+        component: lazy(() => import('@/views/UserMenu/Community/CommunityUser')),
         authority: [],
     },
     {

@@ -3,12 +3,12 @@ import { SLICE_BASE_NAME } from './constants'
 
 export interface SessionState {
     signedIn: boolean
-    token: string | null
+    accessToken: string | null
 }
 
 const initialState: SessionState = {
     signedIn: false,
-    token: null,
+    accessToken: null,
 }
 
 const sessionSlice = createSlice({
@@ -17,11 +17,11 @@ const sessionSlice = createSlice({
     reducers: {
         signInSuccess(state, action: PayloadAction<string>) {
             state.signedIn = true
-            state.token = action.payload
+            state.accessToken = action.payload
         },
         signOutSuccess(state) {
             state.signedIn = false
-            state.token = null
+            state.accessToken = null
         },
     },
 })
