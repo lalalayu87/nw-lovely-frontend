@@ -33,6 +33,7 @@ type FilterQueries = {
 export type SalesProductListState = {
     loading: boolean
     deleteConfirmation: boolean
+    editConfirmation: boolean
     selectedProduct: string
     tableData: TableQueries
     filterData: FilterQueries
@@ -52,6 +53,7 @@ export const getProducts = createAsyncThunk(
             GetSalesProductsResponse,
             GetSalesProductsRequest
         >(data)
+        console.log(response)
         return response.data
     }
 )
@@ -78,6 +80,7 @@ export const initialTableData: TableQueries = {
 const initialState: SalesProductListState = {
     loading: false,
     deleteConfirmation: false,
+    editConfirmation: false,
     selectedProduct: '',
     productList: [],
     tableData: initialTableData,
@@ -107,8 +110,12 @@ const cueSheetListSlice = createSlice({
         toggleDeleteConfirmation: (state, action) => {
             state.deleteConfirmation = action.payload
         },
+        toggleEditConfirmation: (state, action) => {
+            state.editConfirmation = action.payload
+        },
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload
+            console.log(state.selectedProduct)
         },
         openDialog: (state) => {
             state.dialogOpen = true
@@ -142,6 +149,7 @@ export const {
     setTableData,
     setFilterData,
     toggleDeleteConfirmation,
+    toggleEditConfirmation,
     setSelectedProduct,
     openDialog,
     updateDialogView,

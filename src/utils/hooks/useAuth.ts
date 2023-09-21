@@ -35,17 +35,26 @@ function useAuth() {
         try {
             const resp = await apiSignIn(values)
             if (resp.data) {
-                const { token } = resp.data
-                dispatch(signInSuccess(token))
-                if (resp.data.user) {
+                console.log(resp.data)
+                const { accessToken } = resp.data
+
+                dispatch(signInSuccess(accessToken))
+
+                if (resp.data.userRole.roleName === 'ROLE_ADMIN') {
                     dispatch(
                         setUser(
-                            resp.data.user || {
-                                avatar: '',
-                                userName: 'Anonymous',
-                                authority: 'USER',
-                                email: '',
+                            resp.data || {
+                                userId: '',
+                                userName: '',
+                                authority: 'ADMIN',
+                                // email: '',
                             }
+                            // resp.data.user || {
+                            //     avatar: '',
+                            //     userName: 'Anonymous',
+                            //     authority: 'USER',
+                            //     email: '',
+                            // }
                         )
                     )
                 }
