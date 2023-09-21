@@ -10,14 +10,14 @@ export type AppConfig = {
 
 const appConfig: AppConfig = {
     apiPrefix: 'http://152.69.228.245:10001',
-    // authenticatedEntryPath: '/home',
-    // authenticatedEntryPathUser: '/userhome',
+    // apiPrefix: '/api',
     authenticatedEntryPath: '/home',
     authenticatedEntryPathUser: '/home',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/',
     locale: 'en',
     enableMock: false,
+    // enableMock: true,
 }
 
 export default appConfig

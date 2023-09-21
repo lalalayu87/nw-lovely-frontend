@@ -49,6 +49,7 @@ const SignInForm = (props: SignInFormProps) => {
         values: SignInFormSchema,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
+        console.log('onSignIn values : ', values)
         const { userId, userPassword } = values
         setSubmitting(true)
 
@@ -56,6 +57,7 @@ const SignInForm = (props: SignInFormProps) => {
 
         if (result?.status === 'failed') {
             setMessage(result.message)
+            console.log('message : ', message)
         }
 
         setSubmitting(false)
@@ -70,15 +72,15 @@ const SignInForm = (props: SignInFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    userId: '',
-                    userPassword: '',
-                    // password: '123Qwe',
+                    userId: 'admin',
+                    userPassword: 'admin',
                     rememberMe: true,
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
                     if (!disableSubmit) {
                         onSignIn(values, setSubmitting)
+                        console.log('signIn values', values)
                     } else {
                         setSubmitting(false)
                     }

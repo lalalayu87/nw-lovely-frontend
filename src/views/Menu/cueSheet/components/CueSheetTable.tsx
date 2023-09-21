@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, {
     useCallback,
     useEffect,
@@ -249,7 +250,7 @@ const CueSheetTable = () => {
         {
             id: 3,
             process: '화촉점화',
-            performer: '양가 어머님',
+            performer: '신랑 어머니, 신부 어머니',
             text: '먼저 신랑신부의 앞길을 밝힐 화촉점화 순서가 있겠습니다. 양가 어머님께서 초에 불을 밝히실 때 축하의 마음으로 많은 박수 부탁드립니다. 양가 어머님 입장!! (박수 유도)(화촉점화 후) 멋진 신랑과 아름다운 신부를 훌륭하게 키워주신 양가 어머님께 다시 한 번 큰 박수 부탁드리겠습니다.',
             file: '',
             note: '',
@@ -352,6 +353,27 @@ const CueSheetTable = () => {
         },
     ])
 
+    const fontColor = (e: string | void) => {
+        if (e === '신랑') {
+            return 'm-2 bg-blue-200 border-blue-500 w-10 rounded-lg border-2 text-blue-500 text-center'
+        } else if (e === '신부') {
+            return 'm-2 bg-red-200 border-red-500 w-10 rounded-lg border-2 text-red-500 text-center'
+        } else if (e === '신부 어머니') {
+            return 'm-2 bg-amber-100 border-amber-500 w-20 rounded-lg border-2 text-amber-500 text-center'
+        } else if (e === '신랑 어머니') {
+            return 'm-2 bg-indigo-200 border-indigo-500 w-20 rounded-lg border-2 text-indigo-500 text-center'
+        } else if (e === '신부 아버지') {
+            return
+        } else if (e === '신랑 아버지') {
+            return
+            // eslint-disable-next-line no-constant-condition
+        } else if (e === '사회자' || '축가자' || '주례자') {
+            return 'm-2 bg-violet-200 border-violet-500 w-12 rounded-lg border-2 text-violet-500 text-center'
+        } else {
+            return 'text-purple-600'
+        }
+    }
+
     const fetchData = () => {
         dispatch(getProducts({ pageIndex, pageSize, sort, query, filterData }))
     }
@@ -424,6 +446,8 @@ const CueSheetTable = () => {
         )
     }
 
+    console.log('되냐')
+
     return (
         <>
             <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
@@ -447,16 +471,36 @@ const CueSheetTable = () => {
                                             {...provided.dragHandleProps}
                                         >
                                             <div style={style}>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <span>{item.actor}</span>
-                                                <span>{item.content}</span>
-                                                <span>{item.note}</span>
-                                                {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
-                                                <ActionColumn
-                                                    row={item}
-                                                    // onClick={onDeleteClick}
-                                                    // index={orderIndex}
-                                                />
+                                                <div className="flex">
+                                                    <div className="w-1/12 font-semibold">
+                                                        {item.process}
+                                                    </div>
+                                                    <div className="w-1/12">
+                                                        {item.actor
+                                                            .split(', ')
+                                                            .map(
+                                                                (e) => (
+                                                                    <div
+                                                                        className={fontColor(
+                                                                            e
+                                                                        )}
+                                                                    >
+                                                                        {e}
+                                                                    </div>
+                                                                )
+                                                                // </div>
+                                                            )}
+                                                    </div>
+                                                    <div className="w-6/12">
+                                                        {item.content}
+                                                    </div>
+                                                    <div className="w-2/12">
+                                                        {item.filePath}
+                                                    </div>
+                                                    <div className="w-2/12">
+                                                        {item.note}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -505,3 +549,11 @@ const CueSheetTable = () => {
 }
 
 export default CueSheetTable
+
+{
+    /* <ActionColumn
+                                        row={item}
+                                        // onClick={onDeleteClick}
+                                        // index={orderIndex}
+                                    /> */
+}

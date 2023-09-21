@@ -14,14 +14,20 @@ export type SignInCredential = {
 // }
 
 export type SignInResponse = {
-    accessToken: string
+    // token: string
+    // user: {
+    //     userId: string
+    //     authority: string
+    //     avatar: string
+    //     email: string
+    // }
     userId: string
     userName: string
     userRole: {
-        roleName: string
         roleSeq: string
+        roleName: string
     }
-    authority: string
+    accessToken: string
 }
 
 export type SignUpResponse = SignInResponse

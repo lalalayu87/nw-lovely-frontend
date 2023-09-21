@@ -3,7 +3,7 @@ import DataTable from '@/components/shared/DataTable'
 import { getProducts, useAppDispatch, useAppSelector } from '../store'
 import type {
     DataTableResetHandle,
-    ColumnDef
+    ColumnDef,
 } from '@/components/shared/DataTable'
 import CueSheetDataTable from './CueSheetDataTable'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
@@ -11,10 +11,10 @@ import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
 import {
     setSelectedProduct,
-    toggleDeleteConfirmation
+    toggleDeleteConfirmation,
 } from '../store/CueSheetListSlice'
 
-type cueSheet = {
+export type cueSheet = {
     id: string
     process: string
     performer: string
@@ -87,31 +87,36 @@ const CueSheetHeader = () => {
             //     header: '순서',
             //     accessorKey: 'id',
             // },
-
-            { header: '절차', accessorKey: 'process' },
+            {
+                header: '절차',
+                accessorKey: 'process',
+                width: 'w-1/12',
+            },
             {
                 header: '행위자',
-                accessorKey: 'performer: ',
-                sortable: true
+                accessorKey: 'actor',
+                sortable: true,
+                width: 'w-1/12',
             },
             {
                 header: '내용',
-                accessorKey: 'text: '
+                accessorKey: 'content',
+                width: 'w-6/12',
             },
 
             {
                 header: '파일',
-                accessorKey: 'file: '
+                accessorKey: 'filePath',
+                width: 'w-2/12',
             },
             {
                 header: '비고',
-                accessorKey: 'note: '
-            }
-
+                accessorKey: 'note',
+                width: 'w-2/12',
+            },
             // {
             //     header: '',
-            //     accessorKey: 'action',
-            //     // cell: (props) => <ActionColumn row={props.row.original} />,
+            //     id: 'action',
             // },
         ],
         []
