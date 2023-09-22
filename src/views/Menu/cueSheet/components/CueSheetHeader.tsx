@@ -3,7 +3,7 @@ import DataTable from '@/components/shared/DataTable'
 import { getProducts, useAppDispatch, useAppSelector } from '../store'
 import type {
     DataTableResetHandle,
-    ColumnDef
+    ColumnDef,
 } from '@/components/shared/DataTable'
 import CueSheetDataTable from './CueSheetDataTable'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
@@ -11,7 +11,7 @@ import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
 import {
     setSelectedProduct,
-    toggleDeleteConfirmation
+    toggleDeleteConfirmation,
 } from '../store/CueSheetListSlice'
 
 export type cueSheet = {

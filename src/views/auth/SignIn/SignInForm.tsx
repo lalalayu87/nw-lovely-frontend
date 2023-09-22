@@ -28,7 +28,7 @@ type SignInFormSchema = {
 const validationSchema = Yup.object().shape({
     userId: Yup.string().required('아이디를 입력해주세요'),
     userPassword: Yup.string().required('비밀번호를 입력해주세요'),
-    rememberMe: Yup.bool()
+    rememberMe: Yup.bool(),
 })
 
 const SignInForm = (props: SignInFormProps) => {
@@ -37,7 +37,7 @@ const SignInForm = (props: SignInFormProps) => {
         className,
         forgotPasswordUrl = '/forgot-password',
         companySignUpUrl = '/company-sign-up',
-        userSignUpUrl = '/sign-up'
+        userSignUpUrl = '/sign-up',
         // signUpUrl = '/sign-up',
     } = props
 
@@ -75,7 +75,7 @@ const SignInForm = (props: SignInFormProps) => {
                 initialValues={{
                     userId: 'admin',
                     userPassword: 'admin',
-                    rememberMe: true
+                    rememberMe: true,
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {

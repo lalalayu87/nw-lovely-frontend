@@ -6,7 +6,7 @@ import React, {
     useRef,
     useState,
     Suspense,
-    lazy
+    lazy,
 } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
@@ -21,7 +21,7 @@ import {
     toggleEditConfirmation,
     useAppDispatch,
     useAppSelector,
-    closeDialog
+    closeDialog,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import CueSheetDeleteConfirmation from './CueSheetDeleteConfirmation'
@@ -30,14 +30,14 @@ import cloneDeep from 'lodash/cloneDeep'
 import type {
     DataTableResetHandle,
     OnSortParam,
-    ColumnDef
+    ColumnDef,
 } from '@/components/shared/DataTable'
 import {
     DragDropContext,
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 import CueSheetDataTable from './CueSheetDataTable'
 import CueSheetHeader from './CueSheetHeader'
@@ -50,7 +50,7 @@ const style = {
     padding: '2.5rem 1rem',
     marginBottom: '.5rem',
     backgroundColor: 'white',
-    cursor: 'move'
+    cursor: 'move',
 }
 
 // type cueSheet = {
@@ -113,7 +113,7 @@ const ActionColumn = ({ row }: { row: CueSheetData }) => {
     const navigate = useNavigate()
 
     const onEdit = () => {
-        navigate(`/app/sales/product-edit/${row.id}`)
+        // navigate(`/app/sales/product-edit/${row.id}`)
     }
 
     const onDelete = () => {
@@ -169,8 +169,8 @@ const CueSheetTable = () => {
                 `http://152.69.228.245:10001/api/v1/qsheet`,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}` // 토큰을 헤더에 추가
-                    }
+                        Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 추가
+                    },
                 }
             )
 
@@ -310,22 +310,17 @@ const CueSheetTable = () => {
                                                         {item.process}
                                                     </div>
                                                     <div className="w-1/1">
-                                                        {item.actor}
-
-                                                        {/* {item.actor
+                                                        {item.actor
                                                             .split(', ')
-                                                            .map(
-                                                                (e) => (
-                                                                    <div
-                                                                        className={fontColor(
-                                                                            e
-                                                                        )}
-                                                                    >
-                                                                        {e}
-                                                                    </div>
-                                                                )
-                                                                // </div>
-                                                            )} */}
+                                                            .map((e) => (
+                                                                <div
+                                                                    className={fontColor(
+                                                                        e
+                                                                    )}
+                                                                >
+                                                                    {e}
+                                                                </div>
+                                                            ))}
                                                     </div>
                                                     <div className="w-6/12">
                                                         {item.content}

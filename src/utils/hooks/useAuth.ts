@@ -40,10 +40,10 @@ function useAuth() {
             console.log(resp)
             if (resp.data) {
                 const { accessToken } = resp.data
-                console.log("accessToken : ", accessToken)
+                console.log('accessToken : ', accessToken)
                 dispatch(signInSuccess(accessToken))
                 if (resp.data) {
-                    console.log("resp.data : ", resp.data)
+                    console.log('resp.data : ', resp.data)
                     dispatch(
                         setUser(
                             resp.data || {
@@ -57,7 +57,8 @@ function useAuth() {
                                     roleSeq: '',
                                     roleName: 'ROLE_ADMIN',
                                 },
-                                accessToken: ''
+
+                                accessToken: '',
                             }
                             // resp.data.user || {
                             //     avatar: '',
@@ -108,7 +109,7 @@ function useAuth() {
                                     roleSeq: '',
                                     roleName: '',
                                 },
-                                accessToken: ''
+                                accessToken: '',
                             }
                         )
                     )
