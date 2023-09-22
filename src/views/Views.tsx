@@ -3,7 +3,7 @@ import Loading from '@/components/shared/Loading'
 import {
     protectedRoutes,
     publicRoutes,
-    protectedUserRoutes,
+    protectedUserRoutes
 } from '@/configs/routes.config'
 import appConfig from '@/configs/app.config'
 import PageContainer from '@/components/template/PageContainer'
@@ -28,7 +28,7 @@ const {
     authenticatedEntryPath,
     authenticatedEntryPathUser,
     unAuthenticatedEntryPath,
-    tourPath,
+    tourPath
 } = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {

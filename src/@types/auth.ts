@@ -3,16 +3,6 @@ export type SignInCredential = {
     userPassword: string
 }
 
-// export type SignInResponse = {
-//     token: string
-//     user: {
-//         userName: string
-//         authority: string
-//         avatar: string
-//         email: string
-//     }
-// }
-
 export type SignInResponse = {
     // token: string
     // user: {

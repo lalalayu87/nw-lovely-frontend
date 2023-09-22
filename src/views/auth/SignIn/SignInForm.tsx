@@ -22,7 +22,7 @@ interface SignInFormProps extends CommonProps {
 type SignInFormSchema = {
     userId: string
     userPassword: string
-    rememberMe: boolean
+    // rememberMe: boolean
 }
 
 const validationSchema = Yup.object().shape({
@@ -54,6 +54,7 @@ const SignInForm = (props: SignInFormProps) => {
         setSubmitting(true)
 
         const result = await signIn({ userId, userPassword })
+        console.log('result', result)
 
         if (result?.status === 'failed') {
             setMessage(result.message)
