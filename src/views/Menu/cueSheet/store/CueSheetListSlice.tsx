@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
     apiGetSalesProducts,
-    apiDeleteSalesProducts,
+    apiDeleteSalesProducts
 } from '@/services/SalesService'
 import type { TableQueries } from '@/@types/common'
 
@@ -73,8 +73,8 @@ export const initialTableData: TableQueries = {
     query: '',
     sort: {
         order: '',
-        key: '',
-    },
+        key: ''
+    }
 }
 
 const initialState: SalesProductListState = {
@@ -88,10 +88,10 @@ const initialState: SalesProductListState = {
         name: '',
         category: ['bags', 'cloths', 'devices', 'shoes', 'watches'],
         status: [0, 1, 2],
-        productStatus: 0,
+        productStatus: 0
     },
     dialogOpen: false,
-    dialogView: '',
+    dialogView: ''
 }
 
 const cueSheetListSlice = createSlice({
@@ -129,7 +129,7 @@ const cueSheetListSlice = createSlice({
         },
         updateDialogView: (state, action) => {
             state.dialogView = action.payload
-        },
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -141,7 +141,7 @@ const cueSheetListSlice = createSlice({
             .addCase(getProducts.pending, (state) => {
                 state.loading = true
             })
-    },
+    }
 })
 
 export const {
@@ -153,7 +153,7 @@ export const {
     setSelectedProduct,
     openDialog,
     updateDialogView,
-    closeDialog,
+    closeDialog
 } = cueSheetListSlice.actions
 
 export default cueSheetListSlice.reducer

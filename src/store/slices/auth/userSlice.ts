@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SLICE_BASE_NAME } from './constants'
+import { useState } from 'react'
 
 export type UserState = {
     // avatar?: string
@@ -34,8 +35,6 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser(state, action: PayloadAction<UserState>) {
-            console.log('action : ', typeof action.payload.userRole.roleSeq)
-            console.log('state : ', state.userRole)
             // state.avatar = action.payload?.avatar
             // state.email = action.payload?.email
             // state.userName = action.payload?.userName

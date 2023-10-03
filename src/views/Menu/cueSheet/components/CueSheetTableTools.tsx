@@ -11,7 +11,7 @@ const CueSheetTableTools = () => {
         <div className="flex flex-col lg:flex-row lg:items-center">
             {/* <ProductTableSearch />
             <ProductFilter /> */}
-            <Link
+            {/* <Link
                 download
                 className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
                 to="/data/product-list.csv"
@@ -20,7 +20,14 @@ const CueSheetTableTools = () => {
                 <Button block size="sm" icon={<HiDownload />}>
                     Export
                 </Button>
-            </Link>
+            </Link> */}
+
+            <Button block size="sm">
+                저장
+            </Button>
+
+            <Button block size="sm"></Button>
+
             <span>
                 <AddCueSheetDialog />
             </span>

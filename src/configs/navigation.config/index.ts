@@ -59,6 +59,16 @@ const navigationConfig: NavigationTree[] = [
         subMenu: [],
     },
     {
+        key: 'qsheet',
+        path: '/qsheet',
+        title: 'qsheet',
+        translateKey: 'nav.qsheet',
+        icon: 'hiOutlineClipboardList',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
+    {
         key: 'mypage',
         path: '/mypage',
         title: '마이페이지',

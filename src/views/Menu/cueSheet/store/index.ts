@@ -19,7 +19,6 @@ export const useAppSelector: TypedUseSelectorHook<
         }
     }
 > = useSelector //useSelector는 store의 상태값을 반환해주는 역할
-console.log(useAppSelector)
 
 export * from './CueSheetListSlice'
 export { useAppDispatch } from '@/store'
