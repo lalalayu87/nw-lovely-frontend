@@ -33,10 +33,13 @@ type FilterQueries = {
 export type SalesProductListState = {
     loading: boolean
     deleteConfirmation: boolean
+    editConfirmation: boolean
     selectedProduct: string
     tableData: TableQueries
     filterData: FilterQueries
     productList: Product[]
+    dialogOpen: boolean
+    dialogView: 'NEW_COLUMN' | ''
 }
 
 type GetSalesProductsRequest = TableQueries & { filterData?: FilterQueries }
@@ -50,6 +53,7 @@ export const getProducts = createAsyncThunk(
             GetSalesProductsResponse,
             GetSalesProductsRequest
         >(data)
+        console.log(response)
         return response.data
     }
 )
@@ -76,6 +80,7 @@ export const initialTableData: TableQueries = {
 const initialState: SalesProductListState = {
     loading: false,
     deleteConfirmation: false,
+    editConfirmation: false,
     selectedProduct: '',
     productList: [],
     tableData: initialTableData,
@@ -85,6 +90,8 @@ const initialState: SalesProductListState = {
         status: [0, 1, 2],
         productStatus: 0,
     },
+    dialogOpen: false,
+    dialogView: '',
 }
 
 const cueSheetListSlice = createSlice({
@@ -103,8 +110,25 @@ const cueSheetListSlice = createSlice({
         toggleDeleteConfirmation: (state, action) => {
             state.deleteConfirmation = action.payload
         },
+        toggleEditConfirmation: (state, action) => {
+            state.editConfirmation = action.payload
+        },
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload
+            console.log(state.selectedProduct)
+        },
+        openDialog: (state) => {
+            state.dialogOpen = true
+        },
+        closeDialog: (state) => {
+            console.log(state)
+            state.dialogOpen = false
+            // state.ticketId = ''
+            // state.board = ''
+            state.dialogView = ''
+        },
+        updateDialogView: (state, action) => {
+            state.dialogView = action.payload
         },
     },
     extraReducers: (builder) => {
@@ -125,7 +149,11 @@ export const {
     setTableData,
     setFilterData,
     toggleDeleteConfirmation,
+    toggleEditConfirmation,
     setSelectedProduct,
+    openDialog,
+    updateDialogView,
+    closeDialog,
 } = cueSheetListSlice.actions
 
 export default cueSheetListSlice.reducer

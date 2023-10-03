@@ -13,7 +13,7 @@ export async function apiGetSalesProducts<T, U extends Record<string, unknown>>(
     data: U
 ) {
     return ApiService.fetchData<T>({
-        url: '/sales/products',
+        url: '/api/v1/qsheet',
         method: 'post',
         data,
     })
@@ -23,8 +23,9 @@ export async function apiDeleteSalesProducts<
     T,
     U extends Record<string, unknown>
 >(data: U) {
+    console.log(data.id)
     return ApiService.fetchData<T>({
-        url: '/sales/products/delete',
+        url: `/api/v1/qsheet/${data.id}`,
         method: 'delete',
         data,
     })
@@ -34,7 +35,7 @@ export async function apiGetSalesProduct<T, U extends Record<string, unknown>>(
     params: U
 ) {
     return ApiService.fetchData<T>({
-        url: '/sales/product',
+        url: '/api/v1/qsheet',
         method: 'get',
         params,
     })
@@ -64,7 +65,6 @@ export async function apiCreateSalesProduct<
 export async function apiGetSalesOrders<T, U extends Record<string, unknown>>(
     params: U
 ) {
-    console.log('step 2', params)
     return ApiService.fetchData<T>({
         url: '/cuesheet',
         method: 'get',

@@ -3,13 +3,14 @@ import Notification from '@/components/ui/Notification'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import {
     toggleDeleteConfirmation,
+    toggleEditConfirmation,
     deleteProduct,
     getProducts,
     useAppDispatch,
     useAppSelector,
 } from '../store'
 
-const CueSheetDeleteConfirmation = () => {
+const CueSheetEditConfirmation = () => {
     const dispatch = useAppDispatch()
     const dialogOpen = useAppSelector(
         (state) => state.salesProductList.data.deleteConfirmation
@@ -23,11 +24,11 @@ const CueSheetDeleteConfirmation = () => {
     )
 
     const onDialogClose = () => {
-        dispatch(toggleDeleteConfirmation(false))
+        dispatch(toggleEditConfirmation(false))
     }
 
-    const onDelete = async () => {
-        dispatch(toggleDeleteConfirmation(false))
+    const onEdit = async () => {
+        dispatch(toggleEditConfirmation(false))
         const success = await deleteProduct({ id: selectedProduct })
 
         if (success) {
@@ -56,11 +57,11 @@ const CueSheetDeleteConfirmation = () => {
             onClose={onDialogClose}
             onRequestClose={onDialogClose}
             onCancel={onDialogClose}
-            onConfirm={onDelete}
+            onConfirm={onEdit}
         >
-            <p>삭제 하시겠습니까?</p>
+            <p>수정 하시겠습니까?</p>
         </ConfirmDialog>
     )
 }
 
-export default CueSheetDeleteConfirmation
+export default CueSheetEditConfirmation
