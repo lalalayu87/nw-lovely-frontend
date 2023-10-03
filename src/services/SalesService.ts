@@ -93,3 +93,13 @@ export async function apiGetSalesOrderDetails<
         params,
     })
 }
+
+export async function apiGetOrgList<T, U extends Record<string, unknown>>(
+    params: U
+) {
+    return ApiService.fetchData<T>({
+        url: '/api/v1/org',
+        method: 'get',
+        params,
+    })
+}
