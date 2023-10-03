@@ -97,7 +97,9 @@ export const protectedUserRoutes = [
     {
         key: 'CommunityUser',
         path: '/communityUser',
-        component: lazy(() => import('@/views/UserMenu/Community/CommunityUser')),
+        component: lazy(
+            () => import('@/views/UserMenu/Community/CommunityUser')
+        ),
         authority: [],
     },
     {
