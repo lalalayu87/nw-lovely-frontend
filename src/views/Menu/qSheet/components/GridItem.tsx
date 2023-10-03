@@ -4,6 +4,7 @@ import Card from '@/components/ui/Card'
 // import ProgressionBar from './ProgressionBar'
 import { HiOutlineClipboardCheck } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
+import NewQSheet from './NewQSheet'
 
 export type GridItemProps = {
     data: {
@@ -74,9 +75,8 @@ const GridItem = ({ data }: GridItemProps) => {
         <Card bodyClass="h-full">
             <div className="flex flex-col justify-between h-full">
                 <div className="flex justify-between">
-                    <Link to="/app/scrum-board">
-                        <h6>{data.name}</h6>
-                    </Link>
+                    <h6>{data.name}</h6>
+
                     {/* <ItemDropdown /> */}
                 </div>
                 <p>{data.created_at.toString()}</p>

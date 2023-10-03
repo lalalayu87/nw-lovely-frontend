@@ -74,6 +74,8 @@ export type QSheetDataListState = {
     loading: boolean
     qSheetDataList: QSheetDataList
     content: []
+    selectedQSheet: string
+    deleteConfirmation: boolean
 }
 
 export const SLICE_NAME = 'qsheetDataList'
@@ -88,12 +90,22 @@ const initialState: QSheetDataListState = {
     loading: false,
     qSheetDataList: [],
     content: [],
+    selectedQSheet: '',
+    deleteConfirmation: false,
 }
 
 const qSheetDataListSlice = createSlice({
     name: `${SLICE_NAME}/state`,
     initialState,
     reducers: {
+        setSelectedQSheet: (state, action) => {
+            state.selectedQSheet = action.payload.content
+            //action.payload인지 아닌지 몰겠음. 개발하면서 확인 필요함
+        },
+        toggleDeleteConfirmation: (state, action) => {
+            state.deleteConfirmation = action.payload.content
+            //action.payload인지 아닌지 몰겠음. 개발하면서 확인 필요함
+        },
         // toggleSort: (state, action) => {
         //     state.query.sort = action.payload
         // },
@@ -134,4 +146,6 @@ const qSheetDataListSlice = createSlice({
 
 // export const { toggleView, toggleSort, toggleNewProjectDialog, setSearch } =
 // qSheetDataListSlice.actions
+export const { setSelectedQSheet, toggleDeleteConfirmation } =
+    qSheetDataListSlice.actions
 export default qSheetDataListSlice.reducer

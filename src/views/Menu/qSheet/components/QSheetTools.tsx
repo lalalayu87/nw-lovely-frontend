@@ -11,8 +11,9 @@ import {
 } from '../store'
 import debounce from 'lodash/debounce'
 import type { ChangeEvent } from 'react'
+import { Link } from 'react-router-dom'
 
-const ActionBar = () => {
+const QSheetTools = () => {
     const dispatch = useAppDispatch()
 
     const inputRef = useRef(null)
@@ -45,17 +46,19 @@ const ActionBar = () => {
                 <Button block size="sm">
                     삭제(?)
                 </Button>
-                <Button
-                    size="sm"
-                    variant="twoTone"
-                    icon={<HiOutlinePlusCircle />}
-                    // onClick={onAddNewProject}
-                >
-                    큐시트 생성
-                </Button>
+                <Link to="create">
+                    <Button
+                        size="sm"
+                        variant="twoTone"
+                        icon={<HiOutlinePlusCircle />}
+                        // onClick={onAddNewProject}
+                    >
+                        큐시트 생성
+                    </Button>
+                </Link>
             </div>
         </div>
     )
 }
 
-export default ActionBar
+export default QSheetTools
