@@ -33,15 +33,23 @@ export const protectedRoutes = [
     },
     {
         key: 'qsheet',
-        path: '/qsheet',
+        path: '/cuesheet',
         component: lazy(() => import('@/views/Menu/qSheet')),
         authority: [],
     },
     {
         key: 'qsheet',
-        path: '/qsheet/create',
+        path: '/cuesheet/create',
         component: lazy(
             () => import('@/views/Menu/qSheet/components/NewQSheet')
+        ),
+        authority: [],
+    },
+    {
+        key: 'qsheet',
+        path: '/cuesheet/details/:qsheetSeq',
+        component: lazy(
+            () => import('@/views/Menu/qSheet/components/QSheetDetails')
         ),
         authority: [],
     },

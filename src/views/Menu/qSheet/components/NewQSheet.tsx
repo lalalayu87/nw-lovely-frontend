@@ -6,6 +6,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import NewQSheetTools from './NewQSheetTools'
 import NewQSheetHeader from './NewQSheetHeader'
+import NewQSheetContent from './NewQSheetContent'
 
 const NewQSheet = () => {
     return (
@@ -16,9 +17,9 @@ const NewQSheet = () => {
             </div>
             <NewQSheetHeader />
 
-            {/* <DndProvider backend={HTML5Backend}>
-                            <CueSheetTable />
-                        </DndProvider> */}
+            <DndProvider backend={HTML5Backend}>
+                <NewQSheetContent />
+            </DndProvider>
         </AdaptableCard>
     )
 }
