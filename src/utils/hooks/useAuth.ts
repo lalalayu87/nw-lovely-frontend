@@ -35,15 +35,11 @@ function useAuth() {
         | undefined
     > => {
         try {
-            console.log('확인')
             const resp = await apiSignIn(values)
-            console.log(resp)
             if (resp.data) {
                 const { accessToken } = resp.data
-                console.log('accessToken : ', accessToken)
                 dispatch(signInSuccess(accessToken))
                 if (resp.data) {
-                    console.log('resp.data : ', resp.data)
                     dispatch(
                         setUser(
                             resp.data || {
@@ -69,7 +65,6 @@ function useAuth() {
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
-                console.log('redirectUrl : ', redirectUrl)
 
                 navigate(
                     redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
