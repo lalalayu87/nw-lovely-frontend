@@ -14,12 +14,48 @@ import {
 import { HiPencilAlt, HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 import {
-    deleteCustomer,
-    openEditCustomerDetailDialog,
+    // deleteCustomer,
+    // openEditCustomerDetailDialog,
     useAppDispatch,
-    Customer,
 } from '../store'
 import EditCustomerProfile from './EditCustomerProfile'
+
+type UserInfo = {
+    userSeq: string
+    userId: string
+    userName: string
+    userEmail: string
+    userRole: {
+        roleSeq: string
+        roleName: string
+    }
+    userEnable: boolean
+    created_at: string
+}
+
+type Groom = {
+    name: string
+    email: string
+    contact: string
+}
+
+type Bride = {
+    name: string
+    email: string
+    contact: string
+}
+
+type CustomerCardDetail = {
+    userCardSeq: string
+    groom?: Groom
+    bride?: Bride
+    userInfo: UserInfo
+    note: string
+    resDate: string
+    status: string
+    weddingDate: string
+    update_at: string
+}
 
 type CustomerInfoFieldProps = {
     title?: string
@@ -27,7 +63,7 @@ type CustomerInfoFieldProps = {
 }
 
 type CustomerProfileProps = {
-    data?: Partial<Customer>
+    data?: Partial<CustomerCardDetail>
 }
 
 const CustomerInfoField = ({ title, value }: CustomerInfoFieldProps) => {
@@ -57,9 +93,9 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
 
     const onDelete = () => {
         setDialogOpen(false)
-        if (id) {
-            dispatch(deleteCustomer({ id }))
-        }
+        // if (id) {
+        //     dispatch(deleteCustomer({ id }))
+        // }
         navigate('/app/crm/customers')
         toast.push(
             <Notification title={'Successfuly Deleted'} type="success">
@@ -68,13 +104,13 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
         )
     }
 
-    const onEdit = () => {
-        dispatch(openEditCustomerDetailDialog())
-    }
+    // const onEdit = () => {
+    //     dispatch(openEditCustomerDetailDialog())
+    // }
 
     return (
         <>
-            <Button block icon={<HiOutlineTrash />} onClick={onDialogOpen}>
+            {/* <Button block icon={<HiOutlineTrash />} onClick={onDialogOpen}>
                 Delete
             </Button>
             <Button
@@ -101,38 +137,51 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
                     action cannot be undone.
                 </p>
             </ConfirmDialog>
-            <EditCustomerProfile />
+            <EditCustomerProfile /> */}
         </>
     )
 }
 
 const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
     return (
-        <Card>
+        <Card className="w-3/5">
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="flex xl:flex-col items-center gap-4">
-                    <Avatar size={90} shape="circle" src={data.img} />
-                    <h4 className="font-bold">{data.name}</h4>
+                    {data.status === '진행중' ? (
+                        <div className="aspect-square rounded-full bg-red-400 h-24 justify-center flex items-center text-lg font-semibold text-gray-100">
+                            {data.status}
+                        </div>
+                    ) : null}
+                    <h4 className="font-bold">{data.userInfo?.userName}</h4>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">
-                    <CustomerInfoField title="Email" value={data.email} />
-                    <CustomerInfoField
-                        title="Phone"
-                        value={data.personalInfo?.phoneNumber}
-                    />
-                    <CustomerInfoField
-                        title="Location"
-                        value={data.personalInfo?.location}
-                    />
-                    <CustomerInfoField
-                        title="Date of birth"
-                        value={data.personalInfo?.birthday}
-                    />
-                    <CustomerInfoField
-                        title="Title"
-                        value={data.personalInfo?.title}
-                    />
-                    <div className="mb-7">
+                <div className="grid grid-cols-2 divide-x-2">
+                    <div className=" grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">
+                        <CustomerInfoField
+                            title="신부 이름"
+                            value={data.bride?.name}
+                        />
+                        <CustomerInfoField
+                            title="신부 전화번호"
+                            value={data.bride?.contact}
+                        />
+                        <CustomerInfoField
+                            title="신부 이메일"
+                            value={data.bride?.email}
+                        />
+                        {/* <CustomerInfoField
+                            title="신부측 어머니 이름"
+                            value={data.personalInfo?.bride_mother}
+                        />
+
+                        <CustomerInfoField
+                            title="신부측 아버지 이름"
+                            value={data.personalInfo?.bride_father}
+                        /> */}
+                        <CustomerInfoField
+                            title="예약 날짜"
+                            value={data.resDate}
+                        />
+                        {/* <div className="mb-7">
                         <span>Social</span>
                         <div className="flex mt-4">
                             <Button
@@ -166,11 +215,41 @@ const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
                                 }
                             />
                         </div>
+                    </div> */}
+                    </div>
+                    <div className="pl-5 grid sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">
+                        <CustomerInfoField
+                            title="신랑 이름"
+                            value={data.groom?.name}
+                        />
+                        <CustomerInfoField
+                            title="신랑 전화번호"
+                            value={data.groom?.contact}
+                        />
+                        <CustomerInfoField
+                            title="신랑 이메일"
+                            value={data.groom?.email}
+                        />
+                        {/* <CustomerInfoField
+                            title="신랑측 어머니 이름"
+                            value={data.personalInfo?.groom_mother}
+                        />
+                        <CustomerInfoField
+                            title="신랑측 아버지 이름"
+                            value={data.personalInfo?.groom_father}
+                        /> */}
+                        <CustomerInfoField
+                            title="예식 날짜"
+                            value={data.weddingDate}
+                        />
                     </div>
                 </div>
-                <div className="mt-4 flex flex-col xl:flex-row gap-2">
-                    <CustomerProfileAction id={data.id} />
+                <div className="pt-7">
+                    <CustomerInfoField title="메모" value={data.note} />
                 </div>
+                {/* <div className="mt-4 flex flex-col xl:flex-row gap-2">
+                    <CustomerProfileAction id={data.id} />
+                </div> */}
             </div>
         </Card>
     )

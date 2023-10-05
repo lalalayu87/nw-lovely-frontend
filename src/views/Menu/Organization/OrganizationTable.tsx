@@ -28,15 +28,33 @@ import type {
 import { ordersData } from '@/mock/data/projectData'
 
 type Order = {
-    id: string
-    name: string
-    biznum: string
-    contact: string
-    address: string
-    enable: boolean
-    created_at: Date
+    orgSeq: string
+        orgName: string
+        orgBiznum: string
+        orgContact: string
+        orgEnable: boolean
+        created_at: string
 }
-
+type OrgContent = {
+    // content: {
+    //     orgSeq: string
+    //     orgName: string
+    //     orgBiznum: string
+    //     orgContact: string
+    //     orgEnable: boolean
+    //     created_at: string
+    // }
+    pageable: {
+        sort: {
+            empty: boolean
+            sorted: boolean
+            unsorted: boolean
+        }
+        offset: number
+        pageNumber: number
+        pageSize: number
+    }
+}
 // const orderStatusColor: Record<
 //     number,
 //     {
@@ -120,7 +138,7 @@ const OrderColumn = ({ row }: { row: Order }) => {
     const navigate = useNavigate()
 
     const onView = useCallback(() => {
-        navigate(`/app/sales/order-details/${row.id}`)
+        navigate(`/app/sales/order-details/${row.orgSeq}`)
     }, [navigate, row])
 
     return (
@@ -128,20 +146,20 @@ const OrderColumn = ({ row }: { row: Order }) => {
             className={`cursor-pointer select-none font-semibold hover:${textTheme}`}
             onClick={onView}
         >
-            #{row.id}
+            {row.orgSeq}
         </span>
     )
 }
 
-const ActionColumn = ({ row }: { row: Order }) => {
+const ActionColumn = ({ row }: { row: OrgContent }) => {
     const dispatch = useAppDispatch()
     const { textTheme } = useThemeClass()
     const navigate = useNavigate()
 
-    const onDelete = () => {
-        dispatch(setDeleteMode('single'))
-        dispatch(setSelectedRow([row.id]))
-    }
+    // const onDelete = () => {
+    //     dispatch(setDeleteMode('single'))
+    //     // dispatch(setSelectedRow([row.content.orgSeq]))
+    // }
 
     // const onView = useCallback(() => {
     //     navigate(`/app/sales/order-details/${row.id}`)
@@ -160,7 +178,7 @@ const ActionColumn = ({ row }: { row: Order }) => {
             <Tooltip title="Delete">
                 <span
                     className="cursor-pointer p-2 hover:text-red-500"
-                    onClick={onDelete}
+                    // onClick={onDelete}
                 >
                     <HiOutlineTrash />
                 </span>
@@ -174,30 +192,23 @@ const OrdersTable = () => {
 
     const dispatch = useAppDispatch()
 
-    const { pageIndex, pageSize, sort, query, total } = useAppSelector(
-        (state) => state.salesOrderList.data.tableData
-    )
+    const { sort, offset, pageNumber, pageSize  } = useAppSelector(
+        (state) => state.salesOrderList.data.tableData)
     // const loading = useAppSelector((state) => state.salesOrderList.data.loading)
 
-    // const data = useAppSelector((state) => state.salesOrderList.data.orderList)
+    const data = useAppSelector((state) => state.salesOrderList.data.orderList)
 
-    const data = ordersData
+    // const data = ordersData
 
-    const fetchData = useCallback(() => {
-        //     console.log('{ pageIndex, pageSize, sort, query }', {
-        //         pageIndex,
-        //         pageSize,
-        //         sort,
-        //         query,
-        //     })
-        dispatch(getOrders({ pageIndex, pageSize, sort, query }))
-    }, [dispatch, pageIndex, pageSize, sort, query])
+    const fetchData = useCallback(() => {           
+        dispatch(getOrders({ sort, offset, pageNumber, pageSize }))
+    }, [dispatch, sort, offset, pageNumber, pageSize])
 
     useEffect(() => {
         dispatch(setSelectedRows([]))
         fetchData()
         // }, [dispatch])
-    }, [dispatch, fetchData, pageIndex, pageSize, sort])
+    }, [dispatch, fetchData, sort, offset, pageNumber, pageSize])
 
     useEffect(() => {
         if (tableRef) {
@@ -206,8 +217,8 @@ const OrdersTable = () => {
     }, [data])
 
     const tableData = useMemo(
-        () => ({ pageIndex, pageSize, sort, query, total }),
-        [pageIndex, pageSize, sort, query, total]
+        () => ({ sort, offset, pageNumber, pageSize }),
+        [sort, offset, pageNumber, pageSize]
     )
 
     const columns: ColumnDef<Order>[] = useMemo(
@@ -219,7 +230,7 @@ const OrdersTable = () => {
             // },
             {
                 header: '가맹점 명',
-                accessorKey: 'name',
+                accessorKey: 'orgName',
                 // cell: (props) => {
                 //     const row = props.row.original
                 //     return (
@@ -233,29 +244,64 @@ const OrdersTable = () => {
             },
             {
                 header: '사업자 번호',
-                accessorKey: 'biznum',
+                accessorKey: 'orgBiznum',
             },
             {
                 header: '가맹점 상태',
-                accessorKey: 'enable',
+                accessorKey: 'orgEnable',
                 cell: (props) => {
-                    const { enable } = props.row.original
+                    const enable = props.row.original.orgEnable
+                    console.log(enable)
+                    // return (
+                    //     <div className="flex items-center">
+                    //         <Badge
+                    //             className={
+                    //                 orderStatusColor[Number(enable)].dotClass
+                    //             }
+                    //         />
+                    //         <span
+                    //             className={`ml-2 rtl:mr-2 capitalize font-semibold ${
+                    //                 orderStatusColor[Number(enable)].textClass
+                    //             }`}
+                    //         >
+                    //             {orderStatusColor[Number(enable)].label}
+                    //         </span>
+                    //     </div>
+                    // )
                     return (
                         <div className="flex items-center">
+                            {enable === true ? (
+                                <>
                             <Badge
                                 className={
-                                    orderStatusColor[Number(enable)].dotClass
+                                    orderStatusColor[0].dotClass
                                 }
                             />
                             <span
                                 className={`ml-2 rtl:mr-2 capitalize font-semibold ${
-                                    orderStatusColor[Number(enable)].textClass
+                                    orderStatusColor[0].textClass
                                 }`}
                             >
-                                {orderStatusColor[Number(enable)].label}
+                                {orderStatusColor[0].label}
                             </span>
+                            </>
+                            ) : (   <>
+                            <Badge
+                                className={
+                                    orderStatusColor[1].dotClass
+                                }
+                            />
+                            <span
+                                className={`ml-2 rtl:mr-2 capitalize font-semibold ${
+                                    orderStatusColor[1].textClass
+                                }`}
+                            >
+                                {orderStatusColor[1].label}
+                            </span>
+                            </>)}
                         </div>
                     )
+
                 },
             },
             {
@@ -264,7 +310,7 @@ const OrdersTable = () => {
             },
             {
                 header: '연락처',
-                accessorKey: 'contact',
+                accessorKey: 'orgContact',
             },
             // {
             //     header: 'Status',
@@ -321,57 +367,57 @@ const OrdersTable = () => {
             //         )
             //     },
             // },
-            {
-                header: '',
-                id: 'action',
-                cell: (props) => <ActionColumn row={props.row.original} />,
-            },
+            // {
+            //     header: '',
+            //     id: 'action',
+            //     cell: (props) => <ActionColumn row={props.row.} />,
+            // },
         ],
         []
     )
 
-    const onPaginationChange = (page: number) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.pageIndex = page
-        dispatch(setTableData(newTableData))
-    }
+    // const onPaginationChange = (page: number) => {
+    //     const newTableData = cloneDeep(tableData)
+    //     newTableData.pageIndex = page
+    //     dispatch(setTableData(newTableData))
+    // }
 
-    const onSelectChange = (value: number) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.pageSize = Number(value)
-        newTableData.pageIndex = 1
-        dispatch(setTableData(newTableData))
-    }
+    // const onSelectChange = (value: number) => {
+    //     const newTableData = cloneDeep(tableData)
+    //     newTableData.pageSize = Number(value)
+    //     newTableData.pageIndex = 1
+    //     dispatch(setTableData(newTableData))
+    // }
 
-    const onSort = (sort: OnSortParam) => {
-        const newTableData = cloneDeep(tableData)
-        newTableData.sort = sort
-        dispatch(setTableData(newTableData))
-    }
+    // const onSort = (sort: OnSortParam) => {
+    //     const newTableData = cloneDeep(tableData)
+    //     newTableData.sort = sort
+    //     dispatch(setTableData(newTableData))
+    // }
 
-    const onRowSelect = (checked: boolean, row: Order) => {
-        if (checked) {
-            dispatch(addRowItem([row.id]))
-        } else {
-            dispatch(removeRowItem(row.id))
-        }
-    }
+    // const onRowSelect = (checked: boolean, row: Content) => {
+    //     if (checked) {
+    //         dispatch(addRowItem([row.orgSeq]))
+    //     } else {
+    //         dispatch(removeRowItem(row.orgSeq))
+    //     }
+    // }
 
-    const onAllRowSelect = useCallback(
-        (checked: boolean, rows: Row<Order>[]) => {
-            if (checked) {
-                const originalRows = rows.map((row) => row.original)
-                const selectedIds: string[] = []
-                originalRows.forEach((row) => {
-                    selectedIds.push(row.id)
-                })
-                dispatch(setSelectedRows(selectedIds))
-            } else {
-                dispatch(setSelectedRows([]))
-            }
-        },
-        [dispatch]
-    )
+    // const onAllRowSelect = useCallback(
+    //     (checked: boolean, rows: Row<Content>[]) => {
+    //         if (checked) {
+    //             const originalRows = rows.map((row) => row.original)
+    //             const selectedIds: string[] = []
+    //             originalRows.forEach((row) => {
+    //                 selectedIds.push(row.orgSeq)
+    //             })
+    //             dispatch(setSelectedRows(selectedIds))
+    //         } else {
+    //             dispatch(setSelectedRows([]))
+    //         }
+    //     },
+    //     [dispatch]
+    // )
 
     return (
         <DataTable
@@ -380,16 +426,16 @@ const OrdersTable = () => {
             columns={columns}
             data={data}
             // loading={loading}
-            pagingData={{
-                total: tableData.total as number,
-                pageIndex: tableData.pageIndex as number,
-                pageSize: tableData.pageSize as number,
-            }}
-            onPaginationChange={onPaginationChange}
-            onSelectChange={onSelectChange}
-            onSort={onSort}
-            onCheckBoxChange={onRowSelect}
-            onIndeterminateCheckBoxChange={onAllRowSelect}
+            // pagingData={{
+            //     total: tableData.total as number,
+            //     pageIndex: tableData.pageIndex as number,
+            //     pageSize: tableData.pageSize as number,
+            // }}
+            // onPaginationChange={onPaginationChange}
+            // onSelectChange={onSelectChange}
+            // onSort={onSort}
+            // onCheckBoxChange={onRowSelect}
+            // onIndeterminateCheckBoxChange={onAllRowSelect}
         />
     )
 }

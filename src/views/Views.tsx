@@ -3,7 +3,7 @@ import Loading from '@/components/shared/Loading'
 import {
     protectedRoutes,
     publicRoutes,
-    protectedUserRoutes
+    protectedUserRoutes,
 } from '@/configs/routes.config'
 import appConfig from '@/configs/app.config'
 import PageContainer from '@/components/template/PageContainer'
@@ -24,17 +24,20 @@ interface ViewsProps {
 
 type AllRoutesProps = ViewsProps
 
+type Role = 'ROLE_ADMIN' | 'ROLE_USER'
+
 const {
     authenticatedEntryPath,
     authenticatedEntryPathUser,
     unAuthenticatedEntryPath,
-    tourPath
+    tourPath,
 } = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {
     const userAuthority = useAppSelector(
         (state) => state.auth.user.userRole?.roleName
     )
+    // const userAuthority = 'ROLE_USER'
     if (userAuthority) {
         return (
             <Routes>
@@ -45,27 +48,28 @@ const AllRoutes = (props: AllRoutesProps) => {
                             <Navigate replace to={authenticatedEntryPath} />
                         }
                     />
-                    {protectedRoutes.map((route, index) => (
-                        <Route
-                            key={route.key + index}
-                            path={route.path}
-                            element={
-                                <AuthorityGuard
-                                    userAuthority={userAuthority}
-                                    authority={route.authority}
-                                >
-                                    {userAuthority === 'ROLE_ADMIN' ? (
-                                        <PageContainer
-                                            {...props}
-                                            // {...route.meta}
-                                        >
-                                            <AppRoute
-                                                routeKey={route.key}
-                                                component={route.component}
-                                                // {...route.meta}
-                                            />
-                                        </PageContainer>
-                                    ) : (
+                    {userAuthority === 'ROLE_ADMIN'
+                        ? protectedRoutes.map((route, index) => (
+                              <Route
+                                  key={route.key + index}
+                                  path={route.path}
+                                  element={
+                                      <AuthorityGuard
+                                          userAuthority={userAuthority}
+                                          authority={route.authority}
+                                      >
+                                          {/* {userAuthority === 'ROLE_ADMIN' ? ( */}
+                                          <PageContainer
+                                              {...props}
+                                              // {...route.meta}
+                                          >
+                                              <AppRoute
+                                                  routeKey={route.key}
+                                                  component={route.component}
+                                                  // {...route.meta}
+                                              />
+                                          </PageContainer>
+                                          {/* ) : (
                                         <PageContainerUser
                                             {...props}
                                             // {...route.meta}
@@ -76,12 +80,35 @@ const AllRoutes = (props: AllRoutesProps) => {
                                                 // {...route.meta}
                                             />
                                         </PageContainerUser>
-                                    )}
-                                </AuthorityGuard>
-                            }
-                        />
-                    ))}
-                    <Route path="*" element={<Navigate replace to="/" />} />
+                                    )} */}
+                                      </AuthorityGuard>
+                                  }
+                              />
+                          ))
+                        : protectedUserRoutes.map((route, index) => (
+                              <Route
+                                  key={route.key + index}
+                                  path={route.path}
+                                  element={
+                                      <AuthorityGuard
+                                          userAuthority={userAuthority}
+                                          authority={route.authority}
+                                      >
+                                          <PageContainer
+                                              {...props}
+                                              // {...route.meta}
+                                          >
+                                              <AppRoute
+                                                  routeKey={route.key}
+                                                  component={route.component}
+                                                  // {...route.meta}
+                                              />
+                                          </PageContainer>
+                                      </AuthorityGuard>
+                                  }
+                              />
+                          ))}
+                    {/* <Route path="*" element={<Navigate replace to="/" />} /> */}
                 </Route>
                 <Route
                     path="/"

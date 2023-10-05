@@ -53,7 +53,6 @@ function useAuth() {
                                     roleSeq: '',
                                     roleName: 'ROLE_ADMIN',
                                 },
-
                                 accessToken: '',
                             }
                             // resp.data.user || {
@@ -147,9 +146,24 @@ function useAuth() {
     }
 
     const signOut = async () => {
-        await apiSignOut()
-        handleSignOut()
+        await handleSignOut()
+        // apiSignOut()
     }
+
+    // const signOut = () => {
+    //     dispatch(
+    //         setUser({
+    //             userId: '',
+    //             userName: '',
+    //             userRole: {
+    //                 roleSeq: '',
+    //                 roleName: '',
+    //             },
+    //             accessToken: '',
+    //         })
+    //     )
+    //     navigate(appConfig.unAuthenticatedEntryPath)
+    // }
 
     return {
         authenticated: accessToken && signedIn,

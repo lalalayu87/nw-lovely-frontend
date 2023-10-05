@@ -13,62 +13,44 @@ import {
 } from 'react-icons/fa'
 import { HiPencilAlt, HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '@/store'
 // import EditCustomerProfile from './EditCustomerProfile'
 
-const personalData: PersonalInfo = {
-    bride: '신부님',
-    bride_contact: '010-0000-0000',
-    bride_email: 'bride@gmail.com',
-    bride_mother: '신부엄마',
-    bride_father: '신부아빠',
-    groom: '신랑님',
-    groom_contact: '010-1111-1111',
-    groom_email: 'groom@gmail.com',
-    groom_mother: '신랑엄마',
-    groom_father: '신랑아빠',
-    note: 'I am baby kitsch plaid mustache, williamsburg butcher gluten-free 3 wolf moon authentic quinoa selvage knausgaard unicorn. Palo santo viral everyday carry, heirloom tumblr raw denim yr iceland wayfarers single-origin coffee tote bag shoreditch cloud bread poke.',
-    reservation_date: new Date(2023, 9, 10),
-    wedding_date: new Date(2024, 10, 25),
-    status: '전화상담',
+type UserInfo = {
+    userSeq: string
+    userId: string
+    userName: string
+    userEmail: string
+    userRole: {
+        roleSeq: string
+        roleName: string
+    }
+    userEnable: boolean
+    created_at: string
 }
 
-const customerData: Customer = {
-    id: 'string',
-    name: 'username',
-    email: 'string',
-    img: 'string',
-    role: 'string',
-    lastOnline: 10,
-    status: 'string',
-    personalInfo: personalData,
-}
-
-type PersonalInfo = {
-    bride: string
-    bride_contact: string
-    bride_email: string
-    bride_mother: string
-    bride_father: string
-    groom: string
-    groom_contact: string
-    groom_email: string
-    groom_mother: string
-    groom_father: string
-    note: string
-    reservation_date: Date
-    wedding_date: Date
-    status: string
-}
-
-type Customer = {
-    id: string
+type Groom = {
     name: string
     email: string
-    img: string
-    role: string
-    lastOnline: number
+    contact: string
+}
+
+type Bride = {
+    name: string
+    email: string
+    contact: string
+}
+
+type CustomerCardDetail = {
+    userCardSeq: string
+    groom?: Groom
+    bride?: Bride
+    userInfo: UserInfo
+    note: string
+    resDate: string
     status: string
-    personalInfo: PersonalInfo
+    weddingDate: string
+    update_at: string
 }
 
 type CustomerInfoFieldProps = {
@@ -77,7 +59,7 @@ type CustomerInfoFieldProps = {
 }
 
 type CustomerProfileProps = {
-    data?: Partial<Customer>
+    data?: Partial<CustomerCardDetail>
 }
 
 const CustomerInfoField = ({ title, value }: CustomerInfoFieldProps) => {
@@ -92,7 +74,7 @@ const CustomerInfoField = ({ title, value }: CustomerInfoFieldProps) => {
 }
 
 const CustomerProfileAction = ({ id }: { id?: string }) => {
-    // const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
     const [dialogOpen, setDialogOpen] = useState(false)
 
     const navigate = useNavigate()
@@ -107,9 +89,9 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
 
     const onDelete = () => {
         setDialogOpen(false)
-        if (id) {
-            // dispatch(deleteCustomer({ id }))
-        }
+        // if (id) {
+        //     dispatch(deleteCustomer({ id }))
+        // }
         navigate('/app/crm/customers')
         toast.push(
             <Notification title={'Successfuly Deleted'} type="success">
@@ -118,13 +100,13 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
         )
     }
 
-    const onEdit = () => {
-        // dispatch(openEditCustomerDetailDialog())
-    }
+    // const onEdit = () => {
+    //     dispatch(openEditCustomerDetailDialog())
+    // }
 
     return (
         <>
-            <Button block icon={<HiOutlineTrash />} onClick={onDialogOpen}>
+            {/* <Button block icon={<HiOutlineTrash />} onClick={onDialogOpen}>
                 Delete
             </Button>
             <Button
@@ -151,38 +133,39 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
                     action cannot be undone.
                 </p>
             </ConfirmDialog>
-            {/* <EditCustomerProfile /> */}
+            <EditCustomerProfile /> */}
         </>
     )
 }
 
-const CustomerProfile = ({ data = customerData }: CustomerProfileProps) => {
+const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
+    console.log('data : ', data)
     return (
         <Card className="w-3/5">
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
                 <div className="flex xl:flex-col items-center gap-4">
-                    {data.personalInfo?.status === '전화상담' ? (
+                    {data.status === '진행중' ? (
                         <div className="aspect-square rounded-full bg-red-400 h-24 justify-center flex items-center text-lg font-semibold text-gray-100">
-                            {data.personalInfo.status}
+                            {data.status}
                         </div>
                     ) : null}
-                    <h4 className="font-bold">{data.name}</h4>
+                    <h4 className="font-bold">{data.userInfo?.userName}</h4>
                 </div>
                 <div className="grid grid-cols-2 divide-x-2">
                     <div className=" grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">
                         <CustomerInfoField
                             title="신부 이름"
-                            value={data.personalInfo?.bride}
+                            value={data.bride?.name}
                         />
                         <CustomerInfoField
                             title="신부 전화번호"
-                            value={data.personalInfo?.bride_contact}
+                            value={data.bride?.contact}
                         />
                         <CustomerInfoField
                             title="신부 이메일"
-                            value={data.personalInfo?.bride_email}
+                            value={data.bride?.email}
                         />
-                        <CustomerInfoField
+                        {/* <CustomerInfoField
                             title="신부측 어머니 이름"
                             value={data.personalInfo?.bride_mother}
                         />
@@ -190,10 +173,10 @@ const CustomerProfile = ({ data = customerData }: CustomerProfileProps) => {
                         <CustomerInfoField
                             title="신부측 아버지 이름"
                             value={data.personalInfo?.bride_father}
-                        />
+                        /> */}
                         <CustomerInfoField
                             title="예약 날짜"
-                            value={data.personalInfo?.reservation_date.toString()}
+                            value={data.resDate}
                         />
                         {/* <div className="mb-7">
                         <span>Social</span>
@@ -234,35 +217,32 @@ const CustomerProfile = ({ data = customerData }: CustomerProfileProps) => {
                     <div className="pl-5 grid sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">
                         <CustomerInfoField
                             title="신랑 이름"
-                            value={data.personalInfo?.groom}
+                            value={data.groom?.name}
                         />
                         <CustomerInfoField
                             title="신랑 전화번호"
-                            value={data.personalInfo?.groom_contact}
+                            value={data.groom?.contact}
                         />
                         <CustomerInfoField
                             title="신랑 이메일"
-                            value={data.personalInfo?.groom_email}
+                            value={data.groom?.email}
                         />
-                        <CustomerInfoField
+                        {/* <CustomerInfoField
                             title="신랑측 어머니 이름"
                             value={data.personalInfo?.groom_mother}
                         />
                         <CustomerInfoField
                             title="신랑측 아버지 이름"
                             value={data.personalInfo?.groom_father}
-                        />
+                        /> */}
                         <CustomerInfoField
                             title="예식 날짜"
-                            value={data.personalInfo?.wedding_date.toString()}
+                            value={data.weddingDate}
                         />
                     </div>
                 </div>
                 <div className="pt-7">
-                    <CustomerInfoField
-                        title="메모"
-                        value={data.personalInfo?.note}
-                    />
+                    <CustomerInfoField title="메모" value={data.note} />
                 </div>
                 {/* <div className="mt-4 flex flex-col xl:flex-row gap-2">
                     <CustomerProfileAction id={data.id} />

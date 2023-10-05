@@ -18,7 +18,7 @@ export async function apiSignIn(data: SignInCredential) {
 
 export async function apiSignUp(data: SignUpCredential) {
     return ApiService.fetchData<SignUpResponse>({
-        url: '/sign-up',
+        url: '/api/auth/register',
         method: 'post',
         data,
     })
