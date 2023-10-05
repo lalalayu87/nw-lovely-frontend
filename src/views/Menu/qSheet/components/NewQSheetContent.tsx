@@ -191,73 +191,70 @@ const NewQSheetContent = () => {
     }
 
     return (
-        <>
-            {' '}
-            <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
-                <Droppable droppableId="CueSheetDroppable">
-                    {(provided) => (
-                        <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="CueSheetDroppable pt-3"
-                        >
-                            {qSheetExampleData.map((item, index) => (
-                                <Draggable
-                                    key={item.orderIndex}
-                                    draggableId={String(item.orderIndex)}
-                                    index={index}
-                                >
-                                    {(provided) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                        >
-                                            <div style={style}>
-                                                <div className="flex">
-                                                    <div className="w-1/12 font-semibold">
-                                                        {item.process}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.actor
-                                                            .split(', ')
-                                                            .map((e) => (
-                                                                <div
-                                                                    className={fontColor(
-                                                                        e
-                                                                    )}
-                                                                >
-                                                                    {e}
-                                                                </div>
-                                                            ))}
-                                                    </div>
-                                                    <div className="w-5/12">
-                                                        {item.content}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.filePath}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.note}
-                                                    </div>
+        <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+            <Droppable droppableId="CueSheetDroppable">
+                {(provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="CueSheetDroppable pt-3"
+                    >
+                        {qSheetExampleData.map((item, index) => (
+                            <Draggable
+                                key={item.orderIndex}
+                                draggableId={String(item.orderIndex)}
+                                index={index}
+                            >
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                    >
+                                        <div style={style}>
+                                            <div className="flex">
+                                                <div className="w-1/12 font-semibold">
+                                                    {item.process}
                                                 </div>
-                                                {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
-                                                <ActionColumn
-                                                    row={item}
-                                                    // onClick={onDeleteClick}
-                                                    // index={orderIndex}
-                                                />
+                                                <div className="w-2/12">
+                                                    {item.actor
+                                                        .split(', ')
+                                                        .map((e) => (
+                                                            <div
+                                                                className={fontColor(
+                                                                    e
+                                                                )}
+                                                            >
+                                                                {e}
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                                <div className="w-5/12">
+                                                    {item.content}
+                                                </div>
+                                                <div className="w-2/12">
+                                                    {item.filePath}
+                                                </div>
+                                                <div className="w-2/12">
+                                                    {item.note}
+                                                </div>
                                             </div>
+                                            {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
+                                            <ActionColumn
+                                                row={item}
+                                                // onClick={onDeleteClick}
+                                                // index={orderIndex}
+                                            />
                                         </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>{' '}
-        </>
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
     )
 }
 
