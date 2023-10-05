@@ -59,6 +59,12 @@ function useAuth() {
                                 },
                                 accessToken: '',
                             }
+                            // resp.data.user || {
+                            //     avatar: '',
+                            //     userName: 'Anonymous',
+                            //     authority: 'USER',
+                            //     email: '',
+                            // }
                         )
                     )
                 }

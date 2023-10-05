@@ -68,9 +68,9 @@ type DeleteCrmCustomerRequest = { id: string }
 export type CustomerDetailState = {
     loading: boolean
     profileData: Partial<CustomerCardDetail>
-    deletePaymentMethodDialog: boolean
-    editPaymentMethodDialog: boolean
-    editCustomerDetailDialog: boolean
+    // deletePaymentMethodDialog: boolean
+    // editPaymentMethodDialog: boolean
+    // editCustomerDetailDialog: boolean
     // selectedCard: Partial<PaymentMethod>
 }
 
