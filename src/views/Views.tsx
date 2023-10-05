@@ -24,6 +24,8 @@ interface ViewsProps {
 
 type AllRoutesProps = ViewsProps
 
+type Role = 'ROLE_ADMIN' | 'ROLE_USER'
+
 const {
     authenticatedEntryPath,
     authenticatedEntryPathUser,
@@ -32,8 +34,10 @@ const {
 } = appConfig
 
 const AllRoutes = (props: AllRoutesProps) => {
-    const userAuthority = useAppSelector((state) => state.auth.user.userId)
-    console.log('userAuthority : ', userAuthority)
+    const userAuthority = useAppSelector(
+        (state) => state.auth.user.userRole?.roleName
+    )
+    // const userAuthority = 'ROLE_USER'
     if (userAuthority) {
         return (
             <Routes>
@@ -41,35 +45,31 @@ const AllRoutes = (props: AllRoutesProps) => {
                     <Route
                         path="/"
                         element={
-                            <Navigate replace to={unAuthenticatedEntryPath} />
+                            <Navigate replace to={authenticatedEntryPath} />
                         }
                     />
-                    {protectedRoutes.map((route, index) => (
-                        <Route
-                            key={route.key + index}
-                            path={route.path}
-                            element={
-                                <AuthorityGuard
-                                    userAuthority={userAuthority}
-                                    authority={route.authority}
-                                >
-                                    {userAuthority === 'admin' ? (
-                                        <PageContainer
-                                            {...props}
-                                            // {...route.meta}
-                                        >
-                                            {/* {console.log(
-                                              'props in View : ',
-                                              props
-                                          )} */}
-
-                                            <AppRoute
-                                                routeKey={route.key}
-                                                component={route.component}
-                                                // {...route.meta}
-                                            />
-                                        </PageContainer>
-                                    ) : (
+                    {userAuthority === 'ROLE_ADMIN'
+                        ? protectedRoutes.map((route, index) => (
+                              <Route
+                                  key={route.key + index}
+                                  path={route.path}
+                                  element={
+                                      <AuthorityGuard
+                                          userAuthority={userAuthority}
+                                          authority={route.authority}
+                                      >
+                                          {/* {userAuthority === 'ROLE_ADMIN' ? ( */}
+                                          <PageContainer
+                                              {...props}
+                                              // {...route.meta}
+                                          >
+                                              <AppRoute
+                                                  routeKey={route.key}
+                                                  component={route.component}
+                                                  // {...route.meta}
+                                              />
+                                          </PageContainer>
+                                          {/* ) : (
                                         <PageContainerUser
                                             {...props}
                                             // {...route.meta}
@@ -80,17 +80,40 @@ const AllRoutes = (props: AllRoutesProps) => {
                                                 // {...route.meta}
                                             />
                                         </PageContainerUser>
-                                    )}
-                                </AuthorityGuard>
-                            }
-                        />
-                    ))}
-                    <Route path="*" element={<Navigate replace to="/" />} />
+                                    )} */}
+                                      </AuthorityGuard>
+                                  }
+                              />
+                          ))
+                        : protectedUserRoutes.map((route, index) => (
+                              <Route
+                                  key={route.key + index}
+                                  path={route.path}
+                                  element={
+                                      <AuthorityGuard
+                                          userAuthority={userAuthority}
+                                          authority={route.authority}
+                                      >
+                                          <PageContainer
+                                              {...props}
+                                              // {...route.meta}
+                                          >
+                                              <AppRoute
+                                                  routeKey={route.key}
+                                                  component={route.component}
+                                                  // {...route.meta}
+                                              />
+                                          </PageContainer>
+                                      </AuthorityGuard>
+                                  }
+                              />
+                          ))}
+                    {/* <Route path="*" element={<Navigate replace to="/" />} /> */}
                 </Route>
                 <Route
                     path="/"
                     element={
-                        userAuthority === 'admin' ? (
+                        userAuthority === 'ROLE_ADMIN' ? (
                             <PublicRoute />
                         ) : (
                             <PublicRouteUser />
@@ -123,7 +146,10 @@ const AllRoutes = (props: AllRoutesProps) => {
                             <Navigate replace to={unAuthenticatedEntryPath} />
                         }
                     /> */}
-                <Route path="*" element={<Navigate replace to="/sign-in" />} />
+                <Route
+                    path="*"
+                    element={<Navigate replace to={unAuthenticatedEntryPath} />}
+                />
                 {publicRoutes.map((route) => (
                     <Route
                         key={route.path}

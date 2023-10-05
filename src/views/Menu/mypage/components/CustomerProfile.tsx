@@ -13,8 +13,12 @@ import {
 } from 'react-icons/fa'
 import { HiPencilAlt, HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '@/store'
-// import EditCustomerProfile from './EditCustomerProfile'
+import {
+    // deleteCustomer,
+    // openEditCustomerDetailDialog,
+    useAppDispatch,
+} from '../store'
+import EditCustomerProfile from './EditCustomerProfile'
 
 type UserInfo = {
     userSeq: string
@@ -139,7 +143,6 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
 }
 
 const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
-    console.log('data : ', data)
     return (
         <Card className="w-3/5">
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">

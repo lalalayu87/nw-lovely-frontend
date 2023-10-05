@@ -35,7 +35,7 @@ const CustomerDetail = () => {
     const fetchData = () => {
         const id = query.get('id')
         if (id) {
-            dispatch(getCustomer({ id }))
+            // dispatch(getCustomer({ id }))
         }
     }
 
