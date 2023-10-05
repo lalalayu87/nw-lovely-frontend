@@ -49,10 +49,10 @@ const navigationConfig: NavigationTree[] = [
         subMenu: [],
     },
     {
-        key: 'cuesheet',
+        key: 'qsheet',
         path: '/cuesheet',
         title: '큐시트관리',
-        translateKey: 'nav.cuesheet',
+        translateKey: 'nav.qsheet',
         icon: 'hiOutlineClipboardList',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],
