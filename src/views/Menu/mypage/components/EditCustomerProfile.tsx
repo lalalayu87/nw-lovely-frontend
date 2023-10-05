@@ -2,12 +2,12 @@ import { useRef } from 'react'
 import Button from '@/components/ui/Button'
 import Drawer from '@/components/ui/Drawer'
 import {
-    closeEditCustomerDetailDialog,
+    // closeEditCustomerDetailDialog,
     updateProfileData,
     putCustomer,
     useAppDispatch,
     useAppSelector,
-    Customer,
+    // Customer,
 } from '../store'
 import CustomerForm, { FormikRef, FormModel } from '@/views/Menu/CustomerForm'
 import cloneDeep from 'lodash/cloneDeep'
@@ -36,16 +36,16 @@ const EditCustomerProfile = () => {
 
     const formikRef = useRef<FormikRef>(null)
 
-    const dialogOpen = useAppSelector(
-        (state) => state.crmCustomerDetails.data.editCustomerDetailDialog
-    )
-    const customer = useAppSelector(
-        (state) => state.crmCustomerDetails.data.profileData
-    )
+    // const dialogOpen = useAppSelector(
+    //     (state) => state.crmCustomerDetails.data.editCustomerDetailDialog
+    // )
+    // const customer = useAppSelector(
+    //     (state) => state.crmCustomerDetails.data.profileData
+    // )
 
-    const onDrawerClose = () => {
-        dispatch(closeEditCustomerDetailDialog())
-    }
+    // const onDrawerClose = () => {
+    //     dispatch(closeEditCustomerDetailDialog())
+    // }
 
     const formSubmit = () => {
         formikRef.current?.submitForm()
@@ -84,7 +84,7 @@ const EditCustomerProfile = () => {
         }
         const newData = { ...clonedData, ...basicInfo }
         dispatch(updateProfileData(newData))
-        dispatch(putCustomer(newData as Customer))
+        // dispatch(putCustomer(newData as Customer))
         onDrawerClose()
     }
 
