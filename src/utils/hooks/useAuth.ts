@@ -36,7 +36,6 @@ function useAuth() {
     > => {
         try {
             const resp = await apiSignIn(values)
-
             if (resp.data) {
                 const { accessToken } = resp.data
                 dispatch(signInSuccess(accessToken))

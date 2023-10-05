@@ -21,27 +21,13 @@ const CueSheetTableTools = () => {
                     Export
                 </Button>
             </Link> */}
-            <Link
-                download
-                className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
-                to="/data/product-list.csv"
-                target="_blank"
-            >
-                <Button block size="sm" icon={<HiDownload />}>
-                    인쇄
-                </Button>
-            </Link>
 
-            <span className="block lg:inline-block md:mx-2 md:mb-0 mb-4">
-                <Button block size="sm">
-                    저장
-                </Button>
-            </span>
-            <span className="block lg:inline-block md:mx-2 md:mb-0 mb-4">
-                <Button block size="sm">
-                    최종확인
-                </Button>
-            </span>
+            <Button block size="sm">
+                저장
+            </Button>
+
+            <Button block size="sm"></Button>
+
             <span>
                 <AddCueSheetDialog />
             </span>

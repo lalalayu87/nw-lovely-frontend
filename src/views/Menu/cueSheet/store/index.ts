@@ -25,10 +25,6 @@ export const useAppSelector: TypedUseSelectorHook<
     }
 > = useSelector //useSelector는 store의 상태값을 반환해주는 역할
 
-// export * from './CueSheetListSlice';는 슬라이스 관련 내용을 모두 내보내기 위한 구문입니다.
-// export { useAppDispatch } from '@/store';는 Redux 스토어에서 useDispatch 훅을 내보내기 위한 구문입니다.
-// export default reducer;는 합친 리듀서를 기본 내보내기(default export)로 설정합니다.
-
 export * from './CueSheetListSlice'
 export { useAppDispatch } from '@/store'
 export default reducer

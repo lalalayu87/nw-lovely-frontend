@@ -35,7 +35,6 @@ const AllRoutes = (props: AllRoutesProps) => {
     const userAuthority = useAppSelector(
         (state) => state.auth.user.userRole?.roleName
     )
-    console.log('userAuthority : ', userAuthority)
     if (userAuthority) {
         return (
             <Routes>
@@ -60,11 +59,6 @@ const AllRoutes = (props: AllRoutesProps) => {
                                             {...props}
                                             // {...route.meta}
                                         >
-                                            {/* {console.log(
-                                              'props in View : ',
-                                              props
-                                          )} */}
-
                                             <AppRoute
                                                 routeKey={route.key}
                                                 component={route.component}

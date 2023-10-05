@@ -32,9 +32,17 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'cuesheet',
+        key: 'qsheet',
         path: '/cuesheet',
-        component: lazy(() => import('@/views/Menu/cueSheet/CueSheetList')),
+        component: lazy(() => import('@/views/Menu/qSheet')),
+        authority: [],
+    },
+    {
+        key: 'qsheet',
+        path: '/cuesheet/create',
+        component: lazy(
+            () => import('@/views/Menu/qSheet/components/NewQSheet')
+        ),
         authority: [],
     },
     {

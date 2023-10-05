@@ -7,6 +7,7 @@ import { render } from 'react-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import CueSheetHeader from './components/CueSheetHeader'
+import CueSheetMain from './components/CueSheetMain'
 
 injectReducer('salesProductList', reducer)
 
@@ -21,6 +22,7 @@ const CueSheetList = () => {
 
             <DndProvider backend={HTML5Backend}>
                 <CueSheetTable />
+                {/* <CueSheetMain /> */}
             </DndProvider>
         </AdaptableCard>
     )
