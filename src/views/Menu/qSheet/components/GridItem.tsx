@@ -1,10 +1,11 @@
+/* eslint-disable react/jsx-key */
 import Card from '@/components/ui/Card'
-// import ItemDropdown from './ItemDropdown'
-// import Members from './Members'
-// import ProgressionBar from './ProgressionBar'
-import { HiOutlineClipboardCheck } from 'react-icons/hi'
-import { Link } from 'react-router-dom'
+import { HiOutlineClipboardCheck, HiOutlineEye } from 'react-icons/hi'
+import { Link, useNavigate } from 'react-router-dom'
 import NewQSheet from './NewQSheet'
+import useThemeClass from '@/utils/hooks/useThemeClass'
+import Tooltip from '@/components/ui/Tooltip'
+import { useAppDispatch } from '../store'
 
 export type GridItemProps = {
     data: {
@@ -70,6 +71,29 @@ export type GridItemProps = {
     }
 }
 
+const ActionColumn = ({ row }: { row: GridItemProps }) => {
+    const dispatch = useAppDispatch()
+    const { textTheme } = useThemeClass()
+    const navigate = useNavigate()
+
+    const onView = () => {
+        navigate(`/cuesheet/details/${row.qsheetSeq}`)
+    }
+
+    return (
+        <div className="flex justify-end text-lg">
+            <Tooltip title="View">
+                <span
+                    className={`cursor-pointer p-2 hover:${textTheme}`}
+                    onClick={onView}
+                >
+                    <HiOutlineEye />
+                </span>
+            </Tooltip>
+        </div>
+    )
+}
+
 const GridItem = ({ data }: GridItemProps) => {
     return (
         <Card bodyClass="h-full">
@@ -85,10 +109,7 @@ const GridItem = ({ data }: GridItemProps) => {
                     <div className="flex items-center justify-between mt-2">
                         {/* <Members members={member} /> */}
                         <div className="flex items-center rounded-full font-semibold text-xs">
-                            <div className="flex items-center px-2 py-1 border border-gray-300 rounded-full">
-                                <HiOutlineClipboardCheck className="text-base" />
-                                <span className="ml-1 rtl:mr-1 whitespace-nowrap"></span>
-                            </div>
+                            <ActionColumn row={data} />
                         </div>
                     </div>
                 </div>

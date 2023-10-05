@@ -11,9 +11,7 @@ const NewQSheetTools = () => {
             <Button block size="sm">
                 저장
             </Button>
-            <Button block size="sm">
-                삭제(?)
-            </Button>
+
             <span>
                 <Button block size="sm" variant="twoTone">
                     최종 확인

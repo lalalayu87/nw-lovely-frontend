@@ -46,6 +46,14 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'qsheet',
+        path: '/cuesheet/details/:qsheetSeq',
+        component: lazy(
+            () => import('@/views/Menu/qSheet/components/QSheetDetails')
+        ),
+        authority: [],
+    },
+    {
         key: 'mypage',
         path: '/mypage',
         component: lazy(() => import('@/views/Menu/mypage/CustomerDetail')),
