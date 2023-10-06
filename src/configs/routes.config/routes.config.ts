@@ -33,26 +33,26 @@ export const protectedRoutes = [
     },
     {
         key: 'qsheet',
-        path: '/cuesheet',
-        component: lazy(() => import('@/views/Menu/qSheet')),
+        path: '/qsheet',
+        component: lazy(() => import('@/views/Menu/qSheet/QSheetMain')),
         authority: [],
     },
-    {
-        key: 'qsheet',
-        path: '/cuesheet/create',
-        component: lazy(
-            () => import('@/views/Menu/qSheet/components/NewQSheet')
-        ),
-        authority: [],
-    },
-    {
-        key: 'qsheet',
-        path: '/cuesheet/details/:qsheetSeq',
-        component: lazy(
-            () => import('@/views/Menu/qSheet/components/QSheetDetails')
-        ),
-        authority: [],
-    },
+    // {
+    //     key: 'qsheet',
+    //     path: '/cuesheet/create',
+    //     component: lazy(
+    //         () => import('@/views/Menu/qSheet/components/NewQSheet')
+    //     ),
+    //     authority: [],
+    // },
+    // {
+    //     key: 'qsheet',
+    //     path: '/cuesheet/details/:qsheetSeq',
+    //     component: lazy(
+    //         () => import('@/views/Menu/qSheet/components/QSheetDetails')
+    //     ),
+    //     authority: [],
+    // },
     {
         key: 'mypage',
         path: '/mypage',

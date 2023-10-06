@@ -77,7 +77,7 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
     const navigate = useNavigate()
 
     const onView = () => {
-        navigate(`/cuesheet/details/${row.qsheetSeq}`)
+        navigate(`/qsheet/details/${row.data.content[0].qsheetSeq}`)
     }
 
     return (
@@ -99,18 +99,18 @@ const GridItem = ({ data }: GridItemProps) => {
         <Card bodyClass="h-full">
             <div className="flex flex-col justify-between h-full">
                 <div className="flex justify-between">
-                    <h6>{data.name}</h6>
+                    <h6>{data.content[0].name}</h6>
 
                     {/* <ItemDropdown /> */}
                 </div>
-                <p>{data.created_at.toString()}</p>
+                <p>{data.content[0].created_at.toString()}</p>
                 <div className="mt-3">
                     {/* <ProgressionBar progression={progression} /> */}
                     <div className="flex items-center justify-between mt-2">
                         {/* <Members members={member} /> */}
-                        <div className="flex items-center rounded-full font-semibold text-xs">
-                            <ActionColumn row={data} />
-                        </div>
+                        {/* <div className="flex items-center rounded-full font-semibold text-xs">
+                            <ActionColumn row={data.size} />
+                        </div> */}
                     </div>
                 </div>
             </div>

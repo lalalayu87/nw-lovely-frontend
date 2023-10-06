@@ -50,7 +50,7 @@ const navigationConfig: NavigationTree[] = [
     },
     {
         key: 'qsheet',
-        path: '/cuesheet',
+        path: '/qsheet',
         title: '큐시트관리',
         translateKey: 'nav.qsheet',
         icon: 'hiOutlineClipboardList',

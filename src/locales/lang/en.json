@@ -4,7 +4,7 @@
         "organization": "조직관리",
         "place": "장소관리",
         "schedule": "일정관리",
-        "cuesheet": "큐시트관리",
+        "qsheet": "큐시트관리",
         "mypage": "마이페이지",
         "communityUser": "커뮤니티",
         "collapseMenu": {
