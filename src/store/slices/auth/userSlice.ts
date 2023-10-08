@@ -3,29 +3,25 @@ import { SLICE_BASE_NAME } from './constants'
 import { useState } from 'react'
 
 export type UserState = {
-    // avatar?: string
-    // userName?: string
-    // email?: string
-    // authority?: string
+    userSeq: string
     userId?: string
     userName?: string
-    userRole: {
+    userRole: string
+    info: {
         roleSeq?: string
-        roleName?: string
+        userSeq?: string
     }
     accessToken?: string
 }
 
 const initialState: UserState = {
-    // avatar: '',
-    // userName: '',
-    // email: '',
-    // authority: '',
+    userSeq: '',
     userId: '',
     userName: '',
-    userRole: {
-        roleSeq: 'ROLE_ADMIN',
-        roleName: '',
+    userRole: '',
+    info: {
+        roleSeq: '',
+        userSeq: '',
     },
     accessToken: '',
 }
@@ -35,14 +31,9 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser(state, action: PayloadAction<UserState>) {
-            // state.avatar = action.payload?.avatar
-            // state.email = action.payload?.email
-            // state.userName = action.payload?.userName
-            // state.authority = action.payload?.authority
+            state.userSeq = action.payload?.userSeq
             state.userId = action.payload?.userId
             state.userName = action.payload?.userName
-            // state.userRole.roleSeq = action.payload?.userRole?.roleSeq
-            // state.userRole.roleName = action.payload?.userRole?.roleName
             state.userRole = action.payload.userRole
             state.accessToken = action.payload?.accessToken
         },
