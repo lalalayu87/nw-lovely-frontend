@@ -63,6 +63,8 @@ const QSheetDetailsContent = () => {
     const [loading, setLoading] = useState(true)
     const [dialogIsOpen, setIsOpen] = useState(false)
     const [data, setData] = useState<QSheetDetailsResponse>()
+    console.log(data)
+
     const qsheetSeq = data?.qsheetSeq
 
     const initialDataContent: DataContent[] = [
@@ -77,6 +79,8 @@ const QSheetDetailsContent = () => {
     ]
     const [dataContent, setDataContent] =
         useState<DataContent[]>(initialDataContent)
+
+    console.log(dataContent)
 
     useEffect(() => {
         fetchData()
@@ -257,9 +261,7 @@ const QSheetDetailsContent = () => {
                                                 newData
                                             ])
 
-                                            // 다이얼로그를 닫고 폼을 초기화합니다.
                                             onAddDialogClose()
-                                            // resetForm();
 
                                             console.log(
                                                 '새 데이터 추가 완료:',
@@ -717,13 +719,8 @@ const QSheetDetailsContent = () => {
                                                     <div className="w-2/12">
                                                         {item.note}
                                                     </div>
+                                                    <ActionColumn row={item} />
                                                 </div>
-                                                {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
-                                                <ActionColumn
-                                                    row={item}
-                                                    // onClick={onDeleteClick}
-                                                    // index={orderIndex}
-                                                />
                                             </div>
                                         </div>
                                     )}
