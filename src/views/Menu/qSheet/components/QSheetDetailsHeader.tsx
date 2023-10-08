@@ -44,6 +44,7 @@ export type qSheetDetailsDataProps = {
 }
 
 const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
+    console.log(data)
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     // const filterData = useAppSelector(
@@ -141,22 +142,33 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
 
     const onUpdate = async () => {
         console.log('onUpdate')
-        const transformedData = data.map((item) => {
-            return {
-                data: [
-                    {
-                        orderIndex: item.orderIndex,
-                        process: item.process,
-                        content: item.content,
-                        actor: item.actor,
-                        note: item.note,
-                        filePath: item.filePath
-                    }
-                ]
-            }
-        })
+        console.log(data)
+        const transformedData = data.map((item) => ({
+            data: [
+                {
+                    orderIndex: item.orderIndex,
+                    process: item.process,
+                    content: item.content,
+                    actor: item.actor,
+                    note: item.note,
+                    filePath: item.filePath
+                }
+            ]
+        }))
 
-        const body = transformedData[0]
+        const body = {
+            data: []
+        }
+
+        for (let i = 0; i < transformedData.length; i++) {
+            body.data.push(transformedData[i].data[0])
+        }
+
+        console.log(transformedData[0])
+
+        // const body = transformedData
+
+        console.log(body)
 
         try {
             const response = await apiPatchQSheetCardList<ResponseType>(
