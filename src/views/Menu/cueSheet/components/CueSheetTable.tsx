@@ -62,15 +62,6 @@ const style = {
 //     note: string
 // }
 
-type cards = {
-    id: string
-    process: string
-    performer: string
-    text: string
-    file: File
-    note: string
-}
-
 interface CueSheetData {
     process: string
     actor: string
@@ -281,7 +272,6 @@ const CueSheetTable = () => {
         dispatch(setTableData(newTableData))
     }
 
-    console.log(cueSheetData)
     return (
         <>
             <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
@@ -356,10 +346,13 @@ const CueSheetTable = () => {
                 // onRequestClose={onDialogClose}
             >
                 <Suspense fallback={<></>}>
-                    {dialogView === 'NEW_COLUMN' && <AddCueSheetContent />}
+                    {dialogView === 'NEW_COLUMN' && (
+                        <AddCueSheetContent cueSheetData={cueSheetData} />
+                    )}
                 </Suspense>
             </Dialog>
             <CueSheetDeleteConfirmation />
+            <AddCueSheetContent cueSheetData={cueSheetData} />
             {/* <CueSheetEditConfirmation /> */}
             {/* <DataTable
                 ref={tableRef}

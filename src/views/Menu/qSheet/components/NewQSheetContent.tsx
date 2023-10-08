@@ -236,200 +236,185 @@ const NewQSheetContent = () => {
                     >
                         <HiOutlinePencil />
                     </span>
-                    <Dialog
-                        isOpen={dialogIsOpen}
-                        contentClassName="pb-10 px-10"
-                        onClose={onDialogClose}
-                        onRequestClose={onDialogClose}
-                    >
-                        {/* <EditNewQSheetContent
+                </Tooltip>
+                <Dialog
+                    isOpen={dialogIsOpen}
+                    contentClassName="pb-10 px-10"
+                    onClose={onDialogClose}
+                    onRequestClose={onDialogClose}
+                >
+                    {/* <EditNewQSheetContent
                             disableSubmit={false}
                             data={dataForEdit}
                             onClose={onDialogClose}
                         /> */}
-                        <>
-                            <div>
-                                <h5>큐시트 수정</h5>
-                                <div className="mt-8">
-                                    <Formik
-                                        initialValues={{
-                                            process: dataForEdit?.process,
-                                            actor: dataForEdit?.actor,
-                                            content: dataForEdit?.content,
-                                            filePath: dataForEdit?.filePath,
-                                            note: dataForEdit?.note,
-                                            orderIndex: dataForEdit?.orderIndex
-                                        }}
-                                        onSubmit={(
-                                            values,
-                                            { setSubmitting }
-                                        ) => {
-                                            setSubmitting(true)
-                                            console.log('되냐')
-                                            // 폼이 제출될 때 호출되는 함수
-                                            // values는 폼 필드의 값들을 포함합니다.
+                    <>
+                        <div>
+                            <h5>큐시트 수정</h5>
+                            <div className="mt-8">
+                                <Formik
+                                    initialValues={{
+                                        process: dataForEdit?.process,
+                                        actor: dataForEdit?.actor,
+                                        content: dataForEdit?.content,
+                                        filePath: dataForEdit?.filePath,
+                                        note: dataForEdit?.note,
+                                        orderIndex: dataForEdit?.orderIndex
+                                    }}
+                                    onSubmit={(values, { setSubmitting }) => {
+                                        setSubmitting(true)
+                                        console.log('되냐')
+                                        // 폼이 제출될 때 호출되는 함수
+                                        // values는 폼 필드의 값들을 포함합니다.
 
-                                            // qSheetExampleData에서 해당 데이터의 인덱스를 찾습니다.
-                                            const index =
-                                                qSheetExampleData.findIndex(
-                                                    (item) =>
-                                                        item.orderIndex ===
-                                                        values.orderIndex
-                                                )
+                                        // qSheetExampleData에서 해당 데이터의 인덱스를 찾습니다.
+                                        const index =
+                                            qSheetExampleData.findIndex(
+                                                (item) =>
+                                                    item.orderIndex ===
+                                                    values.orderIndex
+                                            )
 
-                                            if (index !== -1) {
-                                                // 데이터를 업데이트합니다.
-                                                const updatedData = [
-                                                    ...qSheetExampleData
-                                                ]
-                                                updatedData[index] = values
-                                                setQSheetExampleData(
-                                                    updatedData
-                                                )
-                                            }
+                                        if (index !== -1) {
+                                            // 데이터를 업데이트합니다.
+                                            const updatedData = [
+                                                ...qSheetExampleData
+                                            ]
+                                            updatedData[index] = values
+                                            setQSheetExampleData(updatedData)
+                                        }
 
-                                            // 다이얼로그를 닫습니다.
-                                            onDialogClose()
-                                        }}
-                                    >
-                                        {({
-                                            touched,
-                                            errors,
-                                            isSubmitting
-                                        }) => (
-                                            <Form>
-                                                <FormContainer layout="horizontal">
-                                                    <FormItem
-                                                        label="절차"
-                                                        invalid={
-                                                            errors.process &&
-                                                            touched.process
+                                        // 다이얼로그를 닫습니다.
+                                        onDialogClose()
+                                    }}
+                                >
+                                    {({ touched, errors, isSubmitting }) => (
+                                        <Form>
+                                            <FormContainer layout="horizontal">
+                                                <FormItem
+                                                    label="절차"
+                                                    invalid={
+                                                        errors.process &&
+                                                        touched.process
+                                                    }
+                                                    errorMessage={
+                                                        errors.process
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="process"
+                                                        placeholder="예) 개식사"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '절차를 기입해주세요.'
+                                                            )
                                                         }
-                                                        errorMessage={
-                                                            errors.process
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="행위자"
+                                                    invalid={
+                                                        errors.actor &&
+                                                        touched.actor
+                                                    }
+                                                    errorMessage={errors.actor}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="actor"
+                                                        placeholder="예) 신랑, 신부"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '행위자를 기입해주세요.'
+                                                            )
                                                         }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="내용"
+                                                    invalid={
+                                                        errors.content &&
+                                                        touched.content
+                                                    }
+                                                    errorMessage={
+                                                        errors.content
+                                                    }
+                                                >
+                                                    <Field
+                                                        style={{
+                                                            height: 100
+                                                        }}
+                                                        type="text"
+                                                        name="content"
+                                                        placeholder="예) 결혼식을 시작하겠습니다."
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '내용을 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="파일"
+                                                    invalid={
+                                                        errors.filePath &&
+                                                        touched.filePath
+                                                    }
+                                                    errorMessage={
+                                                        errors.filePath
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="file"
+                                                        name="file"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="비고"
+                                                    invalid={
+                                                        errors.note &&
+                                                        touched.note
+                                                    }
+                                                    errorMessage={errors.note}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="note"
+                                                        placeholder="비고"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem>
+                                                    <Button
+                                                        variant="solid"
+                                                        loading={isSubmitting}
+                                                        type="submit"
                                                     >
-                                                        <Field
-                                                            type="text"
-                                                            name="process"
-                                                            placeholder="예) 개식사"
-                                                            component={Input}
-                                                            validate={(
-                                                                value: string
-                                                            ) =>
-                                                                requiredFieldValidation(
-                                                                    value,
-                                                                    '절차를 기입해주세요.'
-                                                                )
-                                                            }
-                                                        />
-                                                    </FormItem>
-                                                    <FormItem
-                                                        label="행위자"
-                                                        invalid={
-                                                            errors.actor &&
-                                                            touched.actor
-                                                        }
-                                                        errorMessage={
-                                                            errors.actor
-                                                        }
-                                                    >
-                                                        <Field
-                                                            type="text"
-                                                            name="actor"
-                                                            placeholder="예) 신랑, 신부"
-                                                            component={Input}
-                                                            validate={(
-                                                                value: string
-                                                            ) =>
-                                                                requiredFieldValidation(
-                                                                    value,
-                                                                    '행위자를 기입해주세요.'
-                                                                )
-                                                            }
-                                                        />
-                                                    </FormItem>
-                                                    <FormItem
-                                                        label="내용"
-                                                        invalid={
-                                                            errors.content &&
-                                                            touched.content
-                                                        }
-                                                        errorMessage={
-                                                            errors.content
-                                                        }
-                                                    >
-                                                        <Field
-                                                            style={{
-                                                                height: 100
-                                                            }}
-                                                            type="text"
-                                                            name="content"
-                                                            placeholder="예) 결혼식을 시작하겠습니다."
-                                                            component={Input}
-                                                            validate={(
-                                                                value: string
-                                                            ) =>
-                                                                requiredFieldValidation(
-                                                                    value,
-                                                                    '내용을 기입해주세요.'
-                                                                )
-                                                            }
-                                                        />
-                                                    </FormItem>
-                                                    <FormItem
-                                                        label="파일"
-                                                        invalid={
-                                                            errors.filePath &&
-                                                            touched.filePath
-                                                        }
-                                                        errorMessage={
-                                                            errors.filePath
-                                                        }
-                                                    >
-                                                        <Field
-                                                            type="file"
-                                                            name="file"
-                                                            component={Input}
-                                                        />
-                                                    </FormItem>
-                                                    <FormItem
-                                                        label="비고"
-                                                        invalid={
-                                                            errors.note &&
-                                                            touched.note
-                                                        }
-                                                        errorMessage={
-                                                            errors.note
-                                                        }
-                                                    >
-                                                        <Field
-                                                            type="text"
-                                                            name="note"
-                                                            placeholder="비고"
-                                                            component={Input}
-                                                        />
-                                                    </FormItem>
-                                                    <FormItem>
-                                                        <Button
-                                                            variant="solid"
-                                                            loading={
-                                                                isSubmitting
-                                                            }
-                                                            type="submit"
-                                                        >
-                                                            수정
-                                                        </Button>
-                                                    </FormItem>
-                                                </FormContainer>
-                                            </Form>
-                                        )}
-                                    </Formik>
-                                </div>
+                                                        수정
+                                                    </Button>
+                                                </FormItem>
+                                            </FormContainer>
+                                        </Form>
+                                    )}
+                                </Formik>
                             </div>
-                        </>
-                    </Dialog>
-                </Tooltip>
+                        </div>
+                    </>
+                </Dialog>
 
                 <Tooltip title="삭제">
                     <span
@@ -493,13 +478,8 @@ const NewQSheetContent = () => {
                                                     <div className="w-2/12">
                                                         {item.note}
                                                     </div>
+                                                    <ActionColumn row={item} />
                                                 </div>
-                                                {/* ActionColumn을 사용하여 수정 및 삭제 기능 추가 */}
-                                                <ActionColumn
-                                                    row={item}
-                                                    // onClick={onDeleteClick}
-                                                    // index={orderIndex}
-                                                />
                                             </div>
                                         </div>
                                     )}
