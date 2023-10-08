@@ -1,67 +1,85 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { apiGetQSheetCardList } from '@/services/QSheetService'
+import {
+    createSlice,
+    createAsyncThunk,
+    PayloadAction,
+    current,
+} from '@reduxjs/toolkit'
+import {
+    apiGetQSheetCardList,
+    apiDeleteQSheetCardList,
+    apiGetQSheetCardDetails,
+} from '@/services/QSheetService'
 
 type QSheetData = {
-    content: [
-        {
-            created_at: Date
-            data: [
-                actor: string,
-                content: string,
-                filePath: string,
-                note: string,
-                orderIndex: number,
-                process: string
-            ]
-            name: string
-            orgSeq: {
-                orgBiznum: string
-                orgContact: string
-                orgEnabled: boolean
-                orgName: boolean
-                orgSeq: boolean
-            }
-            qsheetSeq: string
-            userSeq: {
-                created_at: Date
-                userEmail: string
-                userEnabled: boolean
-                userId: string
-                userName: string
-                userRole: {
-                    roleName: string
-                    roleSeq: string
-                }
-                userSeq: string
-            }
-        }
-    ]
-    empty: boolean
-    first: boolean
-    last: boolean
-    number: number
-    numberOfElements: number
-    pageable: {
-        offset: number
-        pageNumber: number
-        pazeSize: number
-        paged: boolean
-        sort: {
-            empty: boolean
-            sorted: boolean
-            unsorted: boolean
-        }
-        unpaged: boolean
-    }
-    size: number
-    sort: {
-        empty: boolean
-        sorted: boolean
-        unsorted: boolean
-    }
-    totalElements: number
-    totalPages: number
+    qsheetSeq: string
+    name: string
+    created_at: Date
+    data: string[]
+    orgSeq: string
+    userSeq: string
 }
+
+// type QSheetData = {
+//     content: [
+//         {
+//             created_at: Date
+//             data: [
+//                 actor: string,
+//                 content: string,
+//                 filePath: string,
+//                 note: string,
+//                 orderIndex: number,
+//                 process: string
+//             ]
+//             name: string
+//             orgSeq: {
+//                 orgBiznum: string
+//                 orgContact: string
+//                 orgEnabled: boolean
+//                 orgName: boolean
+//                 orgSeq: boolean
+//             }
+//             qsheetSeq: string
+//             userSeq: {
+//                 created_at: Date
+//                 userEmail: string
+//                 userEnabled: boolean
+//                 userId: string
+//                 userName: string
+//                 userRole: {
+//                     roleName: string
+//                     roleSeq: string
+//                 }
+//                 userSeq: string
+//             }
+//         }
+//     ]
+//     empty: boolean
+//     first: boolean
+//     last: boolean
+//     number: number
+//     numberOfElements: number
+//     pageable: {
+//         offset: number
+//         pageNumber: number
+//         pazeSize: number
+//         paged: boolean
+//         sort: {
+//             empty: boolean
+//             sorted: boolean
+//             unsorted: boolean
+//         }
+//         unpaged: boolean
+//     }
+//     size: number
+//     sort: {
+//         empty: boolean
+//         sorted: boolean
+//         unsorted: boolean
+//     }
+//     totalElements: number
+//     totalPages: number
+// }
 
 type QSheetDataList = QSheetData[]
 
@@ -76,15 +94,34 @@ export type QSheetDataListState = {
     content: []
     selectedQSheet: string
     deleteConfirmation: boolean
+    selectedRows: string[]
+    selectedRow: string
+    dialogOpen: boolean
+    dialogView: 'NEW_COLUMN' | ''
 }
 
+type QSheetDeleteRequest = { qsheetSeq: string }
+
+type QSheetDeleterResponse = {}
+
 export const SLICE_NAME = 'qsheetDataList'
+
 // getList는 Redux Toolkit의 createAsyncThunk 함수를 사용하여 생성된 비동기 액션 생성자
 // 이 함수는 비동기적인 작업을 수행하고 해당 작업이 완료되면 Redux 스토어의 상태를 업데이트하는 데 사용
 export const getList = createAsyncThunk(SLICE_NAME + '/getList', async () => {
     const response = await apiGetQSheetCardList<GetQSheetDataResponse>()
+    console.log(response.data)
     return response.data
 })
+
+export const deleteList = async (data: QSheetDeleteRequest) => {
+    const response = await apiDeleteQSheetCardList<
+        QSheetDeleterResponse,
+        QSheetDeleteRequest
+    >(data)
+    console.log(response.data)
+    return response.data
+}
 
 const initialState: QSheetDataListState = {
     loading: false,
@@ -92,6 +129,10 @@ const initialState: QSheetDataListState = {
     content: [],
     selectedQSheet: '',
     deleteConfirmation: false,
+    selectedRows: [],
+    selectedRow: '',
+    dialogView: '',
+    dialogOpen: false,
 }
 
 const qSheetDataListSlice = createSlice({
@@ -106,6 +147,14 @@ const qSheetDataListSlice = createSlice({
             state.deleteConfirmation = action.payload.content
             //action.payload인지 아닌지 몰겠음. 개발하면서 확인 필요함
         },
+        setSelectedRows: (state, action) => {
+            state.selectedRows = action.payload
+            console.log(state.selectedRows)
+        },
+        setSelectedRow: (state, action) => {
+            state.selectedRow = action.payload
+            console.log('setSelectedRow ? ', state.selectedRow)
+        },
         // toggleSort: (state, action) => {
         //     state.query.sort = action.payload
         // },
@@ -115,6 +164,26 @@ const qSheetDataListSlice = createSlice({
         // toggleNewProjectDialog: (state, action) => {
         //     state.newProjectDialog = action.payload
         // },
+        removeRowItem: (state, { payload }: PayloadAction<string>) => {
+            const currentState = current(state)
+            console.log('currentState ? ', currentState)
+            if (currentState.selectedRows.includes(payload)) {
+                state.selectedRows = currentState.selectedRows.filter(
+                    (id) => id !== payload
+                )
+            }
+            console.log('removeRowItem ? ', state)
+        },
+        openDialog: (state) => {
+            state.dialogOpen = true
+        },
+        closeDialog: (state) => {
+            state.dialogOpen = false
+            state.dialogView = ''
+        },
+        updateDialogView: (state, action) => {
+            state.dialogView = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -128,24 +197,14 @@ const qSheetDataListSlice = createSlice({
     },
 })
 
-// const projectDashboardSlice = createSlice({
-//     name: `${SLICE_NAME}/state`,
-//     initialState,
-//     reducers: {},
-//     extraReducers: (builder) => {
-//         builder
-//             .addCase(getProjectDashboardData.fulfilled, (state, action) => {
-//                 state.dashboardData = action.payload
-//                 state.loading = false
-//             })
-//             .addCase(getProjectDashboardData.pending, (state) => {
-//                 state.loading = true
-//             })
-//     },
-// })
-
-// export const { toggleView, toggleSort, toggleNewProjectDialog, setSearch } =
-// qSheetDataListSlice.actions
-export const { setSelectedQSheet, toggleDeleteConfirmation } =
-    qSheetDataListSlice.actions
+export const {
+    setSelectedQSheet,
+    toggleDeleteConfirmation,
+    setSelectedRow,
+    setSelectedRows,
+    removeRowItem,
+    updateDialogView,
+    openDialog,
+    closeDialog,
+} = qSheetDataListSlice.actions
 export default qSheetDataListSlice.reducer

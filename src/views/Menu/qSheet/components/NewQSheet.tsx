@@ -11,11 +11,11 @@ import NewQSheetContent from './NewQSheetContent'
 const NewQSheet = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="lg:flex items-center justify-between mb-4">
+            {/* <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
                 <NewQSheetTools />
-            </div>
-            <NewQSheetHeader />
+            </div> */}
+            {/* <NewQSheetHeader /> */}
 
             <DndProvider backend={HTML5Backend}>
                 <NewQSheetContent />

@@ -35,7 +35,7 @@ const {
 
 const AllRoutes = (props: AllRoutesProps) => {
     const userAuthority = useAppSelector(
-        (state) => state.auth.user.userRole?.roleName
+        (state) => state.auth.user.userRole
     )
     // const userAuthority = 'ROLE_USER'
     if (userAuthority) {

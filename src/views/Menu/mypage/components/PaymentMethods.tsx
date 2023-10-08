@@ -1,14 +1,14 @@
 import Button from '@/components/ui/Button'
 import Tag from '@/components/ui/Tag'
-import EditPaymentMethod from './EditPaymentMethod'
-import DeletePaymentMethod from './DeletePaymentMethod'
+// import EditPaymentMethod from './EditPaymentMethod'
+// import DeletePaymentMethod from './DeletePaymentMethod'
 import {
-    openDeletePaymentMethodDialog,
-    openEditPaymentMethodDialog,
+    // openDeletePaymentMethodDialog,
+    // openEditPaymentMethodDialog,
     updateSelectedCard,
     useAppDispatch,
     useAppSelector,
-    PaymentMethod,
+    // PaymentMethod,
 } from '../store'
 import isLastChild from '@/utils/isLastChild'
 import classNames from 'classnames'
@@ -32,23 +32,23 @@ const months = [
 const PaymentMethods = () => {
     const dispatch = useAppDispatch()
 
-    const data = useAppSelector(
-        (state) => state.crmCustomerDetails.data.paymentMethodData
-    )
+    // const data = useAppSelector(
+    //     (state) => state.crmCustomerDetails.data.paymentMethodData
+    // )
 
-    const onEditPaymentMethodDialogOpen = (card: PaymentMethod) => {
-        dispatch(updateSelectedCard(card))
-        dispatch(openEditPaymentMethodDialog())
-    }
+    // const onEditPaymentMethodDialogOpen = (card: PaymentMethod) => {
+    //     dispatch(updateSelectedCard(card))
+    //     dispatch(openEditPaymentMethodDialog())
+    // }
 
-    const onDeletePaymentMethodDialogOpen = (card: PaymentMethod) => {
-        dispatch(updateSelectedCard(card))
-        dispatch(openDeletePaymentMethodDialog())
-    }
+    // const onDeletePaymentMethodDialogOpen = (card: PaymentMethod) => {
+    //     dispatch(updateSelectedCard(card))
+    //     dispatch(openDeletePaymentMethodDialog())
+    // }
 
     return (
-        <>
-            {data.length > 0 && (
+        <>hi
+            {/* {data.length > 0 && (
                 <div>
                     <h6 className="mb-4">Payment Methods</h6>
                     <div className="rounded-lg border border-gray-200 dark:border-gray-600">
@@ -128,9 +128,9 @@ const PaymentMethods = () => {
                         ))}
                     </div>
                 </div>
-            )}
-            <EditPaymentMethod />
-            <DeletePaymentMethod />
+            )} */}
+            {/* <EditPaymentMethod /> */}
+            {/* <DeletePaymentMethod /> */}
         </>
     )
 }

@@ -43,9 +43,6 @@ const QSheetTools = () => {
                     prefix={<HiOutlineSearch className="text-lg" />}
                     onChange={handleInputChange}
                 /> */}
-                <Button block size="sm">
-                    삭제
-                </Button>
                 <Link to="create">
                     <Button
                         size="sm"
