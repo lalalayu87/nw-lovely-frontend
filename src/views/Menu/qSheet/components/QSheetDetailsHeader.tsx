@@ -164,8 +164,6 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
             body.data.push(transformedData[i].data[0])
         }
 
-        console.log(transformedData[0])
-
         // const body = transformedData
 
         console.log(body)
