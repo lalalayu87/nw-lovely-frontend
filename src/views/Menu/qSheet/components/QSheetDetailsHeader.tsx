@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type {
     DataTableResetHandle,
     ColumnDef
@@ -13,17 +13,26 @@ import {
 import { HiOutlinePencil, HiOutlineTrash, HiExternalLink } from 'react-icons/hi'
 import QSheetDataTable from './QSheetDataTable'
 import Button from '@/components/ui/Button'
+import deepParseJson from '@/utils/deepParseJson'
+import { PERSIST_STORE_NAME } from '@/constants/app.constant'
+import { apiPatchQSheetCardList } from '@/services/QSheetService'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import ApiService from '@/services/ApiService'
+import axios from 'axios'
+import QSheetDetailsContent from './QSheetDetailsContent'
 
 export type qSheet = {
-    id: string
+    orderIndex: string
     process: string
-    performer: string
-    text: string
-    file: string
+    actor: string
+    content: string
+    filePath: string
     note: string
 }
 
 export type qSheetDetailsDataProps = {
+    qsheetSeq: string
     data: {
         qsheetSeq: string
         name: string
@@ -34,11 +43,9 @@ export type qSheetDetailsDataProps = {
     }
 }
 
-// const QSheetDetatilsHeader = ({ data }: qSheetDetailsDataProps) => {
-const QSheetDetatilsHeader = () => {
+const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
-
     // const filterData = useAppSelector(
     //     (state) => state.salesProductList.data.filterData
     // )
@@ -117,8 +124,70 @@ const QSheetDetatilsHeader = () => {
         []
     )
 
-    const onCreate = () => {
-        console.log('되나')
+    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+    const persistData = deepParseJson(rawPersistData)
+
+    const navigate = useNavigate()
+
+    // const fetchData = async (dataToPut: qSheetDetailsDataProps[]) => {
+    //     const response = await apiPutQSheetCardList<qSheetDetailsDataProps>({
+    //         qsheetSeq,
+    //         data: dataToPut
+    //     })
+    //     if (response) {
+    //         console.log(response)
+    //     }
+    // }
+
+    const onUpdate = async () => {
+        console.log('onUpdate')
+        const transformedData = data.map((item) => {
+            return {
+                data: [
+                    {
+                        orderIndex: item.orderIndex,
+                        process: item.process,
+                        content: item.content,
+                        actor: item.actor,
+                        note: item.note,
+                        filePath: item.filePath
+                    }
+                ]
+            }
+        })
+
+        const body = transformedData[0]
+
+        try {
+            const response = await apiPatchQSheetCardList<ResponseType>(
+                qsheetSeq,
+                body
+            )
+            console.log(response)
+
+            toast.push(
+                <Notification title={'큐시트가 수정되었습니다.'} type="success">
+                    큐시트가 수정되었습니다.
+                </Notification>
+            )
+
+            navigate('/cuesheet')
+        } catch (error) {
+            console.error(error)
+        }
+
+        // const body = {
+        //     data: [
+        //         {
+        //             orderIndex: 1,
+        //             process: 'hi',
+        //             content: 'hi',
+        //             actor: 'hi',
+        //             note: 'hi',
+        //             filePath: 'hi'
+        //         }
+        //     ]
+        // }
     }
 
     return (
@@ -133,7 +202,7 @@ const QSheetDetatilsHeader = () => {
                     </span>
 
                     <span>
-                        <Button block size="sm">
+                        <Button block size="sm" onClick={onUpdate}>
                             저장
                         </Button>
                     </span>
@@ -142,21 +211,14 @@ const QSheetDetatilsHeader = () => {
                             block
                             size="sm"
                             variant="twoTone"
-                            onClick={onCreate}
+                            // onClick={onUpdate}
                         >
                             최종확인
                         </Button>
                     </span>
                 </div>
             </div>
-            <QSheetDataTable
-                ref={tableRef}
-                columns={columns}
-                // skeletonAvatarColumns={[0]}
-                // skeletonAvatarProps={{
-                //     className: 'rounded-md',
-                // }}
-            />
+            <QSheetDataTable ref={tableRef} columns={columns} />
         </>
     )
 }

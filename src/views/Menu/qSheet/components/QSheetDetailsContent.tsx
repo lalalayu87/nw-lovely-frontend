@@ -1,13 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-    Suspense,
-    lazy
-} from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     DragDropContext,
     Droppable,
@@ -15,7 +7,7 @@ import {
     DraggableChildrenFn,
     Draggable
 } from 'react-beautiful-dnd'
-import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
+import { HiOutlinePencil, HiOutlineTrash, HiPlusSm } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
@@ -25,10 +17,19 @@ import {
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
-import NewQSheetTools from './NewQSheetTools'
-import NewQSheetHeader from './NewQSheetHeader'
+
 import { apiGetQSheetCardDetails } from '@/services/QSheetService'
 import QSheetDetatilsHeader from './QSheetDetailsHeader'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import Tooltip from '@/components/ui/Tooltip'
+import Dialog from '@/components/ui/Dialog'
+import { Formik, Field, Form } from 'formik'
+import requiredFieldValidation from '@/utils/requiredFieldValidation'
+import Input from '@/components/ui/Input'
+import * as Yup from 'yup'
+import { FormItem, FormContainer } from '@/components/ui/Form'
+import { Button } from '@/components/ui'
 
 type QSheetDetailsResponse = {
     qsheetSeq: string
@@ -60,7 +61,9 @@ const QSheetDetailsContent = () => {
     const location = useLocation()
 
     const [loading, setLoading] = useState(true)
+    const [dialogIsOpen, setIsOpen] = useState(false)
     const [data, setData] = useState<QSheetDetailsResponse>()
+    const qsheetSeq = data?.qsheetSeq
 
     const initialDataContent: DataContent[] = [
         {
@@ -99,7 +102,6 @@ const QSheetDetailsContent = () => {
     }
 
     const onDragEnd = (result: DropResult) => {
-        console.log(result)
         // 드래그가 취소된 경우
         if (!result.destination) return
 
@@ -142,36 +144,532 @@ const QSheetDetailsContent = () => {
         const { textTheme } = useThemeClass()
         const navigate = useNavigate()
 
+        const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
+        const [dialogIsOpen, setIsOpen] = useState(false)
+        const [dataForEdit, setDataForEdit] = useState<DataContent | null>(null)
+
+        const openDialog = () => {
+            setIsOpen(true)
+        }
+
+        const onDialogClose = () => {
+            setIsOpen(false)
+        }
+
+        const onClickCloes = () => {
+            setIsOpen(false)
+        }
+
+        const openAddDialog = () => {
+            console.log('add open')
+            setAddDialogIsOpen(true)
+        }
+
+        const onAddDialogClose = () => {
+            console.log('add close')
+            setAddDialogIsOpen(false)
+        }
+
+        const onClickAddCloes = () => {
+            setAddDialogIsOpen(false)
+        }
+
+        const onAdd = () => {
+            console.log('add')
+            setAddDialogIsOpen(true)
+        }
+
         const onEdit = () => {
-            // navigate(`/app/sales/product-edit/${row.id}`)
+            setIsOpen(true)
+
+            // 클릭한 행의 데이터를 전달
+            const rowDataTmp = dataContent.find(
+                (item) => item.orderIndex === row.orderIndex
+            )
+
+            setDataForEdit(rowDataTmp) // setDataForEdit 함수로 데이터 전달
         }
 
         const onDelete = () => {
-            dispatch(toggleDeleteConfirmation(true))
-            // dispatch(setSelectedProduct(row.orderIndex))
+            const rowData = dataContent.find(
+                (item) => item.orderIndex == row.orderIndex
+            )
+
+            console.log(rowData)
+            // 데이터를 삭제하고 업데이트된 배열을 생성합니다.
+            const updatedData = dataContent.filter(
+                (item) => item.orderIndex !== rowData.orderIndex
+            )
+
+            // 업데이트된 배열을 qSheetExampleData로 설정하여 데이터를 삭제합니다.
+            setDataContent(updatedData)
+
+            toast.push(
+                <Notification title={'삭제되었습니다.'} type="success">
+                    삭제되었습니다.
+                </Notification>
+            )
         }
 
         return (
             <div className="flex justify-end text-lg">
-                <span
-                    className={`cursor-pointer p-2 hover:${textTheme}`}
-                    onClick={onEdit}
+                <Tooltip title="추가">
+                    <span
+                        className={`cursor-pointer p-2 hover:${textTheme}`}
+                        onClick={() => onAdd()}
+                    >
+                        <HiPlusSm />
+                    </span>
+                </Tooltip>
+                <Dialog
+                    isOpen={addDialogIsOpen}
+                    contentClassName="pb-10 px-10"
+                    onClose={onAddDialogClose}
+                    onRequestClose={onAddDialogClose}
                 >
-                    <HiOutlinePencil />
-                </span>
-                <span
-                    className="cursor-pointer p-2 hover:text-red-500"
-                    onClick={onDelete}
+                    <>
+                        <div>
+                            <h5>큐시트 추가</h5>
+                            <div className="mt-8">
+                                <Formik
+                                    initialValues={{
+                                        process: '',
+                                        actor: '',
+                                        content: '',
+                                        filePath: '',
+                                        note: '',
+                                        orderIndex: ''
+                                    }}
+                                    onSubmit={(values, { setSubmitting }) => {
+                                        console.log('추가 되냐')
+                                        setSubmitting(true)
+
+                                        try {
+                                            // 새 데이터를 생성하고 배열에 추가합니다.
+                                            const newData = {
+                                                ...values,
+                                                orderIndex:
+                                                    dataContent.length + 1
+                                            }
+
+                                            setDataContent((prevData) => [
+                                                ...prevData,
+                                                newData
+                                            ])
+
+                                            // 다이얼로그를 닫고 폼을 초기화합니다.
+                                            onAddDialogClose()
+                                            // resetForm();
+
+                                            console.log(
+                                                '새 데이터 추가 완료:',
+                                                newData
+                                            )
+                                        } catch (error) {
+                                            console.error(
+                                                '데이터 추가 실패:',
+                                                error
+                                            )
+                                        } finally {
+                                            setSubmitting(false)
+                                        }
+                                    }}
+                                >
+                                    {({ touched, errors, isSubmitting }) => (
+                                        <Form>
+                                            <FormContainer layout="horizontal">
+                                                <FormItem
+                                                    label="절차"
+                                                    invalid={
+                                                        errors.process &&
+                                                        touched.process
+                                                    }
+                                                    errorMessage={
+                                                        errors.process
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="process"
+                                                        placeholder="예) 개식사"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '절차를 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="행위자"
+                                                    invalid={
+                                                        errors.actor &&
+                                                        touched.actor
+                                                    }
+                                                    errorMessage={errors.actor}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="actor"
+                                                        placeholder="예) 신랑, 신부"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '행위자를 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="내용"
+                                                    invalid={
+                                                        errors.content &&
+                                                        touched.content
+                                                    }
+                                                    errorMessage={
+                                                        errors.content
+                                                    }
+                                                >
+                                                    <Field
+                                                        style={{
+                                                            height: 100
+                                                        }}
+                                                        type="text"
+                                                        name="content"
+                                                        placeholder="예) 결혼식을 시작하겠습니다."
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '내용을 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="파일"
+                                                    invalid={
+                                                        errors.filePath &&
+                                                        touched.filePath
+                                                    }
+                                                    errorMessage={
+                                                        errors.filePath
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="file"
+                                                        name="file"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="비고"
+                                                    invalid={
+                                                        errors.note &&
+                                                        touched.note
+                                                    }
+                                                    errorMessage={errors.note}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="note"
+                                                        placeholder="비고"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem>
+                                                    <div>
+                                                        <Button
+                                                            variant="solid"
+                                                            loading={
+                                                                isSubmitting
+                                                            }
+                                                            type="submit"
+                                                        >
+                                                            추가
+                                                        </Button>
+                                                        &nbsp;
+                                                        <Button
+                                                            size="md"
+                                                            type="button"
+                                                            onClick={
+                                                                onClickAddCloes
+                                                            }
+                                                        >
+                                                            취소
+                                                        </Button>
+                                                    </div>
+                                                </FormItem>
+                                            </FormContainer>
+                                        </Form>
+                                    )}
+                                </Formik>
+                            </div>
+                        </div>
+                    </>
+                </Dialog>
+
+                <Tooltip title="수정">
+                    <span
+                        className={`cursor-pointer p-2 hover:${textTheme}`}
+                        onClick={() => onEdit()}
+                    >
+                        <HiOutlinePencil />
+                    </span>
+                </Tooltip>
+                <Dialog
+                    isOpen={dialogIsOpen}
+                    contentClassName="pb-10 px-10"
+                    onClose={onDialogClose}
+                    onRequestClose={onDialogClose}
                 >
-                    <HiOutlineTrash />
-                </span>
+                    {/* <EditNewQSheetContent
+                            disableSubmit={false}
+                            data={dataForEdit}
+                            onClose={onDialogClose}
+                        /> */}
+                    <>
+                        <div>
+                            <h5>큐시트 수정</h5>
+                            <div className="mt-8">
+                                <Formik
+                                    initialValues={{
+                                        process: dataForEdit?.process,
+                                        actor: dataForEdit?.actor,
+                                        content: dataForEdit?.content,
+                                        filePath: dataForEdit?.filePath,
+                                        note: dataForEdit?.note,
+                                        orderIndex: dataForEdit?.orderIndex
+                                    }}
+                                    onSubmit={(values, { setSubmitting }) => {
+                                        console.log('되냐')
+                                        setSubmitting(true)
+
+                                        const index = dataContent.findIndex(
+                                            (item) =>
+                                                item.orderIndex ===
+                                                values.orderIndex
+                                        )
+
+                                        if (index !== -1) {
+                                            // 데이터를 업데이트합니다.
+                                            const updatedData = [...dataContent]
+                                            updatedData[index] = values
+                                            setDataContent(updatedData)
+                                        }
+
+                                        // 다이얼로그를 닫습니다.
+                                        onDialogClose()
+                                    }}
+                                >
+                                    {({ touched, errors, isSubmitting }) => (
+                                        <Form>
+                                            <FormContainer layout="horizontal">
+                                                <FormItem
+                                                    label="절차"
+                                                    invalid={
+                                                        errors.process &&
+                                                        touched.process
+                                                    }
+                                                    errorMessage={
+                                                        errors.process
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="process"
+                                                        placeholder="예) 개식사"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '절차를 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="행위자"
+                                                    invalid={
+                                                        errors.actor &&
+                                                        touched.actor
+                                                    }
+                                                    errorMessage={errors.actor}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="actor"
+                                                        placeholder="예) 신랑, 신부"
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '행위자를 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                    {/* <div className="border border-gray-300 p-2 rounded-md">
+                                                        <Field
+                                                            type="checkbox"
+                                                            name="actor"
+                                                            validate={(
+                                                                value: string
+                                                            ) =>
+                                                                requiredFieldValidation(
+                                                                    value,
+                                                                    '행위자를 선택해주세요.'
+                                                                )
+                                                            }
+                                                            className="w-full h-6"
+                                                        >
+                                                            <option value="사회자">
+                                                                사회자
+                                                            </option>
+                                                            <option value="신랑">
+                                                                신랑
+                                                            </option>
+                                                            <option value="신부">
+                                                                신부
+                                                            </option>
+                                                            <option value="주례자">
+                                                                주례자
+                                                            </option>
+                                                            <option value="신랑 아버님">
+                                                                신랑 아버님
+                                                            </option>
+                                                            <option value="신랑 어머님">
+                                                                신랑 어머님
+                                                            </option>
+                                                            <option value="신부 아버님">
+                                                                신부 아버님
+                                                            </option>
+                                                            <option value="신부 어머님">
+                                                                신부 어머님
+                                                            </option>
+                                                            <option value="축가자">
+                                                                축가자
+                                                            </option>
+                                                        </Field>
+                                                    </div> */}
+                                                </FormItem>
+                                                <FormItem
+                                                    label="내용"
+                                                    invalid={
+                                                        errors.content &&
+                                                        touched.content
+                                                    }
+                                                    errorMessage={
+                                                        errors.content
+                                                    }
+                                                >
+                                                    <Field
+                                                        style={{
+                                                            height: 100
+                                                        }}
+                                                        type="text"
+                                                        name="content"
+                                                        placeholder="예) 결혼식을 시작하겠습니다."
+                                                        component={Input}
+                                                        validate={(
+                                                            value: string
+                                                        ) =>
+                                                            requiredFieldValidation(
+                                                                value,
+                                                                '내용을 기입해주세요.'
+                                                            )
+                                                        }
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="파일"
+                                                    invalid={
+                                                        errors.filePath &&
+                                                        touched.filePath
+                                                    }
+                                                    errorMessage={
+                                                        errors.filePath
+                                                    }
+                                                >
+                                                    <Field
+                                                        type="file"
+                                                        name="file"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="비고"
+                                                    invalid={
+                                                        errors.note &&
+                                                        touched.note
+                                                    }
+                                                    errorMessage={errors.note}
+                                                >
+                                                    <Field
+                                                        type="text"
+                                                        name="note"
+                                                        placeholder="비고"
+                                                        component={Input}
+                                                    />
+                                                </FormItem>
+                                                <FormItem>
+                                                    <div>
+                                                        <Button
+                                                            variant="solid"
+                                                            loading={
+                                                                isSubmitting
+                                                            }
+                                                            type="submit"
+                                                        >
+                                                            수정
+                                                        </Button>
+                                                        &nbsp;
+                                                        <Button
+                                                            size="md"
+                                                            type="button"
+                                                            onClick={
+                                                                onClickCloes
+                                                            }
+                                                        >
+                                                            취소
+                                                        </Button>
+                                                    </div>
+                                                </FormItem>
+                                            </FormContainer>
+                                        </Form>
+                                    )}
+                                </Formik>
+                            </div>
+                        </div>
+                    </>
+                </Dialog>
+
+                <Tooltip title="삭제">
+                    <span
+                        className="cursor-pointer p-2 hover:text-red-500"
+                        onClick={onDelete}
+                    >
+                        <HiOutlineTrash />
+                    </span>
+                </Tooltip>
             </div>
         )
     }
 
     return (
         <>
-            <QSheetDetatilsHeader />
+            <QSheetDetatilsHeader data={dataContent} qsheetSeq={qsheetSeq} />
             <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                 <Droppable droppableId="DetailsDroppable">
                     {(provided) => (

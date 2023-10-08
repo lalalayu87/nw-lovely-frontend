@@ -8,6 +8,7 @@ import {
     apiGetQSheetCardList,
     apiDeleteQSheetCardList,
     apiGetQSheetCardDetails,
+    apiPutQSheetCardList,
 } from '@/services/QSheetService'
 
 type QSheetData = {
@@ -102,7 +103,11 @@ export type QSheetDataListState = {
 
 type QSheetDeleteRequest = { qsheetSeq: string }
 
-type QSheetDeleterResponse = {}
+type QSheetDeleteResponse = {}
+
+type QSheetPatchRequest = { qsheetSeq: string }
+
+type QSheetPatchResponse = []
 
 export const SLICE_NAME = 'qsheetDataList'
 
@@ -110,16 +115,26 @@ export const SLICE_NAME = 'qsheetDataList'
 // 이 함수는 비동기적인 작업을 수행하고 해당 작업이 완료되면 Redux 스토어의 상태를 업데이트하는 데 사용
 export const getList = createAsyncThunk(SLICE_NAME + '/getList', async () => {
     const response = await apiGetQSheetCardList<GetQSheetDataResponse>()
-    console.log(response.data)
+
     return response.data
 })
 
 export const deleteList = async (data: QSheetDeleteRequest) => {
     const response = await apiDeleteQSheetCardList<
-        QSheetDeleterResponse,
+        QSheetDeleteResponse,
         QSheetDeleteRequest
     >(data)
-    console.log(response.data)
+
+    return response.data
+}
+
+export const patchList = async (data: QSheetPatchRequest) => {
+    console.log('patchList', patchList)
+    const response = await apiPathchQSheetCardList<
+        QSheetPatchResponse,
+        QSheetPatchRequest
+    >(data)
+    console.log(response)
     return response.data
 }
 

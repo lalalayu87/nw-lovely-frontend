@@ -40,7 +40,6 @@ export type qSheetExampleDataProps = {
 }
 
 const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
-    console.log(data)
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
 
@@ -57,44 +56,6 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
     // const fetchData = () => {
     //     dispatch(getProducts({ filterData }))
     // }
-
-    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
-    const persistData = deepParseJson(rawPersistData)
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const name = (persistData as any).auth.user.userName
-    const userSeq = (persistData as any).auth.user.userSeq
-
-    const ActionColumn = ({ row }: { row: qSheet }) => {
-        const dispatch = useAppDispatch()
-        const { textTheme } = useThemeClass()
-        const navigate = useNavigate()
-
-        const onEdit = () => {
-            navigate(`/app/sales/product-edit/${row.id}`)
-        }
-
-        const onDelete = () => {
-            dispatch(toggleDeleteConfirmation(true))
-            dispatch(setSelectedQSheet(row.id))
-        }
-        return (
-            <div className="flex justify-end text-lg">
-                <span
-                    className={`cursor-pointer p-2 hover:${textTheme}`}
-                    onClick={onEdit}
-                >
-                    <HiOutlinePencil />
-                </span>
-                <span
-                    className="cursor-pointer p-2 hover:text-red-500"
-                    onClick={onDelete}
-                >
-                    <HiOutlineTrash />
-                </span>
-            </div>
-        )
-    }
 
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
@@ -128,6 +89,13 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
         ],
         []
     )
+
+    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+    const persistData = deepParseJson(rawPersistData)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userSeq = (persistData as any).auth.user.userSeq
+    console.log((persistData as any).auth.user)
 
     const navigate = useNavigate()
     const onCreate = () => {
@@ -170,6 +138,7 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
         <>
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
+
                 <div className="flex flex-col md:flex-row md:items-center gap-1">
                     <Button
                         block

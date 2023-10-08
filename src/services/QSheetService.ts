@@ -1,7 +1,6 @@
 import ApiService from './ApiService'
 
 export async function apiGetQSheetCardList<T>() {
-    console.log('???')
     return ApiService.fetchData<T>({
         url: '/api/v1/qsheet',
         method: 'get',
@@ -12,15 +11,12 @@ export async function apiPostQSheetCardList<
     T,
     U extends Record<string, unknown>
 >(data: U) {
-    console.log(data)
     return ApiService.fetchData<T>({
         url: '/api/v1/qsheet',
         method: 'post',
         data,
     })
 }
-
-// body: JSON.stringify(data)
 
 export async function apiGetQSheetCardDetails<
     T,
@@ -34,6 +30,16 @@ export async function apiGetQSheetCardDetails<
     })
 }
 
+export async function apiPatchQSheetCardList<T>(
+    qsheetSeq: string,
+    body: Record<string, unknown>
+): Promise<T> {
+    return ApiService.fetchData<T>({
+        url: `/api/v1/qsheet/${qsheetSeq}`,
+        method: 'patch',
+        data: body, // body를 데이터로 전달
+    })
+}
 export async function apiDeleteQSheetCardList<
     T,
     U extends Record<string, unknown>
