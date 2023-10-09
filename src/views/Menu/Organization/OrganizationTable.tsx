@@ -5,9 +5,9 @@ import DataTable from '@/components/shared/DataTable'
 import { HiOutlineEye, HiOutlineTrash } from 'react-icons/hi'
 import { NumericFormat } from 'react-number-format'
 import {
-    setSelectedRows,
-    addRowItem,
-    removeRowItem,
+    // setSelectedRows,
+    // addRowItem,
+    // removeRowItem,
     setDeleteMode,
     setSelectedRow,
     getOrders,
@@ -26,55 +26,19 @@ import type {
     Row,
 } from '@/components/shared/DataTable'
 import { ordersData } from '@/mock/data/projectData'
+import { apiDeleteOrg } from '@/services/SalesService'
+import { Notification } from '@/components/ui'
 
 type Order = {
     orgSeq: string
         orgName: string
         orgBiznum: string
         orgContact: string
-        orgEnable: boolean
-        created_at: string
+        orgEnabled: boolean
+        orgAddress: string
 }
-type OrgContent = {
-    // content: {
-    //     orgSeq: string
-    //     orgName: string
-    //     orgBiznum: string
-    //     orgContact: string
-    //     orgEnable: boolean
-    //     created_at: string
-    // }
-    pageable: {
-        sort: {
-            empty: boolean
-            sorted: boolean
-            unsorted: boolean
-        }
-        offset: number
-        pageNumber: number
-        pageSize: number
-    }
-}
-// const orderStatusColor: Record<
-//     number,
-//     {
-//         label: string
-//         dotClass: string
-//         textClass: string
-//     }
-// > = {
-//     0: {
-//         label: 'Paid',
-//         dotClass: 'bg-emerald-500',
-//         textClass: 'text-emerald-500',
-//     },
-//     1: {
-//         label: 'Pending',
-//         dotClass: 'bg-amber-500',
-//         textClass: 'text-amber-500',
-//     },
-//     2: { label: 'Failed', dotClass: 'bg-red-500', textClass: 'text-red-500' },
-// }
+
+
 const orderStatusColor: Record<
     number,
     {
@@ -151,26 +115,30 @@ const OrderColumn = ({ row }: { row: Order }) => {
     )
 }
 
-const ActionColumn = ({ row }: { row: OrgContent }) => {
+const ActionColumn = ({ row }: { row: Order }) => {
     const dispatch = useAppDispatch()
     const { textTheme } = useThemeClass()
     const navigate = useNavigate()
 
-    // const onDelete = () => {
-    //     dispatch(setDeleteMode('single'))
-    //     // dispatch(setSelectedRow([row.content.orgSeq]))
-    // }
+    const onDelete = () => {
+        console.log("delete click")
+        dispatch(setDeleteMode('single'))
+        dispatch(setSelectedRow([row.orgSeq]))
+        apiDeleteOrg({ id: row.orgSeq })
+        dispatch(setSelectedRow([]))
+         location.reload();
+    }
 
-    // const onView = useCallback(() => {
-    //     navigate(`/app/sales/order-details/${row.id}`)
-    // }, [navigate, row])
+    const onEdit = useCallback(() => {
+        navigate(`/organization/edit/${row.orgSeq}`)
+    }, [navigate, row])
 
     return (
         <div className="flex justify-end text-lg">
             <Tooltip title="View">
                 <span
                     className={`cursor-pointer p-2 hover:${textTheme}`}
-                    // onClick={onView}
+                    onClick={onEdit}
                 >
                     <HiOutlineEye />
                 </span>
@@ -178,7 +146,7 @@ const ActionColumn = ({ row }: { row: OrgContent }) => {
             <Tooltip title="Delete">
                 <span
                     className="cursor-pointer p-2 hover:text-red-500"
-                    // onClick={onDelete}
+                    onClick={onDelete}
                 >
                     <HiOutlineTrash />
                 </span>
@@ -192,23 +160,23 @@ const OrdersTable = () => {
 
     const dispatch = useAppDispatch()
 
-    const { sort, offset, pageNumber, pageSize  } = useAppSelector(
+    const { sort, page, size } = useAppSelector(
         (state) => state.salesOrderList.data.tableData)
-    // const loading = useAppSelector((state) => state.salesOrderList.data.loading)
+    const loading = useAppSelector((state) => state.salesOrderList.data.loading)
 
     const data = useAppSelector((state) => state.salesOrderList.data.orderList)
+    console.log("data : ", data)
 
-    // const data = ordersData
-
-    const fetchData = useCallback(() => {           
-        dispatch(getOrders({ sort, offset, pageNumber, pageSize }))
-    }, [dispatch, sort, offset, pageNumber, pageSize])
-
+    const fetchData = useCallback(() => {          
+        dispatch(getOrders({ sort, page, size }))
+    }, [dispatch, sort, page, size])
+    
     useEffect(() => {
-        dispatch(setSelectedRows([]))
+        // dispatch(setSelectedRows([]))
         fetchData()
-        // }, [dispatch])
-    }, [dispatch, fetchData, sort, offset, pageNumber, pageSize])
+        console.log("fetchData", data)
+        }, [dispatch, fetchData, sort, page, size])
+    // }, [dispatch])
 
     useEffect(() => {
         if (tableRef) {
@@ -217,15 +185,15 @@ const OrdersTable = () => {
     }, [data])
 
     const tableData = useMemo(
-        () => ({ sort, offset, pageNumber, pageSize }),
-        [sort, offset, pageNumber, pageSize]
+        () => ({ sort, page, size }),
+        [sort, page, size]
     )
 
     const columns: ColumnDef<Order>[] = useMemo(
         () => [
             // {
             //     header: 'Order',
-            //     accessorKey: 'id',
+            //     accessorKey: 'orgSeq',
             //     cell: (props) => <OrderColumn row={props.row.original} />,
             // },
             {
@@ -240,18 +208,18 @@ const OrdersTable = () => {
             },
             {
                 header: '주소',
-                accessorKey: 'address',
+                accessorKey: 'orgAddress',
             },
             {
                 header: '사업자 번호',
                 accessorKey: 'orgBiznum',
+                // cell: (props) => <OrderColumn row={props.row.original} />
             },
             {
                 header: '가맹점 상태',
                 accessorKey: 'orgEnable',
                 cell: (props) => {
-                    const enable = props.row.original.orgEnable
-                    console.log(enable)
+                    const enable = props.row.original.orgEnabled
                     // return (
                     //     <div className="flex items-center">
                     //         <Badge
@@ -304,10 +272,10 @@ const OrdersTable = () => {
 
                 },
             },
-            {
-                header: '등록일',
-                accessorKey: 'created_at',
-            },
+            // {
+            //     header: '등록일',
+            //     accessorKey: 'created_at',
+            // },
             {
                 header: '연락처',
                 accessorKey: 'orgContact',
@@ -367,11 +335,11 @@ const OrdersTable = () => {
             //         )
             //     },
             // },
-            // {
-            //     header: '',
-            //     id: 'action',
-            //     cell: (props) => <ActionColumn row={props.row.} />,
-            // },
+            {
+                header: '',
+                id: 'action',
+                cell: (props) => <ActionColumn row={props.row.original} />,
+            },
         ],
         []
     )
@@ -425,18 +393,18 @@ const OrdersTable = () => {
             selectable
             columns={columns}
             data={data}
-            // loading={loading}
+            loading={loading}
             // pagingData={{
-            //     total: tableData.total as number,
-            //     pageIndex: tableData.pageIndex as number,
-            //     pageSize: tableData.pageSize as number,
+            //     total: tableData.size as number,
+            //     pageIndex: tableData.page as number,
+            //     pageSize: tableData.size as number,
             // }}
             // onPaginationChange={onPaginationChange}
             // onSelectChange={onSelectChange}
             // onSort={onSort}
             // onCheckBoxChange={onRowSelect}
             // onIndeterminateCheckBoxChange={onAllRowSelect}
-        />
+            />
     )
 }
 

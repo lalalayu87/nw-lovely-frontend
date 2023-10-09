@@ -41,16 +41,15 @@ export async function apPutCrmCustomer<T, U extends Record<string, unknown>>(
     })
 }
 
-export async function apiGetCrmCustomerDetails<
-    T,
-    U extends Record<string, unknown>
->(params: U) {
-    return ApiService.fetchData<T>({
-        url: '/api/v1/user',
-        method: 'get',
-        params,
-    })
-}
+// export async function apiGetCrmCustomerDetails<
+//     T,
+//     U extends Record<string, unknown>
+// >(params: U) {
+//     return ApiService.fetchData<T>({
+//         url: '/api/v1/user',
+//         method: 'get',
+//     })
+// }
 
 export async function apiDeleteCrmCustomer<
     T,
@@ -80,5 +79,25 @@ export async function apiGetCrmMail<T, U extends Record<string, unknown>>(
         url: '/crm/mail',
         method: 'get',
         params,
+    })
+}
+
+// 고객카드 조회
+export async function apiGetCustomerCard<T, U extends Record<string, unknown>>(
+
+) {
+    console.log("api호출")
+    return ApiService.fetchData<T>({
+        url: '/nw/api/v1/usercard',
+        method: 'get',
+    })
+}
+
+// 일정 조회
+export async function apiGetCalendar<T>() {
+    console.log("api 호출")
+    return ApiService.fetchData<T>({
+        url: '/nw/api/v1/schedule',
+        method: 'get',
     })
 }

@@ -13,12 +13,9 @@ import {
 } from 'react-icons/fa'
 import { HiPencilAlt, HiOutlineTrash } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
-import {
-    // deleteCustomer,
-    // openEditCustomerDetailDialog,
-    useAppDispatch,
-} from '../store'
+
 import EditCustomerProfile from './EditCustomerProfile'
+import { useAppDispatch, useAppSelector } from '../store'
 
 type UserInfo = {
     userSeq: string
@@ -141,8 +138,10 @@ const CustomerProfileAction = ({ id }: { id?: string }) => {
         </>
     )
 }
+const CustomerProfile = () => {
 
-const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
+    const data = useAppSelector((state) => state.customerCardDetails.data.profileData)
+
     return (
         <Card className="w-3/5">
             <div className="flex flex-col xl:justify-between h-full 2xl:min-w-[360px] mx-auto">
@@ -152,7 +151,7 @@ const CustomerProfile = ({ data = {} }: CustomerProfileProps) => {
                             {data.status}
                         </div>
                     ) : null}
-                    <h4 className="font-bold">{data.userInfo?.userName}</h4>
+                    <h4 className="font-bold">{data.bride?.name}</h4>
                 </div>
                 <div className="grid grid-cols-2 divide-x-2">
                     <div className=" grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-1 gap-y-7 gap-x-4 mt-8">

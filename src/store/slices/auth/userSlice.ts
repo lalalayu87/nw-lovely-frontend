@@ -23,7 +23,7 @@ const initialState: UserState = {
         roleSeq: '',
         userSeq: '',
     },
-    accessToken: '',
+    accessToken: ''
 }
 
 const userSlice = createSlice({

@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
-    apiGetCrmCustomerDetails,
     apiDeleteCrmCustomer,
     apPutCrmCustomer,
+    apiGetCustomerCard
 } from '@/services/CrmService'
+import { TableQueries } from '@/@types/common'
 
 export const SLICE_NAME = 'customerCardDetails'
 
@@ -67,7 +68,7 @@ type DeleteCrmCustomerRequest = { id: string }
 
 export type CustomerDetailState = {
     loading: boolean
-    profileData: Partial<CustomerCardDetail>
+    profileData: CustomerCardDetail
     // deletePaymentMethodDialog: boolean
     // editPaymentMethodDialog: boolean
     // editCustomerDetailDialog: boolean
@@ -75,13 +76,13 @@ export type CustomerDetailState = {
 }
 
 export const getCustomer = createAsyncThunk(
-    SLICE_NAME + '/getCustomer',
-    async (data: GetCrmCustomerDetailsRequest) => {
-        const response = await apiGetCrmCustomerDetails<
-            // GetCrmCustomerDetailsResponse,
+    SLICE_NAME + '/profileData',
+    async () => {
+        const response = await apiGetCustomerCard<
             CustomerCardDetail,
-            GetCrmCustomerDetailsRequest
-        >(data)
+            TableQueries
+        >()
+        console.log("response : ", response)
         return response.data
     }
 )
@@ -105,35 +106,39 @@ export const putCustomer = createAsyncThunk(
     }
 )
 
-const initialState: CustomerCardDetail = {
-    userCardSeq: '',
-    userInfo: {
-        userSeq: '',
-        userId: '',
-        userName: '',
-        userEmail: '',
-        userRole: {
-            roleSeq: '',
-            roleName: '',
+const initialState: CustomerDetailState = {
+    // userCardSeq: '',
+    loading: false,
+    profileData: {
+        userCardSeq: '',
+        userInfo: {
+            userSeq: '',
+            userId: '',
+            userName: '',
+            userEmail: '',
+            userRole: {
+                roleSeq: '',
+                roleName: '',
+            },
+            userEnable: false,
+            created_at: '',
         },
-        userEnable: false,
-        created_at: '',
-    },
-    bride: {
-        name: '',
-        email: '',
-        contact: '',
-    },
-    groom: {
-        name: '',
-        email: '',
-        contact: '',
-    },
-    note: '',
-    resDate: '',
-    status: '',
-    weddingDate: '',
-    update_at: '',
+        bride: {
+            name: '',
+            email: '',
+            contact: '',
+        },
+        groom: {
+            name: '',
+            email: '',
+            contact: '',
+        },
+        note: '',
+        resDate: '',
+        status: '',
+        weddingDate: '',
+        update_at: ''
+    }
     // loading: true,
     // profileData: {},
     // subscriptionData: [],
@@ -154,6 +159,9 @@ const customerCardSlice = createSlice({
         // },
         updateProfileData: (state, action) => {
             state = action.payload
+        },
+        setProfileData: (state, action) => {
+            state.profileData = action.payload
         },
         // openDeletePaymentMethodDialog: (state) => {
         //     state.deletePaymentMethodDialog = true
@@ -180,7 +188,7 @@ const customerCardSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getCustomer.fulfilled, (state, action) => {
             // state.loading = false
-            state = action.payload
+            state.profileData = action.payload
             // state.subscriptionData = action.payload?.subscription || []
             // state.paymentHistoryData = action.payload?.orderHistory || []
             // state.paymentMethodData = action.payload?.paymentMethod || []
@@ -202,6 +210,7 @@ export const {
     // openEditCustomerDetailDialog,
     // closeEditCustomerDetailDialog,
     updateSelectedCard,
+    setProfileData
 } = customerCardSlice.actions
 
 export default customerCardSlice.reducer

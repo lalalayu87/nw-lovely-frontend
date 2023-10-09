@@ -11,13 +11,15 @@ export type SignInResponse = {
     //     avatar: string
     //     email: string
     // }
-    userId: string
-    userName: string
-    userRole: {
-        roleSeq: string
-        roleName: string
-    }
-    accessToken: string
+    userSeq: '',
+    userId: '',
+    userName: '',
+    userRole: '',
+    info: {
+        roleSeq: '',
+        userSeq: '',
+    },
+    accessToken: ''
 }
 
 export type SignUpResponse = SignInResponse

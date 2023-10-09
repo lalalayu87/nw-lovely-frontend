@@ -1,13 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import ApiService from '@/services/ApiService'
-// import { apiGetCrmCalendar } from '@/services/CrmService'
-
-export async function apiGetCrmCalendar<T>() {
-    return ApiService.fetchData<T>({
-        url: '/crm/calendar',
-        method: 'get',
-    })
-}
+import { apiGetCalendar } from '@/services/CrmService'
 
 type Event = {
     id: string
@@ -57,7 +50,8 @@ export const SLICE_NAME = 'crmCalendar'
 export const getEvents = createAsyncThunk(
     SLICE_NAME + '/getEvents',
     async () => {
-        const response = await apiGetCrmCalendar<GetCrmCalendarResponse>()
+        const response = await apiGetCalendar<GetCrmCalendarResponse>()
+        console.log("response.data : ", response.data)
         return response.data
     }
 )

@@ -5,109 +5,50 @@ import {
     PayloadAction,
 } from '@reduxjs/toolkit'
 import {
-  apiGetOrgList,
+    apiGetOrgList,
+    apiCreateOrg,
+    apiDeleteOrg,
 //   apiDeleteSalesOrders,
 } from '@/services/SalesService'
 import type { TableQueries } from '@/@types/common'
 import ApiService from '@/services/ApiService'
+import async from 'react-select/dist/declarations/src/async/index'
 
-// export async function apiGetSalesOrders<T, U extends Record<string, unknown>>(
-//     params: U
-// ) {
-//     return ApiService.fetchData<T>({
-//         url: '/api/v1/org',
-//         method: 'get',
-//         params,
-//     })
-// }
-
-export async function apiDeleteSalesOrders<
-    T,
-    U extends Record<string, unknown>
->(data: U) {
-    return ApiService.fetchData<T>({
-        url: '/sales/orders/delete',
-        method: 'delete',
-        data,
-    })
-}
 
 type Order = {
     orgSeq: string
-        orgName: string
-        orgBiznum: string
-        orgContact: string
-        orgEnable: boolean
-        created_at: string
-}
-
-type OrgContent = {
-    // content: {
-    //     orgSeq: string
-    //     orgName: string
-    //     orgBiznum: string
-    //     orgContact: string
-    //     orgEnable: boolean
-    //     created_at: string
-    // }
-    pageable: {
-        sort: {
-            empty: boolean
-            sorted: boolean
-            unsorted: boolean
-        }
-        offset: number
-        pageNumber: number
-        pageSize: number
-    }
+    orgName: string
+    orgBiznum: string
+    orgContact: string
+    orgEnable: boolean
+    orgAddress: string
+    // create_at: string
 }
 
 type Orders = Order[]
-type OrgContents = OrgContent[]
-
 
 type GetSalesOrdersResponse = {
-    data: Orders
-    total: number
+    content: Orders
+    totalElements: number
 }
 
 type Page = {
+    // page=0&size=5&sort=id&sort=desc
+    page: number
+    size: number
     sort: {
-        empty: boolean
-        sorted: boolean
-        unsorted: boolean
+        sorted: string
+        unsorted: string
     }
-    offset: number
-    pageNumber: number
-    pageSize: number
 }
 
 export type SalesOrderListState = {
     loading: boolean
-    // orderList: Contents
     orderList: Orders
     tableData: TableQueries
     deleteMode: 'single' | 'batch' | ''
     selectedRows: string[]
     selectedRow: string
-    // content: {
-    //     orgSeq: string
-    //     orgName: string
-    //     orgBiznum: string
-    //     orgContact: string
-    //     orgEnable: boolean
-    //     created_at: string
-    // }
-    // pageable: {
-    //     sort: {
-    //         empty: boolean
-    //         sorted: boolean
-    //         unsorted: boolean
-    //     }
-    //     offset: number
-    //     pageNumber: number
-    //     pageSize: number
-    // }
 }
 
 export const SLICE_NAME = 'salesOrderList'
@@ -115,16 +56,18 @@ export const SLICE_NAME = 'salesOrderList'
 export const getOrders = createAsyncThunk(
     SLICE_NAME + '/getOrders',
     async (data: TableQueries) => {
+        console.log("api확인")
         const response = await apiGetOrgList<
             GetSalesOrdersResponse,
             TableQueries
-        >(data)
+        >()
         return response.data
     }
 )
 
+
 export const deleteOrders = async (data: { id: string | string[] }) => {
-    const response = await apiDeleteSalesOrders<
+    const response = await apiDeleteOrg<
         boolean,
         { id: string | string[] }
     >(data)
@@ -136,43 +79,15 @@ const initialState: SalesOrderListState = {
     orderList: [],
     tableData: {
         sort: {
-            empty: false,
             sorted: false,
             unsorted: false
         },
-        offset: 0,
-        pageNumber: 0,
-        pageSize: 0
-        // total: 0,
-        // pageIndex: 1,
-        // pageSize: 10,
-        // query: '',
-        // sort: {
-        //     order: '',
-        //     key: '',
-        // },
+        page: 0,
+        size: 0
     },
     selectedRows: [],
     selectedRow: '',
     deleteMode: '',
-    // content: {
-    //     orgSeq: '',
-    //     orgName: '',
-    //     orgBiznum: '',
-    //     orgContact: '',
-    //     orgEnable: true,
-    //     created_at: '',
-    // },
-    // pageable: {
-    //     sort: {
-    //     empty: false,
-    //     sorted: true,
-    //     unsorted: false,
-    // },
-    // offset: 0,
-    // pageNumber: 0,
-    // pageSize: 5,
-    // }
 }
 
 const OrganizationSlice = createSlice({
@@ -218,8 +133,9 @@ const OrganizationSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getOrders.fulfilled, (state, action) => {
-                state.orderList = action.payload.data
-                state.tableData.pageSize = action.payload.total
+                console.log(action)
+                state.orderList = action.payload.content
+                state.tableData.page = action.payload.totalElements
                 state.loading = false
             })
             .addCase(getOrders.pending, (state) => {
