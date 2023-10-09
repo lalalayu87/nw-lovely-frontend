@@ -28,12 +28,12 @@ export type TableQueries = {
     // }
     // pageable: {
         sort: {
-            empty: boolean
+            // empty: boolean
             sorted: boolean
             unsorted: boolean
         }
-        offset: number
-        pageNumber: number
-        pageSize: number
+        // offset: number
+        page: number
+        size: number
     // }
 }

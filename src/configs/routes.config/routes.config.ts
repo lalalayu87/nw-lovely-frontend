@@ -2,6 +2,8 @@ import { lazy } from 'react'
 import authRoute from './authRoute'
 import type { Routes } from '@/@types/routes'
 import { ADMIN, USER } from '@/constants/roles.constant'
+import session from 'redux-persist/lib/storage/session'
+import OrganizationSlice, { getOrders } from '@/views/Menu/Organization/store/OrganizationSlice'
 
 export const publicRoutes: Routes = [...authRoute]
 
@@ -17,6 +19,18 @@ export const protectedRoutes = [
         key: 'organization',
         path: '/organization',
         component: lazy(() => import('@/views/Menu/Organization/Organization')),
+        authority: [],
+    },
+    {
+        key: 'organization.create',
+        path: '/organization/create',
+        component: lazy(() => import('@/views/Menu/Organization/OrganizationNew')),
+        authority: [],
+    },
+    {
+        key: 'organization.edit',
+        path: '/organization/edit/:id',
+        component: lazy(() => import('@/views/Menu/Organization/OrganizationEdit')),
         authority: [],
     },
     {

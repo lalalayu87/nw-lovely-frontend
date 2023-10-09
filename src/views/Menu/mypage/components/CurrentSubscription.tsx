@@ -12,8 +12,9 @@ const CurrentSubscription = () => {
     const [subscribed, setSubscribed] = useState(true)
 
     const data = useAppSelector(
-        (state) => state.crmCustomerDetails.data.subscriptionData
-    )
+        (state) => state.customerCardDetails.data.profileData
+        )
+        console.log("data : ", data)
 
     const unsubscribe = useCallback(() => {
         setSubscribed(false)

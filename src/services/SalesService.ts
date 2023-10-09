@@ -94,12 +94,34 @@ export async function apiGetSalesOrderDetails<
     })
 }
 
+// 조직 목록
 export async function apiGetOrgList<T, U extends Record<string, unknown>>(
-    params: U
 ) {
     return ApiService.fetchData<T>({
         url: '/api/v1/org',
         method: 'get',
-        params,
+    })
+}
+
+// 조직 생성
+export async function apiCreateOrg<T, U extends Record<string, unknown>>(
+    data: U
+) {
+    return ApiService.fetchData<T>({
+        url: '/api/v1/org',
+        method: 'post',
+        data,
+    })
+}
+
+// 조직 삭제
+export async function apiDeleteOrg<
+    T,
+    U extends Record<string, unknown>
+>(data: U) {
+    return ApiService.fetchData<T>({
+        url: `/api/v1/org/${data.id}`,
+        method: 'delete',
+        data,
     })
 }

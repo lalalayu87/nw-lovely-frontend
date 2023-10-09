@@ -43,24 +43,18 @@ function useAuth() {
                     dispatch(
                         setUser(
                             resp.data || {
-                                // avatar: '',
-                                // userId: 'Anonymous',
-                                // authority: 'USER',
-                                // email: '',
-                                userId: '',
-                                userName: '',
-                                userRole: {
-                                    roleSeq: '',
-                                    roleName: 'ROLE_ADMIN',
-                                },
-                                accessToken: '',
+
+                                userSeq: '',
+    userId: '',
+    userName: '',
+    userRole: '',
+    info: {
+        roleSeq: '',
+        userSeq: '',
+    },
+    accessToken: ''
                             }
-                            // resp.data.user || {
-                            //     avatar: '',
-                            //     userName: 'Anonymous',
-                            //     authority: 'USER',
-                            //     email: '',
-                            // }
+
                         )
                     )
                 }
@@ -93,24 +87,22 @@ function useAuth() {
                     dispatch(
                         setUser(
                             resp.data || {
-                                // avatar: '',
-                                // userId: 'Anonymous',
-                                // authority: 'USER',
-                                // email: '',
-                                userId: '',
-                                userName: '',
-                                userRole: {
-                                    roleSeq: '',
-                                    roleName: '',
-                                },
-                                accessToken: '',
+
+                                userSeq: '',
+    userId: '',
+    userName: '',
+    userRole: '',
+    info: {
+        roleSeq: '',
+        userSeq: '',
+    },
+    accessToken: ''
                             }
                         )
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
                 navigate(
-                    // redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
                     redirectUrl
                         ? redirectUrl
                         : appConfig.unAuthenticatedEntryPath
@@ -133,13 +125,15 @@ function useAuth() {
         dispatch(signOutSuccess())
         dispatch(
             setUser({
-                userId: '',
-                userName: '',
-                userRole: {
-                    roleSeq: '',
-                    roleName: '',
-                },
-                accessToken: '',
+                userSeq: '',
+    userId: '',
+    userName: '',
+    userRole: '',
+    info: {
+        roleSeq: '',
+        userSeq: '',
+    },
+    accessToken: ''
             })
         )
         navigate(appConfig.unAuthenticatedEntryPath)
