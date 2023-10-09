@@ -43,18 +43,16 @@ function useAuth() {
                     dispatch(
                         setUser(
                             resp.data || {
-
                                 userSeq: '',
-    userId: '',
-    userName: '',
-    userRole: '',
-    info: {
-        roleSeq: '',
-        userSeq: '',
-    },
-    accessToken: ''
+                                userId: '',
+                                userName: '',
+                                userRole: '',
+                                info: {
+                                    roleSeq: '',
+                                    userSeq: '',
+                                },
+                                accessToken: '',
                             }
-
                         )
                     )
                 }
@@ -87,16 +85,15 @@ function useAuth() {
                     dispatch(
                         setUser(
                             resp.data || {
-
                                 userSeq: '',
-    userId: '',
-    userName: '',
-    userRole: '',
-    info: {
-        roleSeq: '',
-        userSeq: '',
-    },
-    accessToken: ''
+                                userId: '',
+                                userName: '',
+                                userRole: '',
+                                info: {
+                                    roleSeq: '',
+                                    userSeq: '',
+                                },
+                                accessToken: '',
                             }
                         )
                     )
@@ -126,14 +123,14 @@ function useAuth() {
         dispatch(
             setUser({
                 userSeq: '',
-    userId: '',
-    userName: '',
-    userRole: '',
-    info: {
-        roleSeq: '',
-        userSeq: '',
-    },
-    accessToken: ''
+                userId: '',
+                userName: '',
+                userRole: '',
+                info: {
+                    roleSeq: '',
+                    userSeq: '',
+                },
+                accessToken: '',
             })
         )
         navigate(appConfig.unAuthenticatedEntryPath)

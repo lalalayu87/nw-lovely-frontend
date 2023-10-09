@@ -18,31 +18,33 @@ const QSheetCardList = () => {
     }, [dispatch])
 
     return (
-        <div
-            className={classNames(
-                'mt-6 h-full flex flex-col',
-                loading && 'justify-center'
-            )}
-        >
-            {loading && (
-                <div className="flex justify-center">
-                    <Spinner size={40} />
-                </div>
-            )}
+        <>
+            <div
+                className={classNames(
+                    'mt-6 h-full flex flex-col',
+                    loading && 'justify-center'
+                )}
+            >
+                {loading && (
+                    <div className="flex justify-center">
+                        <Spinner size={40} />
+                    </div>
+                )}
 
-            {qsheetCardList?.length > 0 && !loading && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-                    {qsheetCardList.map((qsheet, index) => (
-                        <GridItem key={index} data={qsheet} />
-                    ))}
-                </div>
-            )}
-            {qsheetCardList?.length === 0 && !loading && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-                    <p>큐시트를 작성해 주세요.</p>
-                </div>
-            )}
-        </div>
+                {qsheetCardList?.length > 0 && !loading && (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                        {qsheetCardList.map((qsheet, index) => (
+                            <GridItem key={index} data={qsheet} />
+                        ))}
+                    </div>
+                )}
+                {qsheetCardList?.length === 0 && !loading && (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                        <p>큐시트를 작성해 주세요.</p>
+                    </div>
+                )}
+            </div>
+        </>
     )
 }
 

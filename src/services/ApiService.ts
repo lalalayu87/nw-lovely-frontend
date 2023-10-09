@@ -7,6 +7,7 @@ const ApiService = {
     ) {
         console.log('param : ', param)
         return new Promise<AxiosResponse<Response>>((resolve, reject) => {
+            console.log('BaseService ? ', param)
             BaseService(param)
                 .then((response: AxiosResponse<Response>) => {
                     resolve(response)

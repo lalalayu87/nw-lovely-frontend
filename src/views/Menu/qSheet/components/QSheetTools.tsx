@@ -36,22 +36,11 @@ const QSheetTools = () => {
         <div className="lg:flex items-center justify-between mb-4">
             <h3 className="mb-4 lg:mb-0">큐시트 목록</h3>
             <div className="flex flex-col md:flex-row md:items-center gap-1">
-                {/* <Input
-                    ref={inputRef}
-                    size="sm"
-                    placeholder="Search"
-                    prefix={<HiOutlineSearch className="text-lg" />}
-                    onChange={handleInputChange}
-                /> */}
-                <Button block size="sm">
-                    삭제
-                </Button>
                 <Link to="create">
                     <Button
                         size="sm"
                         variant="twoTone"
                         icon={<HiOutlinePlusCircle />}
-                        // onClick={onAddNewProject}
                     >
                         큐시트 생성
                     </Button>

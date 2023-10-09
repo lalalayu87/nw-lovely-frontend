@@ -1,41 +1,19 @@
-import React from 'react'
-import { useAppDispatch, closeDialog, useAppSelector } from '../store'
+/* eslint-disable react/jsx-key */
+import React, { useState, useEffect } from 'react'
+import { useAppDispatch, closeDialog } from '../store'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import {
-    Formik,
-    Field,
-    Form,
-    FieldProps,
-    FormikTouched,
-    FormikErrors,
-    FieldInputProps,
-    FormikProps,
-} from 'formik'
+import { Formik, Field, Form } from 'formik'
 import requiredFieldValidation from '@/utils/requiredFieldValidation'
-import type { CommonProps } from '@/@types/common'
 import * as Yup from 'yup'
-import axios from 'axios'
 
-interface AddCueSheetDialogProps {
-    onClick?(): void
-    onClose?(): void
-}
+// interface AddNewQSheetDialogProps {
+//     onClick?(): void
+//     onClose?(): void
+// }
 
-interface CuesheetContentProps extends CommonProps {
-    disableSubmit?: boolean
-}
-
-type CuesheetContentSchema = {
-    process: string
-    actor: string
-    content: string
-    filePath: string //파일 경로를 문자열로 저장
-    note: string
-}
-
-interface cueSheetData {
+interface QSheetExampleData {
     process: string
     actor: string
     content: string
@@ -44,139 +22,63 @@ interface cueSheetData {
     orderIndex: number
 }
 
-interface addCueSheetContent {
-    cueSheetData: cueSheetData
-    CuesheetContentSchema: CuesheetContentSchema
-    CuesheetContentProps: CuesheetContentProps
-}
-
 const validationSchema = Yup.object().shape({
-    id: Yup.string()
-        .min(3, '3자 이상 입력하세요.')
-        .max(50, '50자 이내로 입력하세요.')
-        // 숫자와 알파벳만
-        .matches(/[a-z0-9]/, '숫자 또는 영어로 입력하세요.')
-        .required('id를 입력하세요.'),
-    userName: Yup.string()
-        .matches(/^[가-힣]{2,5}$/, '한글로 입력하세요.')
-        .min(2, '2자 이상 입력하세요.')
-        .required('이름을 입력하세요.'),
-    phone: Yup.string()
-        .matches(/^[0-9]{11}$/i, '숫자만 입력하세요.')
-        .required('핸드폰 번호를 입력하세요.'),
-    email: Yup.string()
-        .matches(/^[^@\s]+@[^@\s]+\.[^@\s]+$/, '이메일 형식에 맞지 않습니다.')
-        .required('이메일을 입력하세요.'),
-    emailCode: Yup.string()
-        .length(8, '유효하지 않는 코드입니다.')
-        .matches(/[a-z0-9]/, '유효하지 않는 코드입니다.')
-        .required('인증코드를 입력하세요.'),
-    password: Yup.string()
-        .matches(
-            /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,30}$/,
-            '영문, 숫자, 특수문자(!, @, #, $, %, ^, *만 사용 가능) 8-30자'
-        )
-        .required('비밀번호를 입력하세요.'),
-    passwordConfirm: Yup.string().oneOf(
-        [Yup.ref('password')],
-        '비밀번호가 일치하지 않습니다.'
-    ),
+    process: Yup.string().required('절차를 입력해주세요.'),
+    actor: Yup.string().required('행위자를 입력해주세요.'),
+    text: Yup.string().required('내용을 입력해주세요.')
 })
 
-const AddCueSheetContent: React.FC<
-    // AddCueSheetDialogProps & CuesheetContentProps & 
-    cueSheetData
-    // addCueSheetContent
-> = ({
-    // cueSheetData,
-    // CuesheetContentSchema,
-    // CuesheetContentProps
-    // onClick,
-    // onClose,
-    // disableSubmit,
-    process,
-    actor,
-    content,
-    filePath,
-    note,
-    orderIndex,
-}) => {
+const EditNewQSheetContent: React.FC<{
+    onClose: () => void
+    disableSubmit: boolean
+    data: QSheetExampleData
+}> = ({ onClose, disableSubmit, data }) => {
+    const [detailData, setDetailData] = useState(data)
+
+    useEffect(() => {
+        // data props이 변경되면 내부 상태(detailData)도 변경
+        setDetailData(data)
+    }, [data])
+
     const dispatch = useAppDispatch()
-
-    const onFormSubmit = async (
-        values: CuesheetContentSchema,
-        setSubmitting: (isSubmitting: boolean) => void
-    ) => {
-        console.log('기둘')
-        const { process, actor, content, filePath, note } = values
-        setSubmitting(true)
-
-        const { accessToken } = useAppSelector((state) => state.auth.session)
-
-        const cueSheetPostAPI = async () => {
-            try {
-                const response = await axios.post(
-                    `http://152.69.228.245:10001/api/v1/qsheet`,
-                    {
-                        process: values.process,
-                        actor: values.actor,
-                        content: values.content,
-                        filePath: values.filePath,
-                        note: values.note,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`, // 토큰을 헤더에 추가
-                        },
-                    }
-                )
-
-                if (Array.isArray(response.data.content)) {
-                    const newData = response.data.content[0].data
-                    const cueSheetData: cueSheetDataProps[] = newData
-                } else {
-                    return
-                }
-            } catch (error) {
-                // 에러 처리
-                console.error('cueSheet 데이터를 불러오는 중 에러 발생:', error)
-                throw error
-            }
-        }
-
-        // const data = cloneDeep(columns)
-        // data[title ? title : 'Untitled Board'] = []
-        // const newOrdered = [...ordered, ...[title ? title : 'Untitled Board']]
-        // const newColumns: Record<string, unknown> = {}
-        // newOrdered.forEach((elm) => {
-        //     newColumns[elm] = data[elm]
-        // })
-
-        // dispatch(updateColumns(newColumns))
-        // dispatch(updateOrdered(newOrdered))
-        dispatch(closeDialog())
-    }
 
     return (
         <div>
-            <h5>큐시트 추가 내용</h5>
+            <h5>큐시트 수정</h5>
             <div className="mt-8">
                 <Formik
                     initialValues={{
-                        process: '',
-                        actor: '',
-                        content: '',
-                        filePath: '',
-                        note: '',
+                        process: detailData.process,
+                        actor: detailData.actor,
+                        content: detailData.content,
+                        filePath: detailData.filePath,
+                        note: detailData.note,
+                        orderIndex: detailData.orderIndex
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
                         if (!disableSubmit) {
-                            onFormSubmit(values, setSubmitting)
+                            console.log('큐시트 수정 데이터:', values)
+
+                            // 수정 버튼을 누를 때 `detailData` 값을 업데이트
+                            setDetailData(values)
+
+                            // 다른 작업 수행 가능
+
+                            // 다이얼로그 닫기
+                            dispatch(closeDialog())
                         } else {
                             setSubmitting(false)
                         }
                     }}
+                    // onSubmit={(values, { setSubmitting }) => {
+                    //     if (!disableSubmit) {
+                    //         console.log('기둘')
+                    //         // onSignUp(values, setSubmitting)
+                    //     } else {
+                    //         setSubmitting(false)
+                    //     }
+                    // }}
                 >
                     {({ errors, touched }) => (
                         <Form>
@@ -225,7 +127,7 @@ const AddCueSheetContent: React.FC<
                                     <Field
                                         style={{ height: 100 }}
                                         type="text"
-                                        name="text"
+                                        name="content"
                                         placeholder="예) 결혼식을 시작하겠습니다."
                                         component={Input}
                                         validate={(value: string) =>
@@ -262,9 +164,27 @@ const AddCueSheetContent: React.FC<
                                     />
                                 </FormItem>
                                 <FormItem>
-                                    <Button variant="solid" type="submit">
-                                        추가
-                                    </Button>
+                                    <div>
+                                        <span>
+                                            <Button
+                                                variant="solid"
+                                                type="submit"
+                                            >
+                                                수정
+                                            </Button>
+                                        </span>
+                                        &nbsp;
+                                        <span>
+                                            <Button
+                                                className="ltr:mr-2 rtl:ml-2"
+                                                variant="default"
+                                                type="button"
+                                                onClick={onClose}
+                                            >
+                                                취소
+                                            </Button>
+                                        </span>
+                                    </div>
                                 </FormItem>
                             </FormContainer>
                         </Form>
@@ -275,4 +195,4 @@ const AddCueSheetContent: React.FC<
     )
 }
 
-export default AddCueSheetContent
+export default EditNewQSheetContent
