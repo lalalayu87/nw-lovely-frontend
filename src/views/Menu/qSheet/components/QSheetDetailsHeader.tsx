@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type {
     DataTableResetHandle,
-    ColumnDef
+    ColumnDef,
 } from '@/components/shared/DataTable'
 import { useAppDispatch, useAppSelector, getList } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
 import {
     setSelectedQSheet,
-    toggleDeleteConfirmation
+    toggleDeleteConfirmation,
 } from '../store/qSheetSlice'
 import { HiOutlinePencil, HiOutlineTrash, HiExternalLink } from 'react-icons/hi'
 import QSheetDataTable from './QSheetDataTable'
@@ -97,30 +97,30 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
             {
                 header: '절차',
                 accessorKey: 'process',
-                width: 'w-1/12'
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12'
+                width: 'w-5/12',
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12'
-            }
+                width: 'w-2/12',
+            },
         ],
         []
     )
@@ -141,8 +141,6 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
     // }
 
     const onUpdate = async () => {
-        console.log('onUpdate')
-        console.log(data)
         const transformedData = data.map((item) => ({
             data: [
                 {
@@ -151,29 +149,24 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
                     content: item.content,
                     actor: item.actor,
                     note: item.note,
-                    filePath: item.filePath
-                }
-            ]
+                    filePath: item.filePath,
+                },
+            ],
         }))
 
         const body = {
-            data: []
+            data: [],
         }
 
         for (let i = 0; i < transformedData.length; i++) {
             body.data.push(transformedData[i].data[0])
         }
 
-        // const body = transformedData
-
-        console.log(body)
-
         try {
             const response = await apiPatchQSheetCardList<ResponseType>(
                 qsheetSeq,
                 body
             )
-            console.log(response)
 
             toast.push(
                 <Notification title={'큐시트가 수정되었습니다.'} type="success">

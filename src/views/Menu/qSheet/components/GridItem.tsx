@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card'
 import {
     HiOutlineClipboardCheck,
     HiOutlineEye,
-    HiOutlineTrash
+    HiOutlineTrash,
 } from 'react-icons/hi'
 import { Link, useNavigate } from 'react-router-dom'
 import NewQSheet from './NewQSheet'
@@ -16,7 +16,7 @@ import {
     setSelectedRow,
     setSelectedRows,
     deleteList,
-    getList
+    getList,
 } from '../store'
 import { apiGetQSheetCardDetails } from '@/services/QSheetService'
 import DeleteConfirmation from './DeleteConfirmation'
@@ -24,6 +24,7 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 
 export type GridItemProps = {
+    qsheetSeq: string
     data: {
         qsheetSeq: string
         name: string
@@ -104,21 +105,20 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
     const navigate = useNavigate()
 
     const onView = () => {
-        // apiGetQSheetCardDetails(row.qsheetSeq)
-        // getDetail(row.qsheetSeq)
-        // navigate(`/cuesheet/details/${row.qsheetSeq}`)
-
         // 페이지 이동 시 데이터를 state로 전달
         navigate(`/cuesheet/details/${row.qsheetSeq}`, {
-            state: { qsheetSeq: row.qsheetSeq }
+            state: { qsheetSeq: row.qsheetSeq },
         })
     }
 
-    const onDelete = () => {
+    const onDelete = async () => {
         deleteList(row.qsheetSeq)
 
         // 페이지를 새로고침
-        window.location.reload()
+        // window.location.reload()
+        // useEffect 내에서 수행할 작업 정의
+        navigate(`/cuesheet`)
+
         toast.push(
             <Notification title={'삭제되었습니다.'} type="success">
                 삭제되었습니다.

@@ -34,7 +34,11 @@ const QSheetCardList = () => {
                 {qsheetCardList?.length > 0 && !loading && (
                     <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
                         {qsheetCardList.map((qsheet, index) => (
-                            <GridItem key={index} data={qsheet} />
+                            <GridItem
+                                key={index}
+                                data={qsheet}
+                                qsheetSeq={qsheet.qsheetSeq}
+                            />
                         ))}
                     </div>
                 )}

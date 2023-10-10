@@ -5,7 +5,7 @@ import {
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 import { HiOutlinePencil, HiOutlineTrash, HiPlusSm } from 'react-icons/hi'
 import {
@@ -13,7 +13,7 @@ import {
     // toggleEditConfirmation,
     useAppDispatch,
     useAppSelector,
-    getList
+    getList,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -54,16 +54,16 @@ const style = {
     padding: '2.5rem 1rem',
     marginBottom: '.5rem',
     backgroundColor: 'white',
-    cursor: 'move'
+    cursor: 'move',
 }
 
 const QSheetDetailsContent = () => {
     const location = useLocation()
+    console.log(location.state)
 
     const [loading, setLoading] = useState(true)
     const [dialogIsOpen, setIsOpen] = useState(false)
     const [data, setData] = useState<QSheetDetailsResponse>()
-    console.log(data)
 
     const qsheetSeq = data?.qsheetSeq
 
@@ -74,8 +74,8 @@ const QSheetDetailsContent = () => {
             filePath: '',
             note: '',
             orderIndex: 1,
-            process: ''
-        }
+            process: '',
+        },
     ]
     const [dataContent, setDataContent] =
         useState<DataContent[]>(initialDataContent)
@@ -242,7 +242,7 @@ const QSheetDetailsContent = () => {
                                         content: '',
                                         filePath: '',
                                         note: '',
-                                        orderIndex: ''
+                                        orderIndex: '',
                                     }}
                                     onSubmit={(values, { setSubmitting }) => {
                                         console.log('추가 되냐')
@@ -253,12 +253,12 @@ const QSheetDetailsContent = () => {
                                             const newData = {
                                                 ...values,
                                                 orderIndex:
-                                                    dataContent.length + 1
+                                                    dataContent.length + 1,
                                             }
 
                                             setDataContent((prevData) => [
                                                 ...prevData,
-                                                newData
+                                                newData,
                                             ])
 
                                             onAddDialogClose()
@@ -340,7 +340,7 @@ const QSheetDetailsContent = () => {
                                                 >
                                                     <Field
                                                         style={{
-                                                            height: 100
+                                                            height: 100,
                                                         }}
                                                         type="text"
                                                         name="content"
@@ -449,7 +449,7 @@ const QSheetDetailsContent = () => {
                                         content: dataForEdit?.content,
                                         filePath: dataForEdit?.filePath,
                                         note: dataForEdit?.note,
-                                        orderIndex: dataForEdit?.orderIndex
+                                        orderIndex: dataForEdit?.orderIndex,
                                     }}
                                     onSubmit={(values, { setSubmitting }) => {
                                         console.log('되냐')
@@ -578,7 +578,7 @@ const QSheetDetailsContent = () => {
                                                 >
                                                     <Field
                                                         style={{
-                                                            height: 100
+                                                            height: 100,
                                                         }}
                                                         type="text"
                                                         name="content"
