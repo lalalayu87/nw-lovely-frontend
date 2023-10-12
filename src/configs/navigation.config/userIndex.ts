@@ -18,10 +18,10 @@ const userNavigationConfig: NavigationTree[] = [
         subMenu: [],
     },
     {
-        key: 'CuesheetUser',
+        key: 'QsheetUser',
         path: '/cuesheetUser',
         title: '큐시트',
-        translateKey: 'nav.CuesheetUser',
+        translateKey: 'nav.QsheetUser',
         icon: 'hiOutlineClipboardList',
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],

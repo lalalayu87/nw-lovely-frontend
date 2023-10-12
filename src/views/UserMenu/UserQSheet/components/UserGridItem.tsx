@@ -11,13 +11,13 @@ import UserNewQSheet from './UserNewQSheet'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import Tooltip from '@/components/ui/Tooltip'
 import {
-    useAppDispatch,
     removeRowItem,
     setSelectedRow,
     setSelectedRows,
     deleteList,
     getList,
-} from '../store/UserQSheetSlice'
+    useAppDispatch,
+} from '../store'
 import { apiGetQSheetCardDetails } from '@/services/QSheetService'
 import UserDeleteConfirmation from './UserDeleteConfirmation'
 import toast from '@/components/ui/toast'

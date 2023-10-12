@@ -95,7 +95,6 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
-    console.log((persistData as any).auth.user)
 
     const navigate = useNavigate()
     const onCreate = async () => {
@@ -151,14 +150,40 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
                     </Button>
                 </div>
             </div>
-            <QSheetDataTable
+
+            <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700 ">
+                    <tr>
+                        {/* <th className="border-r border-gray-300"></th> */}
+                        <th
+                            // style={{ width: '209px' }}
+                            className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
+                        >
+                            절차
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            행위자
+                        </th>
+                        <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                            내용
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            파일
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            비고
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            액션
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            {/* <QSheetDataTable
                 ref={tableRef}
                 columns={columns}
-                // skeletonAvatarColumns={[0]}
-                // skeletonAvatarProps={{
-                //     className: 'rounded-md',
-                // }}
-            />
+                
+            /> */}
         </>
     )
 }

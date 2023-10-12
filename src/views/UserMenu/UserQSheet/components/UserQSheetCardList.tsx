@@ -1,16 +1,17 @@
 import { useEffect } from 'react'
 import classNames from 'classnames'
-import GridItem from './UserGridItem'
+import UserGridItem from './UserGridItem'
 import Spinner from '@/components/ui/Spinner'
 import { getList, useAppDispatch, useAppSelector } from '../store'
 
 const UserQSheetCardList = () => {
     const dispatch = useAppDispatch()
+    // console.log(useAppSelector((state) => state.qsheetDataList.loading))
 
-    const loading = useAppSelector((state) => state.qsheetDataList.data.loading)
+    const loading = useAppSelector((state) => state.qsheetDataList.loading)
 
     const qsheetCardList = useAppSelector(
-        (state) => state.qsheetDataList.data.qSheetDataList
+        (state) => state.qsheetDataList.qSheetDataList
     )
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const UserQSheetCardList = () => {
                 {qsheetCardList?.length > 0 && !loading && (
                     <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
                         {qsheetCardList.map((qsheet, index) => (
-                            <GridItem
+                            <UserGridItem
                                 key={index}
                                 data={qsheet}
                                 qsheetSeq={qsheet.qsheetSeq}

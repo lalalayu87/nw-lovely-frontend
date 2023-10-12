@@ -19,7 +19,6 @@ import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import { apiGetQSheetCardDetails } from '@/services/QSheetService'
-import UserSheetDetailsHeader from './UserSheetDetailsHeader'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import Tooltip from '@/components/ui/Tooltip'

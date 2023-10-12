@@ -20,7 +20,7 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import ApiService from '@/services/ApiService'
 import axios from 'axios'
-import UserQSheetDetailsContent from './UserQSheetDetailsContent
+import UserQSheetDetailsContent from './UserQSheetDetailsContent'
 
 export type qSheet = {
     orderIndex: string
@@ -43,7 +43,10 @@ export type qSheetDetailsDataProps = {
     }
 }
 
-const USerQSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
+const USerQSheetDetatilsHeader = ({
+    data,
+    qsheetSeq,
+}: qSheetDetailsDataProps) => {
     console.log(data)
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
