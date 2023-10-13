@@ -8,6 +8,8 @@ const QSheetCardList = () => {
     const dispatch = useAppDispatch()
 
     const loading = useAppSelector((state) => state.qsheetDataList.data.loading)
+    const t = useAppSelector((state) => state.qsheetDataList)
+    console.log(t)
 
     const qsheetCardList = useAppSelector(
         (state) => state.qsheetDataList.data.qSheetDataList

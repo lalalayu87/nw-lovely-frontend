@@ -7,6 +7,7 @@ import React, {
     useState,
     Suspense,
     lazy,
+    ChangeEvent,
 } from 'react'
 import {
     DragDropContext,
@@ -15,7 +16,12 @@ import {
     DraggableChildrenFn,
     Draggable,
 } from 'react-beautiful-dnd'
-import { HiOutlineUpload, HiOutlineTrash, HiPlusSm } from 'react-icons/hi'
+import {
+    HiOutlineUpload,
+    HiOutlineTrash,
+    HiPlusSm,
+    HiOutlineSearch,
+} from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
@@ -43,6 +49,8 @@ import { DataTableResetHandle } from '@/components/shared'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
+import { cloneDeep, debounce } from 'lodash'
+import axios from 'axios'
 
 const inputStyle = {
     // border: '1px solid #ccc'
@@ -90,6 +98,7 @@ const validationSchema = Yup.object().shape({
 const USerNewQSheetContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
+    const searchInput = useRef(null)
 
     // const filterData = useAppSelector(
     //     (state) => state.salesProductList.data.filterData
@@ -301,12 +310,26 @@ const USerNewQSheetContent: React.FC = () => {
         )
     }
 
+    const onSearch = (e: ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value)
+    }
+
     return (
         <>
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
 
                 <div className="flex flex-col md:flex-row md:items-center gap-1">
+                    <div>
+                        <Input
+                            ref={searchInput}
+                            className="max-w-md md:w-52 md:mb-0 mb-4" // 가로 길이 조절
+                            size="sm"
+                            placeholder="검색"
+                            prefix={<HiOutlineSearch className="text-lg" />}
+                            onChange={onSearch}
+                        />
+                    </div>
                     <Button
                         block
                         size="sm"

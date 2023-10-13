@@ -305,7 +305,10 @@ const UserQSheetDetailsContent: React.FC = () => {
         orderIndex: 2,
     })
 
-    const ActionColumn = ({ row }: { row: QSheetDetailsResponse }) => {
+    // 수정 활성, 비활성
+    // const [editableRowIndex, setEditableRowIndex] = useState(-1)
+
+    const ActionColumn = ({ row }: { row: DataContent }) => {
         const { textTheme } = useThemeClass()
 
         const onAdd = () => {
@@ -324,6 +327,7 @@ const UserQSheetDetailsContent: React.FC = () => {
 
         const onEdit = () => {
             console.log('onEdit')
+            // setEditableRowIndex(row.orderIndex)
         }
 
         const onDelete = () => {
@@ -352,7 +356,7 @@ const UserQSheetDetailsContent: React.FC = () => {
                         <HiPlusSm />
                     </span>
                 </Tooltip>
-
+                {/* 
                 <Tooltip title="수정">
                     <span
                         className={`cursor-pointer p-2 hover:${textTheme}`}
@@ -360,7 +364,7 @@ const UserQSheetDetailsContent: React.FC = () => {
                     >
                         <HiOutlinePencil />
                     </span>
-                </Tooltip>
+                </Tooltip> */}
                 <Tooltip title="삭제">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
@@ -373,11 +377,18 @@ const UserQSheetDetailsContent: React.FC = () => {
         )
     }
 
+    //인쇄
     const componentRef = useRef(null)
 
     const clickPrint = useReactToPrint({
         content: () => componentRef.current,
         documentTitle: 'Finaltempl',
+        pageStyle: `
+        @page {
+          size: 30cm 40cm;
+          margin: 1cm;
+        }
+      `,
     })
 
     return (
@@ -596,7 +607,7 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                             </td>
                                                             <td className="border border-gray-300 w-1/12 py-2">
                                                                 <div className="flex items-center">
-                                                                    &nbsp;&nbsp;
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     <ActionColumn
                                                                         row={
                                                                             data
