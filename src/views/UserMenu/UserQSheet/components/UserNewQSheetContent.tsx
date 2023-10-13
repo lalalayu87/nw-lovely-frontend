@@ -7,20 +7,20 @@ import React, {
     useState,
     Suspense,
     lazy,
-    ChangeEvent,
+    ChangeEvent
 } from 'react'
 import {
     DragDropContext,
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable,
+    Draggable
 } from 'react-beautiful-dnd'
 import {
     HiOutlineUpload,
     HiOutlineTrash,
     HiPlusSm,
-    HiOutlineSearch,
+    HiOutlineSearch
 } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
@@ -29,7 +29,7 @@ import {
     useAppSelector,
     updateDialogView,
     openDialog,
-    getList,
+    getList
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
@@ -58,7 +58,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%',
+    width: '95%'
 }
 
 const contentInputStyle = {
@@ -67,7 +67,7 @@ const contentInputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%',
+    width: '95%'
 }
 interface QSheetExampleData {
     process: string
@@ -86,13 +86,13 @@ const initialData: QSheetExampleData = {
     filePath: '',
     note: '',
     orderIndex: 1,
-    memo: '',
+    memo: ''
 }
 
 const validationSchema = Yup.object().shape({
     process: Yup.string().required('절차를 입력해주세요.'),
     actor: Yup.string().required('행위자를 입력해주세요.'),
-    text: Yup.string().required('내용을 입력해주세요.'),
+    text: Yup.string().required('내용을 입력해주세요.')
 })
 
 const USerNewQSheetContent: React.FC = () => {
@@ -119,63 +119,141 @@ const USerNewQSheetContent: React.FC = () => {
             {
                 header: '절차',
                 accessorKey: 'process',
-                width: 'w-1/12',
+                width: 'w-1/12'
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12',
+                width: 'w-5/12'
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12',
-            },
+                width: 'w-2/12'
+            }
         ],
         []
     )
-
-    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
-    const persistData = deepParseJson(rawPersistData)
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const userSeq = (persistData as any).auth.user.userSeq
 
     const navigate = useNavigate()
     const onCreate = async () => {
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
 
-        const transformedData = dataList.map((item) => {
-            return {
+        // 1. 빈 FormData 객체를 생성합니다.
+        const formDataArray = []
+
+        // 2. 데이터 배열을 반복하면서 각 항목을 FormData에 추가합니다.
+        dataList.forEach((item, index) => {
+            const formData = new FormData()
+            const jsonData = {
                 orderIndex: item.orderIndex,
                 process: item.process,
                 content: item.content,
                 actor: item.actor,
-                note: item.note,
-                filePath: item.filePath,
+                note: item.note
             }
+
+            formData.append('files', item.filePath)
+
+            console.log(jsonData)
+            console.log(formData)
+
+            // 데이터를 JSON 문자열로 변환하여 FormData에 추가합니다.
+            // formData.append(
+            //     `weddinghallCreateDto[${index}]`,
+            //     JSON.stringify(data),
+            //     {
+            //         contentType: 'application/json'
+            //     }
+            // )
+
+            // formData.append(data, {
+            //     contentType: 'application/json'
+            // })
+
+            // // 파일을 FormData에 추가합니다.
+            // formData.append('files', item.filePath)
+
+            // // FormData 객체를 배열에 추가합니다.
+            // formDataArray.push(formData)
+            // console.log(formDataArray)
         })
 
-        const body = {
-            name: name,
-            userSeq: userSeq,
-            data: transformedData,
-        }
+        // const formData = new FormData() // 파일을 보내기 위한 FormData 객체를 생성합니다.
+        // const transformedData = dataList.map((item) => {
+        //     formData.append('files', item.filePath) // 각 파일을 FormData에 추가합니다.
+        //     return {
+        //         orderIndex: item.orderIndex,
+        //         process: item.process,
+        //         content: item.content,
+        //         actor: item.actor,
+        //         note: item.note,
+        //         filePath: item.filePath
+        //     }
+        // })
 
-        apiPostQSheetCardList(body)
+        // const transformedData = dataList.map((item) => {
+        //     return {
+        //         orderIndex: item.orderIndex,
+        //         process: item.process,
+        //         content: item.content,
+        //         actor: item.actor,
+        //         note: item.note,
+        //         filePath: item.filePath
+        //     }
+        // })
+
+        // 추가적인 파라미터들을 FormData에 포함합니다.
+        // formData.append('name', name)
+        // formData.append('userSeq', userSeq)
+        // formData.append('orgSeq', orgSeq)
+        // formData.append('data', JSON.stringify(transformedData)) // 데이터를 JSON 문자열로 변환하여 포함합니다.
+
+        // const body = {
+        //     name: name,
+        //     userSeq: userSeq,
+        //     orgSeq: orgSeq,
+        //     data: transformedData
+        // }
+
+        // console.log(body)
+        // apiPostQSheetCardList(body)
+
+        const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+        const persistData = deepParseJson(rawPersistData)
+        const accessToken = (persistData as any).auth.session.accessToken
+        try {
+            // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
+            const response = await axios.post(
+                `http://152.69.228.245:10001/api/v1/qsheet`,
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            )
+
+            // API 응답을 필요에 따라 처리합니다.
+            console.log(response.data)
+        } catch (error) {
+            // 에러를 처리합니다.
+            console.error(error)
+        }
 
         toast.push(
             <Notification title={'큐시트가 생성되었습니다.'} type="success">
@@ -194,7 +272,7 @@ const USerNewQSheetContent: React.FC = () => {
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
-        orderIndex: 2,
+        orderIndex: 2
     })
 
     const handleInputChange = (
@@ -202,7 +280,6 @@ const USerNewQSheetContent: React.FC = () => {
         value: string,
         index: number
     ) => {
-        console.log(dataList)
         const updatedDataList = [...dataList]
         updatedDataList[index][field] = value
         setDataList(updatedDataList)
@@ -266,7 +343,7 @@ const USerNewQSheetContent: React.FC = () => {
             console.log('add')
             setNewData({
                 ...newData,
-                orderIndex: newData.orderIndex + 1,
+                orderIndex: newData.orderIndex + 1
             })
             setDataList([...dataList, newData])
         }
@@ -310,8 +387,51 @@ const USerNewQSheetContent: React.FC = () => {
         )
     }
 
-    const onSearch = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value)
+    const [orgSeq, setOrgSeq] = useState('')
+
+    const onSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+        const searchKeyword = e.target.value
+        console.log(searchKeyword)
+
+        const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+        const persistData = deepParseJson(rawPersistData)
+        const accessToken = (persistData as any).auth.session.accessToken
+
+        try {
+            const response = await axios.get(
+                'http://152.69.228.245:10001/api/v1/org',
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
+            )
+
+            // 응답 데이터 가져오기
+            const orgData = response.data.content
+            console.log(orgData)
+
+            const matchingOrgs = orgData.filter(
+                (org) => org.orgName === searchKeyword
+            )
+            const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
+            const matchingOrgSeq = matchingOrgSeqs[0]
+            // 검색어와 일치하는 orgName을 찾기
+            // const filteredOrgs = orgData.map((i) => i.orgName)
+            // const matchingItems = filteredOrgs.filter((item) =>
+            //     item.includes(searchKeyword)
+            // )
+            // console.log(matchingItems)
+
+            if (matchingOrgSeqs.length > 0) {
+                setOrgSeq(matchingOrgSeq)
+            } else {
+                console.log('No matching organizations found.')
+            }
+        } catch (error) {
+            // 오류 처리
+            console.error(error)
+        }
     }
 
     return (
@@ -327,7 +447,7 @@ const USerNewQSheetContent: React.FC = () => {
                             size="sm"
                             placeholder="검색"
                             prefix={<HiOutlineSearch className="text-lg" />}
-                            onChange={onSearch}
+                            onChange={(e) => onSearch(e)}
                         />
                     </div>
                     <Button
@@ -462,10 +582,10 @@ const USerNewQSheetContent: React.FC = () => {
                                                                     type="file"
                                                                     style={{
                                                                         display:
-                                                                            'none',
+                                                                            'none'
                                                                     }}
                                                                     id={`fileInput-${index}`}
-                                                                    accept="application/pdf"
+                                                                    accept="*/*"
                                                                     onChange={(
                                                                         e
                                                                     ) =>

@@ -5,28 +5,28 @@ import {
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable,
+    Draggable
 } from 'react-beautiful-dnd'
 import {
     HiOutlineUpload,
     HiOutlineTrash,
     HiPlusSm,
     HiOutlinePencil,
-    HiExternalLink,
+    HiExternalLink
 } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
     useAppDispatch,
     useAppSelector,
-    getList,
+    getList
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import {
     apiGetQSheetCardDetails,
-    apiPatchQSheetCardList,
+    apiPatchQSheetCardList
 } from '@/services/QSheetService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -51,7 +51,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%',
+    width: '95%'
 }
 
 const contentInputStyle = {
@@ -60,7 +60,7 @@ const contentInputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%',
+    width: '95%'
 }
 
 type QSheetDetailsResponse = {
@@ -110,30 +110,30 @@ const UserQSheetDetailsContent: React.FC = () => {
             {
                 header: '절차',
                 accessorKey: 'process',
-                width: 'w-1/12',
+                width: 'w-1/12'
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12',
+                width: 'w-5/12'
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12',
-            },
+                width: 'w-2/12'
+            }
         ],
         []
     )
@@ -152,13 +152,13 @@ const UserQSheetDetailsContent: React.FC = () => {
                     content: item.content,
                     actor: item.actor,
                     note: item.note,
-                    filePath: item.filePath,
-                },
-            ],
+                    filePath: item.filePath
+                }
+            ]
         }))
 
         const body = {
-            data: [],
+            data: []
         }
 
         for (let i = 0; i < transformedData.length; i++) {
@@ -197,8 +197,8 @@ const UserQSheetDetailsContent: React.FC = () => {
             filePath: '',
             note: '',
             orderIndex: 1,
-            process: '',
-        },
+            process: ''
+        }
     ]
 
     const [dataContent, setDataContent] =
@@ -244,12 +244,16 @@ const UserQSheetDetailsContent: React.FC = () => {
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        const updatedDataList = [...dataList]
+        const updatedDataList = [...dataContent]
+        console.log(e.target.files[0].name)
         const file = e.target.files[0]
+        console.log(file)
+
         if (file) {
             updatedDataList[index].filePath = file.name
         }
-        setDataList(updatedDataList)
+        setDataContent(updatedDataList)
+        console.log(updatedDataList)
     }
 
     const onDragEnd = (result: DropResult) => {
@@ -297,12 +301,12 @@ const UserQSheetDetailsContent: React.FC = () => {
         filePath: '',
         note: '',
         orderIndex: 1,
-        process: '',
+        process: ''
     }
 
     const [newData, setNewData] = useState<DataContent>({
         ...initialData,
-        orderIndex: 2,
+        orderIndex: 2
     })
 
     // 수정 활성, 비활성
@@ -319,7 +323,7 @@ const UserQSheetDetailsContent: React.FC = () => {
                 filePath: '',
                 note: '',
                 orderIndex,
-                process: '',
+                process: ''
             }
             // dataContent 배열에 새 데이터 아이템을 추가합니다.
             setDataContent([...dataContent, newDataItem])
@@ -388,7 +392,7 @@ const UserQSheetDetailsContent: React.FC = () => {
           size: 30cm 40cm;
           margin: 1cm;
         }
-      `,
+      `
     })
 
     return (
@@ -557,10 +561,10 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                         type="file"
                                                                         style={{
                                                                             display:
-                                                                                'none',
+                                                                                'none'
                                                                         }}
                                                                         id={`fileInput-${index}`}
-                                                                        accept="application/pdf"
+                                                                        accept="*/*"
                                                                         onChange={(
                                                                             e
                                                                         ) =>

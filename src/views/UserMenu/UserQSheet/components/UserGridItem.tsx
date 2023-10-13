@@ -4,7 +4,7 @@ import Card from '@/components/ui/Card'
 import {
     HiOutlineClipboardCheck,
     HiOutlineEye,
-    HiOutlineTrash,
+    HiOutlineTrash
 } from 'react-icons/hi'
 import { Link, useNavigate } from 'react-router-dom'
 import UserNewQSheet from './UserNewQSheet'
@@ -16,7 +16,7 @@ import {
     setSelectedRows,
     deleteList,
     getList,
-    useAppDispatch,
+    useAppDispatch
 } from '../store'
 import { apiGetQSheetCardDetails } from '@/services/QSheetService'
 import UserDeleteConfirmation from './UserDeleteConfirmation'
@@ -107,7 +107,7 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
     const onView = () => {
         // 페이지 이동 시 데이터를 state로 전달
         navigate(`/cuesheetUser/details/${row.qsheetSeq}`, {
-            state: { qsheetSeq: row.qsheetSeq },
+            state: { qsheetSeq: row.qsheetSeq }
         })
 
         console.log(row.qsheetSeq)
@@ -125,7 +125,7 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
                 삭제되었습니다.
             </Notification>
         )
-        navigate(`/cuesheetUser`)
+        location.reload()
     }
 
     return (
