@@ -107,6 +107,17 @@ export const protectedUserRoutes = [
         authority: [],
     },
     {
+        key: 'QsheetUser',
+        path: '/cuesheetUser/details/:qsheetSeq',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/UserMenu/UserQSheet/components/UserQSheetDetails'
+                )
+        ),
+        authority: [],
+    },
+    {
         key: 'CommunityUser',
         path: '/communityUser',
         component: lazy(

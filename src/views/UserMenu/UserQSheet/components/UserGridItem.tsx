@@ -106,9 +106,11 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
 
     const onView = () => {
         // 페이지 이동 시 데이터를 state로 전달
-        navigate(`/cuesheet/details/${row.qsheetSeq}`, {
+        navigate(`/cuesheetUser/details/${row.qsheetSeq}`, {
             state: { qsheetSeq: row.qsheetSeq },
         })
+
+        console.log(row.qsheetSeq)
     }
 
     const onDelete = async () => {
@@ -117,13 +119,13 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
         // 페이지를 새로고침
         // window.location.reload()
         // useEffect 내에서 수행할 작업 정의
-        navigate(`/cuesheet`)
 
         toast.push(
             <Notification title={'삭제되었습니다.'} type="success">
                 삭제되었습니다.
             </Notification>
         )
+        navigate(`/cuesheetUser`)
     }
 
     return (

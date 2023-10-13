@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
     DragDropContext,
     Droppable,
@@ -7,7 +7,13 @@ import {
     DraggableChildrenFn,
     Draggable,
 } from 'react-beautiful-dnd'
-import { HiOutlinePencil, HiOutlineTrash, HiPlusSm } from 'react-icons/hi'
+import {
+    HiOutlinePencil,
+    HiOutlineTrash,
+    HiPlusSm,
+    HiExternalLink,
+    HiOutlineUpload,
+} from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
@@ -18,7 +24,10 @@ import {
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import { apiGetQSheetCardDetails } from '@/services/QSheetService'
+import {
+    apiGetQSheetCardDetails,
+    apiPatchQSheetCardList,
+} from '@/services/QSheetService'
 import QSheetDetatilsHeader from './QSheetDetailsHeader'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -30,6 +39,29 @@ import Input from '@/components/ui/Input'
 import * as Yup from 'yup'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import { Button } from '@/components/ui'
+import { useReactToPrint } from 'react-to-print'
+import { PERSIST_STORE_NAME } from '@/constants/app.constant'
+import deepParseJson from '@/utils/deepParseJson'
+import { DataTableResetHandle } from '@/components/shared'
+
+const inputStyle = {
+    // border: '1px solid #ccc'
+    borderRadius: '4px',
+    padding: '5px',
+    margin: '5px',
+    outline: 'none',
+    width: '95%',
+}
+
+const contentInputStyle = {
+    // border: '1px solid #ccc'
+    borderRadius: '4px',
+    padding: '5px',
+    margin: '5px',
+    outline: 'none',
+    width: '95%',
+    overFlow: 'hidden',
+}
 
 type QSheetDetailsResponse = {
     qsheetSeq: string
@@ -49,23 +81,157 @@ type DataContent = {
     process: string
 }
 
-const style = {
-    border: '1px dashed gray',
-    padding: '2.5rem 1rem',
-    marginBottom: '.5rem',
-    backgroundColor: 'white',
-    cursor: 'move',
-}
-
 const QSheetDetailsContent = () => {
+    const tableRef = useRef<DataTableResetHandle>(null)
+    const dispatch = useAppDispatch()
+
+    // const filterData = useAppSelector(
+    //     (state) => state.salesProductList.data.filterData
+    // )
+
+    // useEffect(() => {
+    //     if (tableRef) {
+    //         tableRef.current?.resetSorting()
+    //     }
+    // }, [filterData])
+
+    // const fetchData = () => {
+    //     dispatch(getProducts({ filterData }))
+    // }
+
+    // const ActionColumn = ({ row }: { row: qSheet }) => {
+    //     const dispatch = useAppDispatch()
+    //     const { textTheme } = useThemeClass()
+    //     const navigate = useNavigate()
+
+    //     const onEdit = () => {
+    //         navigate(`/app/sales/product-edit/${row.id}`)
+    //     }
+
+    //     const onDelete = () => {
+    //         dispatch(toggleDeleteConfirmation(true))
+    //         dispatch(setSelectedQSheet(row.id))
+    //     }
+    //     return (
+    //         <div className="flex justify-end text-lg">
+    //             <span
+    //                 className={`cursor-pointer p-2 hover:${textTheme}`}
+    //                 onClick={onEdit}
+    //             >
+    //                 <HiOutlinePencil />
+    //             </span>
+    //             <span
+    //                 className="cursor-pointer p-2 hover:text-red-500"
+    //                 onClick={onDelete}
+    //             >
+    //                 <HiOutlineTrash />
+    //             </span>
+    //         </div>
+    //     )
+    // }
+
+    const columns: ColumnDef<qSheet>[] = useMemo(
+        () => [
+            {
+                header: '절차',
+                accessorKey: 'process',
+                width: 'w-1/12',
+            },
+            {
+                header: '행위자',
+                accessorKey: 'actor',
+                sortable: true,
+                width: 'w-2/12',
+            },
+            {
+                header: '내용',
+                accessorKey: 'content',
+                width: 'w-5/12',
+            },
+
+            {
+                header: '파일',
+                accessorKey: 'filePath',
+                width: 'w-2/12',
+            },
+            {
+                header: '비고',
+                accessorKey: 'note',
+                width: 'w-2/12',
+            },
+        ],
+        []
+    )
+
+    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+    const persistData = deepParseJson(rawPersistData)
+
+    const navigate = useNavigate()
+
+    const onUpdate = async () => {
+        const transformedData = dataContent.map((item) => ({
+            data: [
+                {
+                    orderIndex: item.orderIndex,
+                    process: item.process,
+                    content: item.content,
+                    actor: item.actor,
+                    note: item.note,
+                    filePath: item.filePath,
+                },
+            ],
+        }))
+
+        const body = {
+            data: [],
+        }
+
+        for (let i = 0; i < transformedData.length; i++) {
+            body.data.push(transformedData[i].data[0])
+        }
+
+        try {
+            const response = await apiPatchQSheetCardList<ResponseType>(
+                qsheetSeq,
+                body
+            )
+
+            toast.push(
+                <Notification title={'큐시트가 수정되었습니다.'} type="success">
+                    큐시트가 수정되었습니다.
+                </Notification>
+            )
+
+            navigate('/cuesheet')
+        } catch (error) {
+            console.error(error)
+        }
+
+        // const body = {
+        //     data: [
+        //         {
+        //             orderIndex: 1,
+        //             process: 'hi',
+        //             content: 'hi',
+        //             actor: 'hi',
+        //             note: 'hi',
+        //             filePath: 'hi'
+        //         }
+        //     ]
+        // }
+    }
+
     const location = useLocation()
-    console.log(location.state)
+    const qsheetSeq = location.state.qsheetSeq
 
     const [loading, setLoading] = useState(true)
-    const [dialogIsOpen, setIsOpen] = useState(false)
-    const [data, setData] = useState<QSheetDetailsResponse>()
+    // const [dialogIsOpen, setIsOpen] = useState(false)
 
-    const qsheetSeq = data?.qsheetSeq
+    const [dataList, setDataList] = useState<QSheetDetailsResponse>()
+    // const [newData, setNewData] = useState<QSheetDetailsResponse>({
+    //     ...initialData,
+    //     orderIndex: 2,
+    // })
 
     const initialDataContent: DataContent[] = [
         {
@@ -99,10 +265,33 @@ const QSheetDetailsContent = () => {
                 const res = response.data
                 const responseData = response.data?.data
                 setLoading(false)
-                setData(res)
+                setDataList(res)
                 setDataContent(responseData)
             }
         }
+    }
+
+    const handleInputChange = (
+        field: keyof QSheetExampleData,
+        value: string,
+        index: number
+    ) => {
+        console.log(dataList)
+        const updatedDataList = [...dataContent]
+        updatedDataList[index][field] = value
+        setDataContent(updatedDataList)
+    }
+
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        index: number
+    ) => {
+        const updatedDataList = [...dataList]
+        const file = e.target.files[0]
+        if (file) {
+            updatedDataList[index].filePath = file.name
+        }
+        setDataList(updatedDataList)
     }
 
     const onDragEnd = (result: DropResult) => {
@@ -144,56 +333,38 @@ const QSheetDetailsContent = () => {
     }
 
     const ActionColumn = ({ row }: { row: QSheetDetailsResponse }) => {
-        const dispatch = useAppDispatch()
+        // const dispatch = useAppDispatch()
         const { textTheme } = useThemeClass()
-        const navigate = useNavigate()
+        // const navigate = useNavigate()
 
-        const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
-        const [dialogIsOpen, setIsOpen] = useState(false)
-        const [dataForEdit, setDataForEdit] = useState<DataContent | null>(null)
-
-        const openDialog = () => {
-            setIsOpen(true)
-        }
-
-        const onDialogClose = () => {
-            setIsOpen(false)
-        }
-
-        const onClickCloes = () => {
-            setIsOpen(false)
-        }
-
-        const openAddDialog = () => {
-            console.log('add open')
-            setAddDialogIsOpen(true)
-        }
-
-        const onAddDialogClose = () => {
-            console.log('add close')
-            setAddDialogIsOpen(false)
-        }
-
-        const onClickAddCloes = () => {
-            setAddDialogIsOpen(false)
-        }
-
+        // 행추가
         const onAdd = () => {
             console.log('add')
-            setAddDialogIsOpen(true)
+            const orderIndex = dataContent.length + 1 // 다음 행의 orderIndex를 설정
+            const newDataItem = {
+                actor: '',
+                content: '',
+                filePath: '',
+                note: '',
+                orderIndex,
+                process: '',
+            }
+            // dataContent 배열에 새 데이터 아이템을 추가합니다.
+            setDataContent([...dataContent, newDataItem])
         }
 
+        //행 수정
         const onEdit = () => {
-            setIsOpen(true)
-
             // 클릭한 행의 데이터를 전달
             const rowDataTmp = dataContent.find(
                 (item) => item.orderIndex === row.orderIndex
             )
+            console.log(rowDataTmp)
 
-            setDataForEdit(rowDataTmp) // setDataForEdit 함수로 데이터 전달
+            // setDataContent(rowDataTmp) // setDataForEdit 함수로 데이터 전달
         }
 
+        // 행 삭제
         const onDelete = () => {
             const rowData = dataContent.find(
                 (item) => item.orderIndex == row.orderIndex
@@ -216,7 +387,7 @@ const QSheetDetailsContent = () => {
         }
 
         return (
-            <div className="flex justify-end text-lg">
+            <div className="flex justify-normal text-lg">
                 <Tooltip title="추가">
                     <span
                         className={`cursor-pointer p-2 hover:${textTheme}`}
@@ -225,200 +396,7 @@ const QSheetDetailsContent = () => {
                         <HiPlusSm />
                     </span>
                 </Tooltip>
-                <Dialog
-                    isOpen={addDialogIsOpen}
-                    contentClassName="pb-10 px-10"
-                    onClose={onAddDialogClose}
-                    onRequestClose={onAddDialogClose}
-                >
-                    <>
-                        <div>
-                            <h5>큐시트 추가</h5>
-                            <div className="mt-8">
-                                <Formik
-                                    initialValues={{
-                                        process: '',
-                                        actor: '',
-                                        content: '',
-                                        filePath: '',
-                                        note: '',
-                                        orderIndex: '',
-                                    }}
-                                    onSubmit={(values, { setSubmitting }) => {
-                                        console.log('추가 되냐')
-                                        setSubmitting(true)
-
-                                        try {
-                                            // 새 데이터를 생성하고 배열에 추가합니다.
-                                            const newData = {
-                                                ...values,
-                                                orderIndex:
-                                                    dataContent.length + 1,
-                                            }
-
-                                            setDataContent((prevData) => [
-                                                ...prevData,
-                                                newData,
-                                            ])
-
-                                            onAddDialogClose()
-
-                                            console.log(
-                                                '새 데이터 추가 완료:',
-                                                newData
-                                            )
-                                        } catch (error) {
-                                            console.error(
-                                                '데이터 추가 실패:',
-                                                error
-                                            )
-                                        } finally {
-                                            setSubmitting(false)
-                                        }
-                                    }}
-                                >
-                                    {({ touched, errors, isSubmitting }) => (
-                                        <Form>
-                                            <FormContainer layout="horizontal">
-                                                <FormItem
-                                                    label="절차"
-                                                    invalid={
-                                                        errors.process &&
-                                                        touched.process
-                                                    }
-                                                    errorMessage={
-                                                        errors.process
-                                                    }
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="process"
-                                                        placeholder="예) 개식사"
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '절차를 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="행위자"
-                                                    invalid={
-                                                        errors.actor &&
-                                                        touched.actor
-                                                    }
-                                                    errorMessage={errors.actor}
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="actor"
-                                                        placeholder="예) 신랑, 신부"
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '행위자를 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="내용"
-                                                    invalid={
-                                                        errors.content &&
-                                                        touched.content
-                                                    }
-                                                    errorMessage={
-                                                        errors.content
-                                                    }
-                                                >
-                                                    <Field
-                                                        style={{
-                                                            height: 100,
-                                                        }}
-                                                        type="text"
-                                                        name="content"
-                                                        placeholder="예) 결혼식을 시작하겠습니다."
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '내용을 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="파일"
-                                                    invalid={
-                                                        errors.filePath &&
-                                                        touched.filePath
-                                                    }
-                                                    errorMessage={
-                                                        errors.filePath
-                                                    }
-                                                >
-                                                    <Field
-                                                        type="file"
-                                                        name="file"
-                                                        component={Input}
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="비고"
-                                                    invalid={
-                                                        errors.note &&
-                                                        touched.note
-                                                    }
-                                                    errorMessage={errors.note}
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="note"
-                                                        placeholder="비고"
-                                                        component={Input}
-                                                    />
-                                                </FormItem>
-                                                <FormItem>
-                                                    <div>
-                                                        <Button
-                                                            variant="solid"
-                                                            loading={
-                                                                isSubmitting
-                                                            }
-                                                            type="submit"
-                                                        >
-                                                            추가
-                                                        </Button>
-                                                        &nbsp;
-                                                        <Button
-                                                            size="md"
-                                                            type="button"
-                                                            onClick={
-                                                                onClickAddCloes
-                                                            }
-                                                        >
-                                                            취소
-                                                        </Button>
-                                                    </div>
-                                                </FormItem>
-                                            </FormContainer>
-                                        </Form>
-                                    )}
-                                </Formik>
-                            </div>
-                        </div>
-                    </>
-                </Dialog>
-
+                &nbsp;
                 <Tooltip title="수정">
                     <span
                         className={`cursor-pointer p-2 hover:${textTheme}`}
@@ -427,240 +405,10 @@ const QSheetDetailsContent = () => {
                         <HiOutlinePencil />
                     </span>
                 </Tooltip>
-                <Dialog
-                    isOpen={dialogIsOpen}
-                    contentClassName="pb-10 px-10"
-                    onClose={onDialogClose}
-                    onRequestClose={onDialogClose}
-                >
-                    {/* <EditNewQSheetContent
-                            disableSubmit={false}
-                            data={dataForEdit}
-                            onClose={onDialogClose}
-                        /> */}
-                    <>
-                        <div>
-                            <h5>큐시트 수정</h5>
-                            <div className="mt-8">
-                                <Formik
-                                    initialValues={{
-                                        process: dataForEdit?.process,
-                                        actor: dataForEdit?.actor,
-                                        content: dataForEdit?.content,
-                                        filePath: dataForEdit?.filePath,
-                                        note: dataForEdit?.note,
-                                        orderIndex: dataForEdit?.orderIndex,
-                                    }}
-                                    onSubmit={(values, { setSubmitting }) => {
-                                        console.log('되냐')
-                                        setSubmitting(true)
-
-                                        const index = dataContent.findIndex(
-                                            (item) =>
-                                                item.orderIndex ===
-                                                values.orderIndex
-                                        )
-
-                                        if (index !== -1) {
-                                            // 데이터를 업데이트합니다.
-                                            const updatedData = [...dataContent]
-                                            updatedData[index] = values
-                                            setDataContent(updatedData)
-                                        }
-
-                                        // 다이얼로그를 닫습니다.
-                                        onDialogClose()
-                                    }}
-                                >
-                                    {({ touched, errors, isSubmitting }) => (
-                                        <Form>
-                                            <FormContainer layout="horizontal">
-                                                <FormItem
-                                                    label="절차"
-                                                    invalid={
-                                                        errors.process &&
-                                                        touched.process
-                                                    }
-                                                    errorMessage={
-                                                        errors.process
-                                                    }
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="process"
-                                                        placeholder="예) 개식사"
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '절차를 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="행위자"
-                                                    invalid={
-                                                        errors.actor &&
-                                                        touched.actor
-                                                    }
-                                                    errorMessage={errors.actor}
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="actor"
-                                                        placeholder="예) 신랑, 신부"
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '행위자를 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                    {/* <div className="border border-gray-300 p-2 rounded-md">
-                                                        <Field
-                                                            type="checkbox"
-                                                            name="actor"
-                                                            validate={(
-                                                                value: string
-                                                            ) =>
-                                                                requiredFieldValidation(
-                                                                    value,
-                                                                    '행위자를 선택해주세요.'
-                                                                )
-                                                            }
-                                                            className="w-full h-6"
-                                                        >
-                                                            <option value="사회자">
-                                                                사회자
-                                                            </option>
-                                                            <option value="신랑">
-                                                                신랑
-                                                            </option>
-                                                            <option value="신부">
-                                                                신부
-                                                            </option>
-                                                            <option value="주례자">
-                                                                주례자
-                                                            </option>
-                                                            <option value="신랑 아버님">
-                                                                신랑 아버님
-                                                            </option>
-                                                            <option value="신랑 어머님">
-                                                                신랑 어머님
-                                                            </option>
-                                                            <option value="신부 아버님">
-                                                                신부 아버님
-                                                            </option>
-                                                            <option value="신부 어머님">
-                                                                신부 어머님
-                                                            </option>
-                                                            <option value="축가자">
-                                                                축가자
-                                                            </option>
-                                                        </Field>
-                                                    </div> */}
-                                                </FormItem>
-                                                <FormItem
-                                                    label="내용"
-                                                    invalid={
-                                                        errors.content &&
-                                                        touched.content
-                                                    }
-                                                    errorMessage={
-                                                        errors.content
-                                                    }
-                                                >
-                                                    <Field
-                                                        style={{
-                                                            height: 100,
-                                                        }}
-                                                        type="text"
-                                                        name="content"
-                                                        placeholder="예) 결혼식을 시작하겠습니다."
-                                                        component={Input}
-                                                        validate={(
-                                                            value: string
-                                                        ) =>
-                                                            requiredFieldValidation(
-                                                                value,
-                                                                '내용을 기입해주세요.'
-                                                            )
-                                                        }
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="파일"
-                                                    invalid={
-                                                        errors.filePath &&
-                                                        touched.filePath
-                                                    }
-                                                    errorMessage={
-                                                        errors.filePath
-                                                    }
-                                                >
-                                                    <Field
-                                                        type="file"
-                                                        name="file"
-                                                        component={Input}
-                                                    />
-                                                </FormItem>
-                                                <FormItem
-                                                    label="비고"
-                                                    invalid={
-                                                        errors.note &&
-                                                        touched.note
-                                                    }
-                                                    errorMessage={errors.note}
-                                                >
-                                                    <Field
-                                                        type="text"
-                                                        name="note"
-                                                        placeholder="비고"
-                                                        component={Input}
-                                                    />
-                                                </FormItem>
-                                                <FormItem>
-                                                    <div>
-                                                        <Button
-                                                            variant="solid"
-                                                            loading={
-                                                                isSubmitting
-                                                            }
-                                                            type="submit"
-                                                        >
-                                                            수정
-                                                        </Button>
-                                                        &nbsp;
-                                                        <Button
-                                                            size="md"
-                                                            type="button"
-                                                            onClick={
-                                                                onClickCloes
-                                                            }
-                                                        >
-                                                            취소
-                                                        </Button>
-                                                    </div>
-                                                </FormItem>
-                                            </FormContainer>
-                                        </Form>
-                                    )}
-                                </Formik>
-                            </div>
-                        </div>
-                    </>
-                </Dialog>
-
                 <Tooltip title="삭제">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
-                        onClick={onDelete}
+                        onClick={() => onDelete()}
                     >
                         <HiOutlineTrash />
                     </span>
@@ -669,68 +417,268 @@ const QSheetDetailsContent = () => {
         )
     }
 
+    const componentRef = useRef(null)
+
+    const clickPrint = useReactToPrint({
+        content: () => componentRef.current,
+        documentTitle: 'Finaltempl',
+    })
+
     return (
         <>
-            <QSheetDetatilsHeader data={dataContent} qsheetSeq={qsheetSeq} />
-            <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
-                <Droppable droppableId="DetailsDroppable">
-                    {(provided) => (
-                        <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="DetailsDroppable pt-3"
+            {/* <QSheetDetatilsHeader data={dataContent} qsheetSeq={qsheetSeq} /> */}
+            <div className="lg:flex items-center justify-between mb-4">
+                <h3 className="mb-4 lg:mb-0">큐시트 내용</h3>
+                <div className="flex flex-col md:flex-row md:items-center gap-1">
+                    <span>
+                        <Button block size="sm" icon={<HiExternalLink />}>
+                            공유
+                        </Button>
+                    </span>
+
+                    <span>
+                        <Button block size="sm" onClick={onUpdate}>
+                            저장
+                        </Button>
+                    </span>
+                    <span>
+                        <Button
+                            block
+                            size="sm"
+                            variant="twoTone"
+                            // onClick={onUpdate}
                         >
-                            {dataContent.map((item, index) => (
-                                <Draggable
-                                    key={item.orderIndex}
-                                    draggableId={String(item.orderIndex)}
-                                    index={index}
+                            최종확인
+                        </Button>
+                    </span>
+                    <span>
+                        <Button size="sm" onClick={clickPrint}>
+                            인쇄
+                        </Button>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div ref={componentRef} className="report-template">
+                    <table className="table-auto min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th className="px-2  w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
+                                    절차
+                                </th>
+                                <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                                    행위자
+                                </th>
+                                <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                                    내용
+                                </th>
+                                <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                                    파일
+                                </th>
+                                <th className="px-2  w-2/12 py-3 text-center border border-gray-300">
+                                    비고
+                                </th>
+                                <th className="px-2  w-1/12 py-3 text-center border border-gray-300">
+                                    액션
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+                        <Droppable droppableId="DetailsDroppable">
+                            {(provided) => (
+                                <div
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    className="DetailsDroppable"
                                 >
-                                    {(provided) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
+                                    {dataContent.map((data, index) => (
+                                        <Draggable
+                                            key={data.orderIndex}
+                                            draggableId={String(
+                                                data.orderIndex
+                                            )}
+                                            index={index}
                                         >
-                                            <div style={style}>
-                                                <div className="flex">
-                                                    <div className="w-1/12 font-semibold">
-                                                        {item.process}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.actor
-                                                            .split(', ')
-                                                            .map((e) => (
-                                                                <div
-                                                                    className={fontColor(
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    <>
+                                                        <tr key={index}>
+                                                            {/* 절차 */}
+                                                            <td className="justify-cent border border-gray-300 w-1/12 py-2">
+                                                                <input
+                                                                    type="text"
+                                                                    style={
+                                                                        inputStyle
+                                                                    }
+                                                                    value={
+                                                                        data.process
+                                                                    }
+                                                                    onChange={(
                                                                         e
-                                                                    )}
-                                                                >
-                                                                    {e}
+                                                                    ) =>
+                                                                        handleInputChange(
+                                                                            'process',
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            {/* 행위자 */}
+                                                            <td className="border border-gray-300 w-2/12 py-2">
+                                                                <input
+                                                                    type="text"
+                                                                    style={
+                                                                        inputStyle
+                                                                    }
+                                                                    value={
+                                                                        data.actor
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleInputChange(
+                                                                            'actor',
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            {/* 내용 */}
+                                                            <td className="border border-gray-300 w-5/12 py-2">
+                                                                {/* {data.content
+                                                                    .split('\n')
+                                                                    .map(
+                                                                        (
+                                                                            line,
+                                                                            lineIndex
+                                                                        ) => (
+                                                                            <React.Fragment
+                                                                                key={
+                                                                                    lineIndex
+                                                                                }
+                                                                            >
+                                                                                {lineIndex >
+                                                                                    0 && (
+                                                                                    <br />
+                                                                                )}
+                                                                                {
+                                                                                    line
+                                                                                }
+                                                                            </React.Fragment>
+                                                                        )
+                                                                    )} */}
+                                                                <textarea
+                                                                    // type="text"
+                                                                    style={
+                                                                        contentInputStyle
+                                                                    }
+                                                                    value={
+                                                                        data.content
+                                                                    }
+                                                                    rows={3} // 표시할 행 수를 조절할 수 있습니다
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleInputChange(
+                                                                            'content',
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            {/* 파일 */}
+                                                            <td className="border border-gray-300 w-1/12 py-2">
+                                                                <div>
+                                                                    <input
+                                                                        type="file"
+                                                                        style={{
+                                                                            display:
+                                                                                'none',
+                                                                        }}
+                                                                        id={`fileInput-${index}`}
+                                                                        accept="application/pdf"
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            handleFileChange(
+                                                                                e,
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                    <label
+                                                                        htmlFor={`fileInput-${index}`}
+                                                                        className="cursor-pointer flex items-center "
+                                                                    >
+                                                                        &nbsp;
+                                                                        &nbsp;
+                                                                        <HiOutlineUpload className="text-2xl mr-1" />
+                                                                        파일
+                                                                        올리기
+                                                                    </label>
                                                                 </div>
-                                                            ))}
-                                                    </div>
-                                                    <div className="w-5/12">
-                                                        {item.content}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.filePath}
-                                                    </div>
-                                                    <div className="w-2/12">
-                                                        {item.note}
-                                                    </div>
-                                                    <ActionColumn row={item} />
+                                                            </td>
+                                                            {/* 비고 */}
+                                                            <td className="border border-gray-300 w-2/12 py-2">
+                                                                <input
+                                                                    type="text"
+                                                                    style={
+                                                                        inputStyle
+                                                                    }
+                                                                    value={
+                                                                        data.note
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleInputChange(
+                                                                            'note',
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            <td className="border border-gray-300 w-1/12 py-2">
+                                                                <div className="flex items-center">
+                                                                    &nbsp;
+                                                                    <ActionColumn
+                                                                        row={
+                                                                            data
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                </div>
+            </div>
         </>
     )
 }

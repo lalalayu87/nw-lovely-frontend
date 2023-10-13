@@ -21,6 +21,7 @@ import Notification from '@/components/ui/Notification'
 import ApiService from '@/services/ApiService'
 import axios from 'axios'
 import QSheetDetailsContent from './QSheetDetailsContent'
+import { useReactToPrint } from 'react-to-print'
 
 export type qSheet = {
     orderIndex: string
@@ -192,6 +193,12 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
         //     ]
         // }
     }
+    const componentRef = useRef(null)
+
+    const clickPrint = useReactToPrint({
+        content: () => componentRef.current,
+        documentTitle: 'Finaltempl',
+    })
 
     return (
         <>
@@ -219,8 +226,15 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
                             최종확인
                         </Button>
                     </span>
+                    <button
+                        className="bg-pink-300 m-1 p-2 text-white rounded-md"
+                        onClick={clickPrint}
+                    >
+                        프린트하기
+                    </button>
                 </div>
             </div>
+
             <QSheetDataTable ref={tableRef} columns={columns} />
         </>
     )

@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-key */
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
     DragDropContext,
     Droppable,
     DropResult,
-    DraggableChildrenFn,
     Draggable,
 } from 'react-beautiful-dnd'
 // import '@/assets/styles/components/_tables.css'
-import { Tooltip } from '@/components/ui'
+import { Tooltip, Button } from '@/components/ui'
 import {
     HiOutlinePencil,
     HiOutlineTrash,
@@ -17,6 +16,18 @@ import {
 } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import NewQSheetHeader from './NewQSheetHeader'
+import { useReactToPrint } from 'react-to-print'
+import type {
+    DataTableResetHandle,
+    ColumnDef,
+} from '@/components/shared/DataTable'
+import { useAppDispatch, useAppSelector, getList } from '../store'
+import { apiPostQSheetCardList } from '@/services/QSheetService'
+import { PERSIST_STORE_NAME } from '@/constants/app.constant'
+import deepParseJson from '@/utils/deepParseJson'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import { useNavigate } from 'react-router-dom'
 
 const inputStyle = {
     // border: '1px solid #ccc'
@@ -56,6 +67,100 @@ const initialData: QSheetExampleData = {
 }
 
 const NewQSheetContent: React.FC = () => {
+    const tableRef = useRef<DataTableResetHandle>(null)
+    const dispatch = useAppDispatch()
+
+    // const filterData = useAppSelector(
+    //     (state) => state.salesProductList.data.filterData
+    // )
+
+    // useEffect(() => {
+    //     if (tableRef) {
+    //         tableRef.current?.resetSorting()
+    //     }
+    // }, [filterData])
+
+    // const fetchData = () => {
+    //     dispatch(getProducts({ filterData }))
+    // }
+
+    const columns: ColumnDef<qSheet>[] = useMemo(
+        () => [
+            {
+                header: '절차',
+                accessorKey: 'process',
+                width: 'w-1/12',
+            },
+            {
+                header: '행위자',
+                accessorKey: 'actor',
+                sortable: true,
+                width: 'w-2/12',
+            },
+            {
+                header: '내용',
+                accessorKey: 'content',
+                width: 'w-5/12',
+            },
+
+            {
+                header: '파일',
+                accessorKey: 'filePath',
+                width: 'w-2/12',
+            },
+            {
+                header: '비고',
+                accessorKey: 'note',
+                width: 'w-2/12',
+            },
+        ],
+        []
+    )
+
+    const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+    const persistData = deepParseJson(rawPersistData)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userSeq = (persistData as any).auth.user.userSeq
+
+    const navigate = useNavigate()
+    const onCreate = async () => {
+        const date = new Date()
+        const name = '큐시트_' + date.toLocaleDateString('ko-kr')
+
+        const transformedData = dataList.map((item) => {
+            return {
+                orderIndex: item.orderIndex,
+                process: item.process,
+                content: item.content,
+                actor: item.actor,
+                note: item.note,
+                filePath: item.filePath,
+            }
+        })
+
+        const body = {
+            name: name,
+            userSeq: userSeq,
+            data: transformedData,
+        }
+
+        apiPostQSheetCardList(body)
+
+        toast.push(
+            <Notification title={'큐시트가 생성되었습니다.'} type="success">
+                큐시트가 생성되었습니다.
+            </Notification>
+        )
+
+        await getList()
+        navigate('/cuesheet')
+    }
+
+    useEffect(() => {
+        getList()
+    }, [])
+
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
@@ -111,7 +216,6 @@ const NewQSheetContent: React.FC = () => {
         setDataList(newItems)
     }
 
-    // const ActionColumn = ({ row }: { row: QSheetDetailsResponse }) => {
     const ActionColumn = ({ row }: { row: QSheetExampleData }) => {
         const { textTheme } = useThemeClass()
 
@@ -151,14 +255,6 @@ const NewQSheetContent: React.FC = () => {
                     </span>
                 </Tooltip>
                 &nbsp;
-                {/* <Tooltip title="수정">
-                    <span
-                        className={`cursor-pointer p-2 hover:${textTheme}`}
-                        onClick={() => onEdit()}
-                    >
-                        <HiOutlinePencil />
-                    </span>
-                </Tooltip> */}
                 <Tooltip title="삭제">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
@@ -173,187 +269,200 @@ const NewQSheetContent: React.FC = () => {
 
     return (
         <>
-            {/* <button onClick={handleAddData}>추가</button> */}
-            <NewQSheetHeader />
+            <div className="lg:flex items-center justify-between mb-4">
+                <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
+
+                <div className="flex flex-col md:flex-row md:items-center gap-1">
+                    <Button
+                        block
+                        size="sm"
+                        variant="twoTone"
+                        onClick={onCreate}
+                    >
+                        저장
+                    </Button>
+                </div>
+            </div>
+
             <div>
-                <table className="table-auto min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        <DragDropContext
-                            onDragEnd={(result) => onDragEnd(result)}
-                        >
-                            <Droppable droppableId="DetailsDroppable">
-                                {(provided) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.droppableProps}
-                                        className="DetailsDroppable"
-                                    >
-                                        {dataList.map((data, index) => (
-                                            <Draggable
-                                                key={data.orderIndex}
-                                                draggableId={String(
-                                                    data.orderIndex
-                                                )}
-                                                index={index}
-                                            >
-                                                {(provided) => (
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                    >
-                                                        <>
-                                                            <tr key={index}>
-                                                                {/* 절차 */}
-                                                                <td className="border border-gray-300 w-1/12 py-2">
-                                                                    <input
-                                                                        type="text"
-                                                                        style={
-                                                                            inputStyle
-                                                                        }
-                                                                        value={
-                                                                            data.process
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleInputChange(
-                                                                                'process',
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                                index
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </td>
-                                                                {/* 행위자 */}
-                                                                <td className="border border-gray-300 w-2/12 py-2">
-                                                                    <input
-                                                                        type="text"
-                                                                        style={
-                                                                            inputStyle
-                                                                        }
-                                                                        value={
-                                                                            data.actor
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleInputChange(
-                                                                                'actor',
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                                index
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </td>
-                                                                {/* 내용 */}
-                                                                <td className="border border-gray-300 w-5/12 py-2">
-                                                                    <input
-                                                                        type="text"
-                                                                        style={
-                                                                            contentInputStyle
-                                                                        }
-                                                                        value={
-                                                                            data.content
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleInputChange(
-                                                                                'content',
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                                index
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </td>
-                                                                {/* 파일 */}
-                                                                <td className="border border-gray-300 w-1/12 py-2">
-                                                                    <div>
-                                                                        <input
-                                                                            type="file"
-                                                                            style={{
-                                                                                display:
-                                                                                    'none',
-                                                                            }}
-                                                                            id={`fileInput-${index}`}
-                                                                            accept="application/pdf"
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleFileChange(
-                                                                                    e,
-                                                                                    index
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                        <label
-                                                                            htmlFor={`fileInput-${index}`}
-                                                                            className="cursor-pointer flex items-center "
-                                                                        >
-                                                                            &nbsp;
-                                                                            &nbsp;
-                                                                            <HiOutlineUpload className="text-2xl mr-1" />
-                                                                            파일
-                                                                            올리기
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                                {/* 비고 */}
-                                                                <td className="border border-gray-300 w-2/12 py-2">
-                                                                    <input
-                                                                        type="text"
-                                                                        style={
-                                                                            inputStyle
-                                                                        }
-                                                                        value={
-                                                                            data.note
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleInputChange(
-                                                                                'note',
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                                index
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </td>
-                                                                <td className="border border-gray-300 w-1/12 py-2">
-                                                                    <div className="flex items-center">
-                                                                        &nbsp;
-                                                                        &nbsp;
-                                                                        &nbsp;
-                                                                        &nbsp;
-                                                                        <ActionColumn
-                                                                            row={
-                                                                                data
-                                                                            }
-                                                                        />
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </>
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
-                    </tbody>
+                <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th className="px-2  w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
+                                절차
+                            </th>
+                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                                행위자
+                            </th>
+                            <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                                내용
+                            </th>
+                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                                파일
+                            </th>
+                            <th className="px-2  w-2/12 py-3 text-center border border-gray-300">
+                                비고
+                            </th>
+                            <th className="px-2  w-1/12 py-3 text-center border border-gray-300">
+                                액션
+                            </th>
+                        </tr>
+                    </thead>
                 </table>
+
+                <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+                    <Droppable droppableId="DetailsDroppable">
+                        {(provided) => (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className="DetailsDroppable"
+                            >
+                                {dataList.map((data, index) => (
+                                    <Draggable
+                                        key={data.orderIndex}
+                                        draggableId={String(data.orderIndex)}
+                                        index={index}
+                                    >
+                                        {(provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            >
+                                                <>
+                                                    <tr key={index}>
+                                                        {/* 절차 */}
+                                                        <td className="border border-gray-300 w-1/12 py-2">
+                                                            <input
+                                                                type="text"
+                                                                style={
+                                                                    inputStyle
+                                                                }
+                                                                value={
+                                                                    data.process
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleInputChange(
+                                                                        'process',
+                                                                        e.target
+                                                                            .value,
+                                                                        index
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        {/* 행위자 */}
+                                                        <td className="border border-gray-300 w-2/12 py-2">
+                                                            <input
+                                                                type="text"
+                                                                style={
+                                                                    inputStyle
+                                                                }
+                                                                value={
+                                                                    data.actor
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleInputChange(
+                                                                        'actor',
+                                                                        e.target
+                                                                            .value,
+                                                                        index
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        {/* 내용 */}
+                                                        <td className="border border-gray-300 w-5/12 py-2">
+                                                            <input
+                                                                type="text"
+                                                                style={
+                                                                    contentInputStyle
+                                                                }
+                                                                value={
+                                                                    data.content
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleInputChange(
+                                                                        'content',
+                                                                        e.target
+                                                                            .value,
+                                                                        index
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        {/* 파일 */}
+                                                        <td className="border border-gray-300 w-1/12 py-2">
+                                                            <div>
+                                                                <input
+                                                                    type="file"
+                                                                    style={{
+                                                                        display:
+                                                                            'none',
+                                                                    }}
+                                                                    id={`fileInput-${index}`}
+                                                                    accept="application/pdf"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleFileChange(
+                                                                            e,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                />
+                                                                <label
+                                                                    htmlFor={`fileInput-${index}`}
+                                                                    className="cursor-pointer flex items-center "
+                                                                >
+                                                                    &nbsp;
+                                                                    &nbsp;
+                                                                    <HiOutlineUpload className="text-2xl mr-1" />
+                                                                    파일 올리기
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                        {/* 비고 */}
+                                                        <td className="border border-gray-300 w-2/12 py-2">
+                                                            <input
+                                                                type="text"
+                                                                style={
+                                                                    inputStyle
+                                                                }
+                                                                value={
+                                                                    data.note
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleInputChange(
+                                                                        'note',
+                                                                        e.target
+                                                                            .value,
+                                                                        index
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className="border border-gray-300 w-1/12 py-2">
+                                                            <div className="flex items-center">
+                                                                &nbsp; &nbsp;
+                                                                &nbsp; &nbsp;
+                                                                <ActionColumn
+                                                                    row={data}
+                                                                />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             </div>
         </>
     )

@@ -23,15 +23,15 @@ import axios from 'axios'
 import UserQSheetDetailsContent from './UserQSheetDetailsContent'
 
 export type qSheet = {
-    orderIndex: string
+    id: string
     process: string
-    actor: string
-    content: string
-    filePath: string
+    performer: string
+    text: string
+    file: string
     note: string
 }
 
-export type qSheetDetailsDataProps = {
+export type qSheetExampleDataProps = {
     qsheetSeq: string
     data: {
         qsheetSeq: string
@@ -46,7 +46,7 @@ export type qSheetDetailsDataProps = {
 const USerQSheetDetatilsHeader = ({
     data,
     qsheetSeq,
-}: qSheetDetailsDataProps) => {
+}: qSheetExampleDataProps) => {
     console.log(data)
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
@@ -177,7 +177,7 @@ const USerQSheetDetatilsHeader = ({
                 </Notification>
             )
 
-            navigate('/cuesheet')
+            navigate('/cuesheetUser')
         } catch (error) {
             console.error(error)
         }
@@ -224,7 +224,35 @@ const USerQSheetDetatilsHeader = ({
                     </span>
                 </div>
             </div>
-            <UserQSheetDataTable ref={tableRef} columns={columns} />
+            <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700 ">
+                    <tr>
+                        {/* <th className="border-r border-gray-300"></th> */}
+                        <th
+                            // style={{ width: '209px' }}
+                            className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
+                        >
+                            절차
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            행위자
+                        </th>
+                        <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                            내용
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            파일
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            비고
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            액션
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            {/* <UserQSheetDataTable ref={tableRef} columns={columns} /> */}
         </>
     )
 }
