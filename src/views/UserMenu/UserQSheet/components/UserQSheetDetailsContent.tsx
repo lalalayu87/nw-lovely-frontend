@@ -434,24 +434,39 @@ const UserQSheetDetailsContent: React.FC = () => {
                         <tr>
                             {/* <th className="border-r border-gray-300"></th> */}
                             <th
-                                // style={{ width: '209px' }}
-                                className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
+                                style={{ width: '10%' }}
+                                className="text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
                             >
                                 절차
                             </th>
-                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            <th
+                                style={{ width: '20%' }}
+                                className="py-3 text-center border border-gray-300"
+                            >
                                 행위자
                             </th>
-                            <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                            <th
+                                style={{ width: '40%' }}
+                                className="text-center border border-gray-300"
+                            >
                                 내용
                             </th>
-                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            <th
+                                style={{ width: '10%' }}
+                                className="text-center border border-gray-300"
+                            >
                                 파일
                             </th>
-                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            <th
+                                style={{ width: '10%' }}
+                                className="text-center border border-gray-300"
+                            >
                                 비고
                             </th>
-                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            <th
+                                style={{ width: '10%' }}
+                                className="text-center border border-gray-300"
+                            >
                                 액션
                             </th>
                         </tr>
@@ -486,7 +501,12 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                     <>
                                                         <tr key={index}>
                                                             {/* 절차 */}
-                                                            <td className="border border-gray-300 w-1/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-3"
+                                                                style={{
+                                                                    width: '10%'
+                                                                }}
+                                                            >
                                                                 <input
                                                                     type="text"
                                                                     style={
@@ -509,7 +529,12 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                 />
                                                             </td>
                                                             {/* 행위자 */}
-                                                            <td className="border border-gray-300 w-2/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-3"
+                                                                style={{
+                                                                    width: '20%'
+                                                                }}
+                                                            >
                                                                 <input
                                                                     type="text"
                                                                     style={
@@ -532,7 +557,12 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                 />
                                                             </td>
                                                             {/* 내용 */}
-                                                            <td className="border border-gray-300 w-5/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-3"
+                                                                style={{
+                                                                    width: '40%'
+                                                                }}
+                                                            >
                                                                 <input
                                                                     type="text"
                                                                     style={
@@ -555,7 +585,12 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                 />
                                                             </td>
                                                             {/* 파일 */}
-                                                            <td className="border border-gray-300 w-1/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-3"
+                                                                style={{
+                                                                    width: '10%'
+                                                                }}
+                                                            >
                                                                 <div>
                                                                     <input
                                                                         type="file"
@@ -576,18 +611,20 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                     />
                                                                     <label
                                                                         htmlFor={`fileInput-${index}`}
-                                                                        className="cursor-pointer flex items-center "
+                                                                        className="cursor-pointer flex"
                                                                     >
-                                                                        &nbsp;
-                                                                        &nbsp;
-                                                                        <HiOutlineUpload className="text-2xl mr-1" />
+                                                                        <HiOutlineUpload className="items-center text-2xl mr-1" />
                                                                         파일
-                                                                        올리기
                                                                     </label>
                                                                 </div>
                                                             </td>
                                                             {/* 비고 */}
-                                                            <td className="border border-gray-300 w-2/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-3"
+                                                                style={{
+                                                                    width: '10%'
+                                                                }}
+                                                            >
                                                                 <input
                                                                     type="text"
                                                                     style={
@@ -609,7 +646,12 @@ const UserQSheetDetailsContent: React.FC = () => {
                                                                     }
                                                                 />
                                                             </td>
-                                                            <td className="border border-gray-300 w-1/12 py-2">
+                                                            <td
+                                                                className="border border-gray-200 py-2"
+                                                                style={{
+                                                                    width: '10%'
+                                                                }}
+                                                            >
                                                                 <div className="flex items-center">
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     <ActionColumn

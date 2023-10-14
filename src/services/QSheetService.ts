@@ -16,9 +16,6 @@ export async function apiPostQSheetCardList<
         url: '/api/v1/qsheet',
         method: 'post',
         data,
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
     })
 }
 

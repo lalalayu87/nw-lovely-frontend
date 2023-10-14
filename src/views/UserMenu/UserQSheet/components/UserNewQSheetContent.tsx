@@ -152,89 +152,40 @@ const USerNewQSheetContent: React.FC = () => {
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
 
-        // 1. 빈 FormData 객체를 생성합니다.
-        const formDataArray = []
-
-        // 2. 데이터 배열을 반복하면서 각 항목을 FormData에 추가합니다.
-        dataList.forEach((item, index) => {
-            const formData = new FormData()
-            const jsonData = {
-                orderIndex: item.orderIndex,
-                process: item.process,
-                content: item.content,
-                actor: item.actor,
-                note: item.note
-            }
-
-            formData.append('files', item.filePath)
-
-            console.log(jsonData)
-            console.log(formData)
-
-            // 데이터를 JSON 문자열로 변환하여 FormData에 추가합니다.
-            // formData.append(
-            //     `weddinghallCreateDto[${index}]`,
-            //     JSON.stringify(data),
-            //     {
-            //         contentType: 'application/json'
-            //     }
-            // )
-
-            // formData.append(data, {
-            //     contentType: 'application/json'
-            // })
-
-            // // 파일을 FormData에 추가합니다.
-            // formData.append('files', item.filePath)
-
-            // // FormData 객체를 배열에 추가합니다.
-            // formDataArray.push(formData)
-            // console.log(formDataArray)
-        })
-
-        // const formData = new FormData() // 파일을 보내기 위한 FormData 객체를 생성합니다.
-        // const transformedData = dataList.map((item) => {
-        //     formData.append('files', item.filePath) // 각 파일을 FormData에 추가합니다.
-        //     return {
-        //         orderIndex: item.orderIndex,
-        //         process: item.process,
-        //         content: item.content,
-        //         actor: item.actor,
-        //         note: item.note,
-        //         filePath: item.filePath
-        //     }
-        // })
-
-        // const transformedData = dataList.map((item) => {
-        //     return {
-        //         orderIndex: item.orderIndex,
-        //         process: item.process,
-        //         content: item.content,
-        //         actor: item.actor,
-        //         note: item.note,
-        //         filePath: item.filePath
-        //     }
-        // })
-
-        // 추가적인 파라미터들을 FormData에 포함합니다.
-        // formData.append('name', name)
-        // formData.append('userSeq', userSeq)
-        // formData.append('orgSeq', orgSeq)
-        // formData.append('data', JSON.stringify(transformedData)) // 데이터를 JSON 문자열로 변환하여 포함합니다.
-
-        // const body = {
-        //     name: name,
-        //     userSeq: userSeq,
-        //     orgSeq: orgSeq,
-        //     data: transformedData
-        // }
-
-        // console.log(body)
-        // apiPostQSheetCardList(body)
+        const data = new FormData()
+        const fileInput = document.getElementById('fileInput')
+        console.log(fileInput)
+        const files = fileInput.files[0].name
+        console.log(files)
 
         const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
         const persistData = deepParseJson(rawPersistData)
         const accessToken = (persistData as any).auth.session.accessToken
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const userSeq = (persistData as any).auth.user.userSeq
+        console.log(orgSeq)
+        console.log(userSeq)
+        console.log(name)
+
+        const requestData = dataList.map((item) => ({
+            name: name,
+            userSeq: userSeq,
+            orgSeq: orgSeq,
+            data: [
+                {
+                    orderIndex: item.orderIndex,
+                    process: item.process,
+                    content: item.content,
+                    actor: item.actor,
+                    note: item.note,
+                    filePath: item.filePath // 이 부분을 실제 파일 경로로 업데이트해야 합니다.
+                }
+            ]
+        }))
+
+        data.append('qsheetCreateDto', JSON.stringify(requestData))
+        data.append('files', files)
+
         try {
             // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
             const response = await axios.post(
@@ -249,20 +200,34 @@ const USerNewQSheetContent: React.FC = () => {
             )
 
             // API 응답을 필요에 따라 처리합니다.
-            console.log(response.data)
+            console.log(response)
+            if (response.status === 200) {
+                // "==="로 비교 연산자를 사용
+                toast.push(
+                    <Notification
+                        title={'큐시트가 생성되었습니다.'}
+                        type="success"
+                    >
+                        큐시트가 생성되었습니다.
+                    </Notification>
+                )
+                setDataList([])
+                await getList()
+                navigate('/cuesheetUser')
+            }
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
         }
 
-        toast.push(
-            <Notification title={'큐시트가 생성되었습니다.'} type="success">
-                큐시트가 생성되었습니다.
-            </Notification>
-        )
+        // toast.push(
+        //     <Notification title={'큐시트가 생성되었습니다.'} type="success">
+        //         큐시트가 생성되었습니다.
+        //     </Notification>
+        // )
 
-        await getList()
-        navigate('/cuesheetUser')
+        // await getList()
+        // navigate('/cuesheetUser')
     }
 
     useEffect(() => {
@@ -291,6 +256,7 @@ const USerNewQSheetContent: React.FC = () => {
     ) => {
         const updatedDataList = [...dataList]
         const file = e.target.files[0]
+        console.log(e.target.files)
         if (file) {
             updatedDataList[index].filePath = file.name
         }
@@ -407,21 +373,14 @@ const USerNewQSheetContent: React.FC = () => {
                 }
             )
 
-            // 응답 데이터 가져오기
             const orgData = response.data.content
-            console.log(orgData)
 
             const matchingOrgs = orgData.filter(
                 (org) => org.orgName === searchKeyword
             )
             const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
             const matchingOrgSeq = matchingOrgSeqs[0]
-            // 검색어와 일치하는 orgName을 찾기
-            // const filteredOrgs = orgData.map((i) => i.orgName)
-            // const matchingItems = filteredOrgs.filter((item) =>
-            //     item.includes(searchKeyword)
-            // )
-            // console.log(matchingItems)
+            console.log(matchingOrgSeq)
 
             if (matchingOrgSeqs.length > 0) {
                 setOrgSeq(matchingOrgSeq)
@@ -584,7 +543,8 @@ const USerNewQSheetContent: React.FC = () => {
                                                                         display:
                                                                             'none'
                                                                     }}
-                                                                    id={`fileInput-${index}`}
+                                                                    // id={`fileInput-${index}`}
+                                                                    id="fileInput"
                                                                     accept="*/*"
                                                                     onChange={(
                                                                         e
@@ -596,13 +556,14 @@ const USerNewQSheetContent: React.FC = () => {
                                                                     }
                                                                 />
                                                                 <label
-                                                                    htmlFor={`fileInput-${index}`}
+                                                                    htmlFor={`fileInput`}
+                                                                    // htmlfor=`fileInput
                                                                     className="cursor-pointer flex items-center "
                                                                 >
                                                                     &nbsp;
                                                                     &nbsp;
                                                                     <HiOutlineUpload className="text-2xl mr-1" />
-                                                                    파일 올리기
+                                                                    파일
                                                                 </label>
                                                             </div>
                                                         </td>

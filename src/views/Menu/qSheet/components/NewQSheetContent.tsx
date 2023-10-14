@@ -4,7 +4,7 @@ import {
     DragDropContext,
     Droppable,
     DropResult,
-    Draggable,
+    Draggable
 } from 'react-beautiful-dnd'
 // import '@/assets/styles/components/_tables.css'
 import { Tooltip, Button } from '@/components/ui'
@@ -12,14 +12,14 @@ import {
     HiOutlinePencil,
     HiOutlineTrash,
     HiPlusSm,
-    HiOutlineUpload,
+    HiOutlineUpload
 } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import NewQSheetHeader from './NewQSheetHeader'
 import { useReactToPrint } from 'react-to-print'
 import type {
     DataTableResetHandle,
-    ColumnDef,
+    ColumnDef
 } from '@/components/shared/DataTable'
 import { useAppDispatch, useAppSelector, getList } from '../store'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
@@ -35,7 +35,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%',
+    width: '95%'
 }
 
 const contentInputStyle = {
@@ -45,6 +45,7 @@ const contentInputStyle = {
     margin: '5px',
     outline: 'none',
     width: '95%',
+    overFlow: 'hidden'
 }
 interface QSheetExampleData {
     process: string
@@ -63,7 +64,7 @@ const initialData: QSheetExampleData = {
     filePath: '',
     note: '',
     orderIndex: 1,
-    memo: '',
+    memo: ''
 }
 
 const NewQSheetContent: React.FC = () => {
@@ -89,30 +90,30 @@ const NewQSheetContent: React.FC = () => {
             {
                 header: '절차',
                 accessorKey: 'process',
-                width: 'w-1/12',
+                width: 'w-1/12'
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12',
+                width: 'w-5/12'
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12',
-            },
+                width: 'w-2/12'
+            }
         ],
         []
     )
@@ -135,14 +136,14 @@ const NewQSheetContent: React.FC = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: item.filePath,
+                filePath: item.filePath
             }
         })
 
         const body = {
             name: name,
             userSeq: userSeq,
-            data: transformedData,
+            data: transformedData
         }
 
         apiPostQSheetCardList(body)
@@ -152,6 +153,7 @@ const NewQSheetContent: React.FC = () => {
                 큐시트가 생성되었습니다.
             </Notification>
         )
+        setDataList([])
 
         await getList()
         navigate('/cuesheet')
@@ -164,7 +166,7 @@ const NewQSheetContent: React.FC = () => {
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
-        orderIndex: 2,
+        orderIndex: 2
     })
 
     // const handleAddData = () => {
@@ -223,7 +225,7 @@ const NewQSheetContent: React.FC = () => {
             console.log('add')
             setNewData({
                 ...newData,
-                orderIndex: newData.orderIndex + 1,
+                orderIndex: newData.orderIndex + 1
             })
             setDataList([...dataList, newData])
         }
@@ -288,7 +290,7 @@ const NewQSheetContent: React.FC = () => {
                 <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th className="px-2  w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
+                            <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                                 절차
                             </th>
                             <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
@@ -399,10 +401,10 @@ const NewQSheetContent: React.FC = () => {
                                                                     type="file"
                                                                     style={{
                                                                         display:
-                                                                            'none',
+                                                                            'none'
                                                                     }}
                                                                     id={`fileInput-${index}`}
-                                                                    accept="application/pdf"
+                                                                    accept="*/*"
                                                                     onChange={(
                                                                         e
                                                                     ) =>
@@ -419,7 +421,7 @@ const NewQSheetContent: React.FC = () => {
                                                                     &nbsp;
                                                                     &nbsp;
                                                                     <HiOutlineUpload className="text-2xl mr-1" />
-                                                                    파일 올리기
+                                                                    파일
                                                                 </label>
                                                             </div>
                                                         </td>

@@ -28,14 +28,10 @@ const QSheetCardList = () => {
     const dispatch = useAppDispatch()
 
     const loading = useAppSelector((state) => state.qsheetDataList.loading)
-    const t = useAppSelector((state) => state.qsheetDataList)
-    console.log(t)
-    const tt = useAppSelector((state) => state.qsheetDataList.data)
-    console.log(tt)
-
     const qsheetCardList = useAppSelector(
         (state) => state.qsheetDataList.data.qSheetDataList
     )
+    console.log(qsheetCardList)
 
     useEffect(() => {
         dispatch(getList())
