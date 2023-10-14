@@ -23,9 +23,9 @@ interface QSheetExampleData {
 }
 
 const validationSchema = Yup.object().shape({
-    process: Yup.string().required('절차를 입력해주세요.'),
+    process: Yup.string().required('식순명을 입력해주세요.'),
     actor: Yup.string().required('행위자를 입력해주세요.'),
-    text: Yup.string().required('내용을 입력해주세요.'),
+    text: Yup.string().required('내용을 입력해주세요.')
 })
 
 const UserEditNewQSheetContent: React.FC<{
@@ -53,7 +53,7 @@ const UserEditNewQSheetContent: React.FC<{
                         content: detailData.content,
                         filePath: detailData.filePath,
                         note: detailData.note,
-                        orderIndex: detailData.orderIndex,
+                        orderIndex: detailData.orderIndex
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
@@ -84,7 +84,7 @@ const UserEditNewQSheetContent: React.FC<{
                         <Form>
                             <FormContainer layout="horizontal">
                                 <FormItem
-                                    label="절차"
+                                    label="식순명"
                                     invalid={errors.process && touched.process}
                                     errorMessage={errors.process}
                                 >
@@ -96,7 +96,7 @@ const UserEditNewQSheetContent: React.FC<{
                                         validate={(value: string) =>
                                             requiredFieldValidation(
                                                 value,
-                                                '절차를 기입해주세요.'
+                                                '식순명을 기입해주세요.'
                                             )
                                         }
                                     />

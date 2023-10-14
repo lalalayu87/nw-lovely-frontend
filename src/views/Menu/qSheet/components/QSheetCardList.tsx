@@ -44,19 +44,17 @@ const QSheetCardList = () => {
         row: QSheetData
         qsheetCardList: QSheetData[]
     }) => {
-        console.log(row)
-        console.log(qsheetCardList)
         const dispatch = useAppDispatch()
         const { textTheme } = useThemeClass()
         const navigate = useNavigate()
 
-        const onView = () => {
-            console.log('보기', row)
-            // 페이지 이동 시 데이터를 state로 전달
-            navigate(`/cuesheet/details/${row.qsheetSeq}`, {
-                state: { qsheetSeq: row.qsheetSeq }
-            })
-        }
+        // const onView = () => {
+        //     console.log('보기', row)
+        //     // 페이지 이동 시 데이터를 state로 전달
+        //     navigate(`/cuesheet/details/${row.qsheetSeq}`, {
+        //         state: { qsheetSeq: row.qsheetSeq }
+        //     })
+        // }
 
         const onDelete = async () => {
             console.log('삭제')
@@ -75,14 +73,14 @@ const QSheetCardList = () => {
 
         return (
             <div>
-                <Tooltip title="보기">
+                {/* <Tooltip title="보기">
                     <span
                         className={`cursor-pointer p-2 hover:${textTheme}`}
                         onClick={onView}
                     >
                         <HiOutlineEye />
                     </span>
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip title="삭제">
                     <span
@@ -129,7 +127,12 @@ const QSheetCardList = () => {
                         {qsheetCardList.map((data, index) => (
                             <tr key={index}>
                                 <td className="text-center rtl:text-right font-semibold justify-cent border-t border-b  border-gray-300 py-2">
-                                    {data.name}{' '}
+                                    <Link
+                                        to={`/cuesheet/details/${data.qsheetSeq}`}
+                                        state={{ qsheetSeq: data.qsheetSeq }}
+                                    >
+                                        {data.name}
+                                    </Link>
                                 </td>
                                 <td className="text-center rtl:text-right font-semibold justify-cent border-t border-b  border-gray-300 py-2">
                                     {data.created_at.toString()}

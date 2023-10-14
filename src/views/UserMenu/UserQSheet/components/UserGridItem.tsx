@@ -35,83 +35,9 @@ export type GridItemProps = {
     }
 }
 
-// export type GridItemProps = {
-//     data: {
-//         content: [
-//             {
-//                 created_at: Date
-//                 data: [
-//                     actor: string,
-//                     content: string,
-//                     filePath: string,
-//                     note: string,
-//                     orderIndex: number,
-//                     process: string
-//                 ]
-//                 name: string
-//                 orgSeq: {
-//                     orgBiznum: string
-//                     orgContact: string
-//                     orgEnabled: boolean
-//                     orgName: boolean
-//                     orgSeq: boolean
-//                 }
-//                 qsheetSeq: string
-//                 userSeq: {
-//                     created_at: Date
-//                     userEmail: string
-//                     userEnabled: boolean
-//                     userId: string
-//                     userName: string
-//                     userRole: {
-//                         roleName: string
-//                         roleSeq: string
-//                     }
-//                     userSeq: string
-//                 }
-//             }
-//         ]
-//         empty: boolean
-//         first: boolean
-//         last: boolean
-//         number: number
-//         numberOfElements: number
-//         pageable: {
-//             offset: number
-//             pageNumber: number
-//             pazeSize: number
-//             paged: boolean
-//             sort: {
-//                 empty: boolean
-//                 sorted: boolean
-//                 unsorted: boolean
-//             }
-//             unpaged: boolean
-//         }
-//         size: number
-//         sort: {
-//             empty: boolean
-//             sorted: boolean
-//             unsorted: boolean
-//         }
-//         totalElements: number
-//         totalPages: number
-//     }
-// }
-
 const ActionColumn = ({ row }: { row: GridItemProps }) => {
     const dispatch = useAppDispatch()
     const { textTheme } = useThemeClass()
-    const navigate = useNavigate()
-
-    const onView = () => {
-        // 페이지 이동 시 데이터를 state로 전달
-        navigate(`/cuesheetUser/details/${row.qsheetSeq}`, {
-            state: { qsheetSeq: row.qsheetSeq }
-        })
-
-        console.log(row.qsheetSeq)
-    }
 
     const onDelete = async () => {
         deleteList(row.qsheetSeq)
@@ -130,14 +56,6 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
 
     return (
         <div className="flex justify-end text-lg">
-            <Tooltip title="보기">
-                <span
-                    className={`cursor-pointer p-2 hover:${textTheme}`}
-                    onClick={onView}
-                >
-                    <HiOutlineEye />
-                </span>
-            </Tooltip>
             <Tooltip title="삭제">
                 <span
                     className={`cursor-pointer p-2 hover:${textTheme}`}
@@ -146,7 +64,6 @@ const ActionColumn = ({ row }: { row: GridItemProps }) => {
                     <HiOutlineTrash />
                 </span>
             </Tooltip>
-            {/* <DeleteConfirmation /> */}
         </div>
     )
 }
@@ -156,15 +73,16 @@ const UserGridItem = ({ data }: GridItemProps) => {
         <Card bodyClass="h-full">
             <div className="flex flex-col justify-between h-full">
                 <div className="flex justify-between">
-                    <h6>{data.name}</h6>
-
-                    {/* <ItemDropdown /> */}
+                    <Link
+                        to={`/cuesheetUser/details/${data.qsheetSeq}`}
+                        state={{ qsheetSeq: data.qsheetSeq }}
+                    >
+                        <h6>{data.name}</h6>
+                    </Link>
                 </div>
                 <p>{data.created_at.toString()}</p>
                 <div className="mt-3">
-                    {/* <ProgressionBar progression={progression} /> */}
                     <div className="flex items-center justify-between mt-2">
-                        {/* <Members members={member} /> */}
                         <div className="flex items-center rounded-full font-semibold text-xs">
                             <ActionColumn row={data} />
                         </div>

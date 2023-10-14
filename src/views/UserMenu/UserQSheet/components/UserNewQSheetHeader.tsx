@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import type {
     DataTableResetHandle,
-    ColumnDef,
+    ColumnDef
 } from '@/components/shared/DataTable'
 import {
     useAppDispatch,
     useAppSelector,
     getList,
     setSelectedQSheet,
-    toggleDeleteConfirmation,
+    toggleDeleteConfirmation
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
@@ -62,32 +62,32 @@ const USerNewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
-                header: '절차',
+                header: '식순명',
                 accessorKey: 'process',
-                width: 'w-1/12',
+                width: 'w-1/12'
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12',
+                width: 'w-5/12'
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12',
+                width: 'w-2/12'
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12',
-            },
+                width: 'w-2/12'
+            }
         ],
         []
     )
@@ -110,14 +110,14 @@ const USerNewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: item.filePath,
+                filePath: item.filePath
             }
         })
 
         const body = {
             name: name,
             userSeq: userSeq,
-            data: transformedData,
+            data: transformedData
         }
 
         apiPostQSheetCardList(body)
@@ -161,7 +161,7 @@ const USerNewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
                             // style={{ width: '209px' }}
                             className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
                         >
-                            절차
+                            식순명
                         </th>
                         <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                             행위자

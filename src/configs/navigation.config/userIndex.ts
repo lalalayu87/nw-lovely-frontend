@@ -7,16 +7,16 @@ import type { NavigationTree } from '@/@types/navigation'
 import { BiCalendarCheck } from 'react-icons/bi'
 
 const userNavigationConfig: NavigationTree[] = [
-    {
-        key: 'Userhome',
-        path: '/userhome',
-        title: 'Home',
-        translateKey: 'nav.Userhome',
-        icon: 'home',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
+    // {
+    //     key: 'Userhome',
+    //     path: '/userhome',
+    //     title: 'Home',
+    //     translateKey: 'nav.Userhome',
+    //     icon: 'home',
+    //     type: NAV_ITEM_TYPE_ITEM,
+    //     authority: [],
+    //     subMenu: [],
+    // },
     {
         key: 'QsheetUser',
         path: '/cuesheetUser',
@@ -27,26 +27,27 @@ const userNavigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
-    {
-        key: 'CommunityUser',
-        path: '/communityUser',
-        title: '커뮤니티',
-        translateKey: 'nav.CommunityUser',
-        icon: 'hiOutlineChatAlt2',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
-    {
-        key: 'MypageUser',
-        path: '/mypageUser',
-        title: '마이페이지',
-        translateKey: 'nav.MypageUser',
-        icon: 'hiOutlineEmojiHappy',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
+    // {
+    //     key: 'CommunityUser',
+    //     path: '/communityUser',
+    //     title: '커뮤니티',
+    //     translateKey: 'nav.CommunityUser',
+    //     icon: 'hiOutlineChatAlt2',
+    //     type: NAV_ITEM_TYPE_ITEM,
+    //     authority: [],
+    //     subMenu: [],
+    // },
+    // {
+    //     key: 'MypageUser',
+    //     path: '/mypageUser',
+    //     title: '마이페이지',
+    //     translateKey: 'nav.MypageUser',
+    //     icon: 'hiOutlineEmojiHappy',
+    //     type: NAV_ITEM_TYPE_ITEM,
+    //     authority: [],
+    //     subMenu: [],
+    // },
+
     // /** Example purpose only, please remove */
     // {
     //     key: 'ScheduleList',
