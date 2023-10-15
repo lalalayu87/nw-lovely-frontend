@@ -58,9 +58,10 @@ function useAuth() {
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
 
-                navigate(
-                    redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
-                )
+                // 나중에 롤에 따라 바꿔야함 페이지
+                // navigate(
+                //     redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
+                // )
                 return {
                     status: 'success',
                     message: '',
