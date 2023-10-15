@@ -40,6 +40,18 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'finaltempl',
+        path: '/finaltempl',
+        component: lazy(() => import('@/views/Menu/Finaltempl/Finaltempl')),
+        authority: [],
+    },
+    {
+        key: 'finaltemplView',
+        path: '/finaltempl/finaltemplView',
+        component: lazy(() => import('@/views/Menu/Finaltempl/FinaltemplView')),
+        authority: [],
+    },
+    {
         key: 'place',
         path: '/place',
         component: lazy(() => import('@/views/Menu/Place')),
@@ -79,40 +91,6 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/Menu/mypage/CustomerDetail')),
         authority: [],
     },
-    // {
-    //     key: 'collapseMenu.item1',
-    //     path: '/collapse-menu-item-view-1',
-    //     component: lazy(() => import('@/views/demo/CollapseMenuItemView1')),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'collapseMenu.item2',
-    //     path: '/collapse-menu-item-view-2',
-    //     component: lazy(() => import('@/views/demo/CollapseMenuItemView2')),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'groupMenu.single',
-    //     path: '/group-single-menu-item-view',
-    //     component: lazy(() => import('@/views/demo/GroupSingleMenuItemView')),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'groupMenu.collapse.item1',
-    //     path: '/group-collapse-menu-item-view-1',
-    //     component: lazy(
-    //         () => import('@/views/demo/GroupCollapseMenuItemView1')
-    //     ),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'groupMenu.collapse.item2',
-    //     path: '/group-collapse-menu-item-view-2',
-    //     component: lazy(
-    //         () => import('@/views/demo/GroupCollapseMenuItemView2')
-    //     ),
-    //     authority: [],
-    // },
 ]
 
 export const protectedUserRoutes = [
@@ -125,9 +103,30 @@ export const protectedUserRoutes = [
         authority: [],
     },
     {
-        key: 'CuesheetUser',
+        key: 'QsheetUser',
         path: '/cuesheetUser',
-        component: lazy(() => import('@/views/UserMenu/CueSheetUser')),
+        component: lazy(
+            () => import('@/views/UserMenu/UserQSheet/UserQSheetMain')
+        ),
+        authority: [],
+    },
+    {
+        key: 'QsheetUser',
+        path: '/cuesheetUser/create',
+        component: lazy(
+            () => import('@/views/UserMenu/UserQSheet/components/UserNewQSheet')
+        ),
+        authority: [],
+    },
+    {
+        key: 'QsheetUser',
+        path: '/cuesheetUser/details/:qsheetSeq',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/UserMenu/UserQSheet/components/UserQSheetDetails'
+                )
+        ),
         authority: [],
     },
     {

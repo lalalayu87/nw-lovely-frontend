@@ -9,9 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import {
     setSelectedQSheet,
     toggleDeleteConfirmation
-} from '../store/qSheetSlice'
+} from '../store/UserQSheetSlice'
 import { HiOutlinePencil, HiOutlineTrash, HiExternalLink } from 'react-icons/hi'
-import QSheetDataTable from './QSheetDataTable'
+import QSheetDataTable from './UserQSheetDataTable'
 import Button from '@/components/ui/Button'
 import deepParseJson from '@/utils/deepParseJson'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
@@ -20,19 +20,18 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import ApiService from '@/services/ApiService'
 import axios from 'axios'
-import QSheetDetailsContent from './QSheetDetailsContent'
-import { useReactToPrint } from 'react-to-print'
+import UserQSheetDetailsContent from './UserQSheetDetailsContent'
 
 export type qSheet = {
-    orderIndex: string
+    id: string
     process: string
-    actor: string
-    content: string
-    filePath: string
+    performer: string
+    text: string
+    file: string
     note: string
 }
 
-export type qSheetDetailsDataProps = {
+export type qSheetExampleDataProps = {
     qsheetSeq: string
     data: {
         qsheetSeq: string
@@ -44,7 +43,10 @@ export type qSheetDetailsDataProps = {
     }
 }
 
-const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
+const USerQSheetDetatilsHeader = ({
+    data,
+    qsheetSeq
+}: qSheetExampleDataProps) => {
     console.log(data)
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
@@ -175,7 +177,7 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
                 </Notification>
             )
 
-            navigate('/cuesheet')
+            navigate('/cuesheetUser')
         } catch (error) {
             console.error(error)
         }
@@ -193,12 +195,6 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
         //     ]
         // }
     }
-    const componentRef = useRef(null)
-
-    const clickPrint = useReactToPrint({
-        content: () => componentRef.current,
-        documentTitle: 'Finaltempl'
-    })
 
     return (
         <>
@@ -226,18 +222,39 @@ const QSheetDetatilsHeader = ({ data, qsheetSeq }: qSheetDetailsDataProps) => {
                             최종확인
                         </Button>
                     </span>
-                    <button
-                        className="bg-pink-300 m-1 p-2 text-white rounded-md"
-                        onClick={clickPrint}
-                    >
-                        프린트하기
-                    </button>
                 </div>
             </div>
-
-            <QSheetDataTable ref={tableRef} columns={columns} />
+            <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700 ">
+                    <tr>
+                        {/* <th className="border-r border-gray-300"></th> */}
+                        <th
+                            // style={{ width: '209px' }}
+                            className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
+                        >
+                            식순명
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            행위자
+                        </th>
+                        <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
+                            내용
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            파일
+                        </th>
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            비고
+                        </th>
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            액션
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            {/* <UserQSheetDataTable ref={tableRef} columns={columns} /> */}
         </>
     )
 }
 
-export default QSheetDetatilsHeader
+export default USerQSheetDetatilsHeader

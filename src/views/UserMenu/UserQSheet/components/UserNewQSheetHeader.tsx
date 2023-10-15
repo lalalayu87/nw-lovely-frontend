@@ -3,22 +3,23 @@ import type {
     DataTableResetHandle,
     ColumnDef
 } from '@/components/shared/DataTable'
-import { useAppDispatch, useAppSelector, getList } from '../store'
-import useThemeClass from '@/utils/hooks/useThemeClass'
-import { useNavigate } from 'react-router-dom'
 import {
+    useAppDispatch,
+    useAppSelector,
+    getList,
     setSelectedQSheet,
     toggleDeleteConfirmation
-} from '../store/qSheetSlice'
+} from '../store'
+import useThemeClass from '@/utils/hooks/useThemeClass'
+import { useNavigate } from 'react-router-dom'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
-import QSheetDataTable from './QSheetDataTable'
+import UserQSheetDataTable from './UserQSheetDataTable'
 import Button from '@/components/ui/Button'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { useReactToPrint } from 'react-to-print'
 
 export type qSheet = {
     id: string
@@ -40,7 +41,7 @@ export type qSheetExampleDataProps = {
     }
 }
 
-const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
+const USerNewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
 
@@ -128,7 +129,7 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
         )
 
         await getList()
-        navigate('/cuesheet')
+        navigate('/cuesheetUser')
     }
 
     useEffect(() => {
@@ -152,10 +153,12 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
                 </div>
             </div>
 
-            {/* <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+            <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700 ">
                     <tr>
+                        {/* <th className="border-r border-gray-300"></th> */}
                         <th
+                            // style={{ width: '209px' }}
                             className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
                         >
                             식순명
@@ -177,7 +180,7 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
                         </th>
                     </tr>
                 </thead>
-            </table> */}
+            </table>
             {/* <QSheetDataTable
                 ref={tableRef}
                 columns={columns}
@@ -187,4 +190,4 @@ const NewQSheetHeader = ({ data }: qSheetExampleDataProps) => {
     )
 }
 
-export default NewQSheetHeader
+export default USerNewQSheetHeader
