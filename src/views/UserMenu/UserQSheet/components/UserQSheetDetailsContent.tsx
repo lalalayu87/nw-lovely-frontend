@@ -44,6 +44,7 @@ import { DataTableResetHandle } from '@/components/shared'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { useReactToPrint } from 'react-to-print'
+import axios from 'axios'
 
 const inputStyle = {
     // border: '1px solid #ccc'
@@ -101,9 +102,57 @@ type DataContent = {
 //     memo: '',
 // }
 
-const UserQSheetDetailsContent: React.FC = () => {
+const UserQSheetDetailsContent = () => {
+    // const UserQSheetDetailsContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        fetchData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const fetchData = async () => {
+        const qsheetSeq = location.state.qsheetSeq
+        if (qsheetSeq) {
+            setLoading(true)
+            const response = await apiGetQSheetCardDetails<
+                QSheetDetailsResponse,
+                { qsheetSeq: string }
+            >({ qsheetSeq })
+            if (response) {
+                const res = response.data
+                const responseData = response.data?.data
+                setLoading(false)
+                setDataList(res)
+                setDataContent(responseData)
+            }
+        }
+    }
+
+    const location = useLocation()
+
+    const [loading, setLoading] = useState(true)
+
+    const [dataList, setDataList] = useState<QSheetDetailsResponse>()
+    const qsheetSeq = location.state.qsheetSeq
+    const orgSeq = dataList?.orgSeq.orgSeq
+
+    const initialDataContent: DataContent[] = [
+        {
+            actor: '',
+            content: '',
+            filePath: '',
+            note: '',
+            orderIndex: 1,
+            process: ''
+        }
+    ]
+
+    const [dataContent, setDataContent] =
+        useState<DataContent[]>(initialDataContent)
+
+    console.log(dataContent)
 
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
@@ -141,35 +190,66 @@ const UserQSheetDetailsContent: React.FC = () => {
     const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
     const persistData = deepParseJson(rawPersistData)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userSeq = (persistData as any).auth.user.userSeq
+    // const orgSeq = dataList
+
     const navigate = useNavigate()
 
     const onUpdate = async () => {
-        const transformedData = dataContent.map((item) => ({
-            data: [
-                {
-                    orderIndex: item.orderIndex,
-                    process: item.process,
-                    content: item.content,
-                    actor: item.actor,
-                    note: item.note,
-                    filePath: item.filePath
-                }
-            ]
-        }))
-
-        const body = {
+        const qsheetData = {
+            orgSeq: orgSeq,
             data: []
         }
+        const addData = []
+        const formData = new FormData()
 
-        for (let i = 0; i < transformedData.length; i++) {
-            body.data.push(transformedData[i].data[0])
+        for (let i = 0; i < dataContent.length; i++) {
+            const item = dataContent[i]
+            const requestData = dataContent.map((item) => ({
+                orderIndex: item.orderIndex,
+                process: item.process,
+                content: item.content,
+                actor: item.actor,
+                note: item.note,
+                filePath: `${item.process}_${item.filePath}`
+            }))
+            qsheetData.data = qsheetData.data.concat(requestData[i])
+            console.log(qsheetData.data)
+            console.log(qsheetData)
         }
 
+        // console.log(alert(JSON.stringify(qsheetData)))
+
+        formData.append(
+            'qsheetUpdateDto',
+            new Blob([JSON.stringify(qsheetData)], {
+                type: 'application/json'
+            })
+        )
+        console.log([JSON.stringify(qsheetData)])
+
+        fileInputs.forEach((file, index) => {
+            if (file) {
+                formData.append(`files`, file)
+            }
+        })
+
+        const accessToken = (persistData as any).auth.session.accessToken
         try {
-            const response = await apiPatchQSheetCardList<ResponseType>(
-                qsheetSeq,
-                body
+            // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
+            const response = await axios.patch(
+                `http://152.69.228.245:10001/api/v1/qsheet/${qsheetSeq}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
             )
+
+            // API 응답을 필요에 따라 처리합니다.
+            console.log(response.data)
 
             toast.push(
                 <Notification title={'큐시트가 수정되었습니다.'} type="success">
@@ -179,54 +259,47 @@ const UserQSheetDetailsContent: React.FC = () => {
 
             navigate('/cuesheetUser')
         } catch (error) {
+            // 에러를 처리합니다.
             console.error(error)
         }
-    }
 
-    const location = useLocation()
+        // const transformedData = dataContent.map((item) => ({
+        //     data: [
+        //         {
+        //             orderIndex: item.orderIndex,
+        //             process: item.process,
+        //             content: item.content,
+        //             actor: item.actor,
+        //             note: item.note,
+        //             filePath: item.filePath
+        //         }
+        //     ]
+        // }))
 
-    const [loading, setLoading] = useState(true)
+        // const body = {
+        //     data: []
+        // }
 
-    const [dataList, setDataList] = useState<QSheetDetailsResponse>()
-    const qsheetSeq = location.state.qsheetSeq
+        // for (let i = 0; i < transformedData.length; i++) {
+        //     body.data.push(transformedData[i].data[0])
+        // }
 
-    const initialDataContent: DataContent[] = [
-        {
-            actor: '',
-            content: '',
-            filePath: '',
-            note: '',
-            orderIndex: 1,
-            process: ''
-        }
-    ]
+        // try {
+        //     const response = await apiPatchQSheetCardList<ResponseType>(
+        //         qsheetSeq,
+        //         body
+        //     )
 
-    const [dataContent, setDataContent] =
-        useState<DataContent[]>(initialDataContent)
+        //     toast.push(
+        //         <Notification title={'큐시트가 수정되었습니다.'} type="success">
+        //             큐시트가 수정되었습니다.
+        //         </Notification>
+        //     )
 
-    console.log(dataContent)
-
-    useEffect(() => {
-        fetchData()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const fetchData = async () => {
-        const qsheetSeq = location.state.qsheetSeq
-        if (qsheetSeq) {
-            setLoading(true)
-            const response = await apiGetQSheetCardDetails<
-                QSheetDetailsResponse,
-                { qsheetSeq: string }
-            >({ qsheetSeq })
-            if (response) {
-                const res = response.data
-                const responseData = response.data?.data
-                setLoading(false)
-                setDataList(res)
-                setDataContent(responseData)
-            }
-        }
+        //     navigate('/cuesheetUser')
+        // } catch (error) {
+        //     console.error(error)
+        // }
     }
 
     const handleInputChange = (
@@ -242,36 +315,94 @@ const UserQSheetDetailsContent: React.FC = () => {
 
     const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
 
+    const [fileInputs, setFileInputs] = useState([])
+
     const handleFileChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        const updatedDataList = [...dataContent]
-        console.log(e.target.files[0].name)
-        const file = e.target.files[0]
-        console.log(file)
+        console.log(e)
+        console.log(index)
 
-        if (file) {
-            updatedDataList[index].filePath = file.name
+        const updatedDataList = [...dataContent]
+        console.log('updatedDataList', updatedDataList)
+
+        const files = e.target.files
+        console.log(files)
+
+        const updatedFileInputs = [...fileInputs]
+
+        for (let i = 0; i < e.target.files.length; i++) {
+            updatedFileInputs[index + i] = e.target.files[i]
         }
-        setDataContent(updatedDataList)
+
+        setFileInputs(updatedFileInputs)
+        if (files.length > 0) {
+            updatedDataList[index] = {
+                ...updatedDataList[index],
+                filePath: files[0].name
+            }
+            setDataContent(updatedDataList)
+        }
+
+        // if (file) {
+        //     updatedDataList[index] = {
+        //         ...updatedDataList[index], //중요!!!
+        //         filePath: file.name
+        //     }
+        //     console.log(updatedDataList)
+        //     console.log(index)
+        //     console.log(file.name)
+        // }
+        // setDataList(updatedDataList)
         console.log(updatedDataList)
 
-        const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-        const fileNameDisplay = document.getElementById('fileNameDisplay')
+        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
+        // const fileNameDisplay = document.getElementById('fileNameDisplay')
 
-        if (fileInputName && fileInputName.files.length > 0) {
-            // null 체크를 수행하여 오류 방지
-            const fileName = fileInputName.files[0].name
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = fileName
-            }
-        } else {
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = '파일'
-            }
-        }
+        // if (fileInputName && fileInputName.files.length > 0) {
+        //     // null 체크를 수행하여 오류 방지
+        //     const fileName = fileInputName.files[0].name
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = fileName
+        //     }
+        // } else {
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = '파일'
+        //     }
+        // }
     }
+
+    // const handleFileChange = (
+    //     e: React.ChangeEvent<HTMLInputElement>,
+    //     index: number
+    // ) => {
+    //     const updatedDataList = [...dataContent]
+    //     console.log(e.target.files[0].name)
+    //     const file = e.target.files[0]
+    //     console.log(file)
+
+    //     if (file) {
+    //         updatedDataList[index].filePath = file.name
+    //     }
+    //     setDataContent(updatedDataList)
+    //     console.log(updatedDataList)
+
+    //     const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
+    //     const fileNameDisplay = document.getElementById('fileNameDisplay')
+
+    //     if (fileInputName && fileInputName.files.length > 0) {
+    //         // null 체크를 수행하여 오류 방지
+    //         const fileName = fileInputName.files[0].name
+    //         if (fileNameDisplay) {
+    //             fileNameDisplay.textContent = fileName
+    //         }
+    //     } else {
+    //         if (fileNameDisplay) {
+    //             fileNameDisplay.textContent = '파일'
+    //         }
+    //     }
+    // }
 
     const onDragEnd = (result: DropResult) => {
         console.log(result)
@@ -288,7 +419,7 @@ const UserQSheetDetailsContent: React.FC = () => {
         // 원하는 자리에 reorderedItem을 insert 해줍니다.
         newItems.splice(result.destination.index, 0, reorderedItem)
 
-        setDataList(newItems)
+        setDataContent(newItems) //setDataList에서 수정
     }
 
     const fontColor = (e: string | void) => {
@@ -312,19 +443,19 @@ const UserQSheetDetailsContent: React.FC = () => {
         }
     }
 
-    const initialData: DataContent = {
-        actor: '',
-        content: '',
-        filePath: '',
-        note: '',
-        orderIndex: 1,
-        process: ''
-    }
+    // const initialData: DataContent = {
+    //     actor: '',
+    //     content: '',
+    //     filePath: '',
+    //     note: '',
+    //     orderIndex: 1,
+    //     process: ''
+    // }
 
-    const [newData, setNewData] = useState<DataContent>({
-        ...initialData,
-        orderIndex: 2
-    })
+    // const [newData, setNewData] = useState<DataContent>({
+    //     ...initialData,
+    //     orderIndex: 2
+    // })
 
     // 수정 활성, 비활성
     // const [editableRowIndex, setEditableRowIndex] = useState(-1)
@@ -365,6 +496,11 @@ const UserQSheetDetailsContent: React.FC = () => {
             console.log(updatedData)
 
             setDataContent(updatedData)
+            toast.push(
+                <Notification title={'삭제되었습니다.'} type="success">
+                    삭제되었습니다.
+                </Notification>
+            )
         }
 
         return (

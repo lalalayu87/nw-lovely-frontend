@@ -171,6 +171,7 @@ const QSheetDetailsContent = () => {
             }))
             qsheetData.data = qsheetData.data.concat(requestData[i])
             console.log(qsheetData.data)
+            console.log(qsheetData)
         }
 
         console.log(alert(JSON.stringify(qsheetData)))
@@ -185,7 +186,7 @@ const QSheetDetailsContent = () => {
 
         fileInputs.forEach((file, index) => {
             if (file) {
-                formData.append(`files`, file)
+                formData.append(`files`, '')
             }
         })
 
@@ -225,6 +226,14 @@ const QSheetDetailsContent = () => {
 
             // API 응답을 필요에 따라 처리합니다.
             console.log(response.data)
+
+            toast.push(
+                <Notification title={'큐시트가 수정되었습니다.'} type="success">
+                    큐시트가 수정되었습니다.
+                </Notification>
+            )
+
+            navigate('/cuesheet')
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)

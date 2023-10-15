@@ -264,6 +264,8 @@ const USerNewQSheetContent: React.FC = () => {
 
             // API 응답을 필요에 따라 처리합니다.
             console.log(response.data)
+            alert(`API 응답: ${JSON.stringify(response.data)}`)
+            console.log(response.data)
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
