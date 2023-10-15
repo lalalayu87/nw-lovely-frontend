@@ -40,6 +40,18 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'finaltempl',
+        path: '/finaltempl',
+        component: lazy(() => import('@/views/Menu/Finaltempl/Finaltempl')),
+        authority: [],
+    },
+    {
+        key: 'finaltemplView',
+        path: '/finaltempl/finaltemplView',
+        component: lazy(() => import('@/views/Menu/Finaltempl/FinaltemplView')),
+        authority: [],
+    },
+    {
         key: 'place',
         path: '/place',
         component: lazy(() => import('@/views/Menu/Place')),
