@@ -135,48 +135,24 @@ const USerNewQSheetContent: React.FC = () => {
     )
     const formData = new FormData()
 
-    // const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
-
-    const [fileInputs, setFileInputs] = useState([])
+    const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
 
     const handleFileChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        console.log(e)
+        console.log(e.target.files)
         console.log(index)
 
         const updatedDataList = [...dataList]
-        console.log('updatedDataList', updatedDataList)
-        // const file = e.target.files[0]
-        const files = e.target.files
-        console.log(files)
+        const file = e.target.files[0]
+        console.log(e.target.files)
 
-        const updatedFileInputs = [...fileInputs]
-
-        for (let i = 0; i < e.target.files.length; i++) {
-            updatedFileInputs[index + i] = e.target.files[i]
+        if (file) {
+            updatedDataList[index].filePath = file.name
+            console.log(updatedDataList[index])
         }
-
-        setFileInputs(updatedFileInputs)
-        if (files.length > 0) {
-            updatedDataList[index] = {
-                ...updatedDataList[index],
-                filePath: files[0].name
-            }
-            setDataList(updatedDataList)
-        }
-
-        // if (file) {
-        //     updatedDataList[index] = {
-        //         ...updatedDataList[index], //중요!!!
-        //         filePath: file.name
-        //     }
-        //     console.log(updatedDataList)
-        //     console.log(index)
-        //     console.log(file.name)
-        // }
-        // setDataList(updatedDataList)
+        setDataList(updatedDataList)
         console.log(updatedDataList)
 
         // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
@@ -233,39 +209,106 @@ const USerNewQSheetContent: React.FC = () => {
                 })
             )
 
-            console.log([JSON.stringify(requestData)])
+            // 찾은 파일 입력 요소
+            const fileInput = document.getElementById(`fileInput-${i}`)
+            console.log(fileInput.files)
+            if (fileInput && fileInput.files[0]) {
+                const file = fileInput.files[0]
+                console.log(file)
 
-            fileInputs.forEach((file, index) => {
-                if (file) {
-                    formData.append(`files`, file)
-                }
-            })
-
-            // const fileInput = document.getElementById(`fileInput-${i}`)
-            // formData.append('files', fileInput.files[i])
+                formData.append('files', file)
+                console.log(formData)
+            }
         }
-        // const fileData = inputRef.current.file.files;
+
         // for (let i = 0; i < dataList.length; i++) {
+        //     const requestData = dataList.map((item) => ({
+        //         name: name,
+        //         userSeq: userSeq,
+        //         orgSeq: orgSeq,
+        //         data: [
+        //             {
+        //                 orderIndex: item.orderIndex,
+        //                 process: item.process,
+        //                 content: item.content,
+        //                 actor: item.actor,
+        //                 note: item.note,
+        //                 filePath: `${item.process}_${item.filePath}`
+        //             }
+        //         ]
+        //     }))
+        //     // const requestData = {
+        //     //     name: name,
+        //     //     userSeq: userSeq,
+        //     //     orgSeq: orgSeq,
+        //     //     data: [
+        //     //         {
+        //     //             orderIndex: item.orderIndex,
+        //     //             process: item.process,
+        //     //             content: item.content,
+        //     //             actor: item.actor,
+        //     //             note: item.note,
+        //     //             filePath: `${item.process}_${item.filePath}`
+        //     //         }
+        //     //     ]
+        //     // }
+
+        //     console.log(requestData[i])
+
+        //     formData.append(
+        //         'qsheetCreateDto',
+        //         new Blob([JSON.stringify(requestData[i])], {
+        //             type: 'application/json'
+        //         })
+        //     )
+
         //     // 찾은 파일 입력 요소
 
         //     const fileInput = document.getElementById(`fileInput-${i}`)
-        //     console.log(fileInput.files)
-        //     console.log(fileInput.files[i])
+        //     console.log(fileInput.files[0])
+        //     console.log(fileInput.files[1])
 
-        //     formData.append('files', fileInput.files[i])
+        //     const file = fileInput.files[i]
+        //     console.log(file)
 
-        //     // if (fileInput && fileInput.files[0]) {
-        //     //     const file = fileInput.files[0]
-        //     //     console.log(file)
-
-        //     //     formData.append('files', file)
-        //     //     console.log(formData)
-        //     // }
+        //     formData.append('files', file)
         // }
 
-        // var blob = new Blob([JSON.stringify(requestData)], { type: "application/json" })
-        // data.append("qsheetCreateDto", blob);
-        // formData.append('files', fileInput.files[0])
+        // const requestData = dataList.map((item) => ({
+        //     name: name,
+        //     userSeq: userSeq,
+        //     orgSeq: orgSeq,
+        //     data: [
+        //         {
+        //             orderIndex: item.orderIndex,
+        //             process: item.process,
+        //             content: item.content,
+        //             actor: item.actor,
+        //             note: item.note,
+        //             filePath: `${item.process}_${item.filePath}`
+        //         }
+        //     ]
+        // }))
+
+        // formData.append(
+        //     'qsheetCreateDto',
+        //     new Blob([JSON.stringify(requestData[0])], {
+        //         type: 'application/json'
+        //     })
+        // )
+
+        // for (let i = 0; i < dataList.length; i++) {
+        //     // 찾은 파일 입력 요소
+        //     const fileInput = document.getElementById(`fileInput-${i}`)
+        //     console.log(fileInput.files[0])
+        //     console.log(fileInput.files[1])
+        //     if (fileInput) {
+        //         const file = fileInput.files[i]
+        //         if (file) {
+        //             formData.append('files', file)
+        //         }
+        //     }
+        // }
 
         console.log(Object.fromEntries(formData))
 
@@ -366,6 +409,7 @@ const USerNewQSheetContent: React.FC = () => {
         value: string,
         index: number
     ) => {
+        console.log(index)
         const updatedDataList = [...dataList]
         updatedDataList[index][field] = value
         setDataList(updatedDataList)
@@ -550,6 +594,8 @@ const USerNewQSheetContent: React.FC = () => {
             </table>
 
             <div>
+                {/* <table className="table-auto min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700"> */}
                 <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                     <Droppable droppableId="DetailsDroppable">
                         {(provided) => (
@@ -635,9 +681,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                 }
                                                             />
                                                         </td>
-
                                                         {/* 파일 */}
-
                                                         <td className="border border-gray-200 w-1/12 py-2">
                                                             <div>
                                                                 <input
@@ -647,6 +691,9 @@ const USerNewQSheetContent: React.FC = () => {
                                                                         display:
                                                                             'none'
                                                                     }}
+                                                                    ref={
+                                                                        fileInputRef
+                                                                    } // useRef로 파일 입력 요소를 참조
                                                                     onChange={(
                                                                         e
                                                                     ) =>
@@ -655,17 +702,12 @@ const USerNewQSheetContent: React.FC = () => {
                                                                             index
                                                                         )
                                                                     }
-                                                                    multiple
-                                                                    // ref={
-                                                                    //     fileInputRef
-                                                                    // }
-                                                                    // useRef로 파일 입력 요소를 참조
                                                                     id={`fileInput-${index}`}
-                                                                    // id={`fileInput-0`}
+                                                                    // id="fileInput-0"
                                                                     accept="*/*"
                                                                 />
                                                                 <label
-                                                                    // htmlFor={`fileInput-0`}
+                                                                    // htmlFor={`fileInput-${index}`}
                                                                     htmlFor={`fileInput-${index}`}
                                                                     className="cursor-pointer flex items-center"
                                                                 >
@@ -747,6 +789,8 @@ const USerNewQSheetContent: React.FC = () => {
                         )}
                     </Droppable>
                 </DragDropContext>
+                {/* </tbody>
+                </table> */}
             </div>
         </>
     )
