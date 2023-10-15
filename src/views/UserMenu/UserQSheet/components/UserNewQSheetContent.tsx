@@ -100,7 +100,11 @@ const USerNewQSheetContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     const searchInput = useRef(null)
-
+    const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
+    const [newData, setNewData] = useState<QSheetExampleData>({
+        ...initialData,
+        orderIndex: 2
+    })
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -205,122 +209,48 @@ const USerNewQSheetContent: React.FC = () => {
     const onCreate = async () => {
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
+        const qsheetData = {
+            name: name,
+            userSeq: userSeq,
+            orgSeq: orgSeq,
+            data: []
+        }
+        const addData = []
+        const formData = new FormData()
 
         for (let i = 0; i < dataList.length; i++) {
             const item = dataList[i]
-            const requestData = {
-                name: name,
-                userSeq: userSeq,
-                orgSeq: orgSeq,
-                data: [
-                    {
-                        orderIndex: item.orderIndex,
-                        process: item.process,
-                        content: item.content,
-                        actor: item.actor,
-                        note: item.note,
-                        filePath: `${item.process}_${item.filePath}`
-                    }
-                ]
-            }
+            const requestData = dataList.map((item) => ({
+                orderIndex: item.orderIndex,
+                process: item.process,
+                content: item.content,
+                actor: item.actor,
+                note: item.note,
+                filePath: `${item.process}_${item.filePath}`
+            }))
 
-            console.log(requestData)
-
-            formData.append(
-                'qsheetCreateDto',
-                new Blob([JSON.stringify(requestData)], {
-                    type: 'application/json'
-                })
-            )
-
-            console.log([JSON.stringify(requestData)])
-
-            fileInputs.forEach((file, index) => {
-                if (file) {
-                    formData.append(`files`, file)
-                }
-            })
-
-            // const fileInput = document.getElementById(`fileInput-${i}`)
-            // formData.append('files', fileInput.files[i])
+            qsheetData.data = qsheetData.data.concat(requestData[i])
         }
-        // const fileData = inputRef.current.file.files;
-        // for (let i = 0; i < dataList.length; i++) {
-        //     // 찾은 파일 입력 요소
 
-        //     const fileInput = document.getElementById(`fileInput-${i}`)
-        //     console.log(fileInput.files)
-        //     console.log(fileInput.files[i])
+        console.log(alert(JSON.stringify(qsheetData)))
 
-        //     formData.append('files', fileInput.files[i])
+        formData.append(
+            'qsheetCreateDto',
+            new Blob([JSON.stringify(qsheetData)], {
+                type: 'application/json'
+            })
+        )
 
-        //     // if (fileInput && fileInput.files[0]) {
-        //     //     const file = fileInput.files[0]
-        //     //     console.log(file)
-
-        //     //     formData.append('files', file)
-        //     //     console.log(formData)
-        //     // }
-        // }
-
-        // var blob = new Blob([JSON.stringify(requestData)], { type: "application/json" })
-        // data.append("qsheetCreateDto", blob);
-        // formData.append('files', fileInput.files[0])
-
-        console.log(Object.fromEntries(formData))
-
-        // const transformedData = dataList.map((item) => {
-        //     return {
-        //         orderIndex: item.orderIndex,
-        //         process: item.process,
-        //         content: item.content,
-        //         actor: item.actor,
-        //         note: item.note,
-        //         filePath: item.filePath,
-        //     }
-        // })
-
-        // const body = {
-        //     name: name,
-        //     userSeq: userSeq,
-        //     data: transformedData,ㄹ
-        // }
-
-        // console.log('dataList is : ', dataList)
-        // const formData = new FormData()
-        // const requestData = dataList.map((item) => ({
-        //     name: name,
-        //     userSeq: userSeq,
-        //     orgSeq: orgSeq,
-        //     data: [
-        //         {
-        //             orderIndex: item.orderIndex,
-        //             process: item.process,
-        //             content: item.content,
-        //             actor: item.actor,
-        //             note: item.note,
-        //             filePath: item.filePath
-        //         }
-        //     ]
-        // }))
-
-        // console.log('qsheetCreateDto = ', requestData)
-
-        // formData.append(
-        //     'qsheetCreateDto',
-        //     new Blob([JSON.stringify(requestData[0])], {
-        //         type: 'application/json'
-        //     })
-        // )
-
-        // // const fileInput = document.getElementById(`fileInput-0`)
-        // const fileInput = document.getElementById(`fileInput-${index}`)
-        // formData.append('files', fileInput.files[0])
+        fileInputs.forEach((file, index) => {
+            if (file) {
+                formData.append(`files`, file)
+            }
+        })
 
         // apiPostQSheetCardList(data)
         const accessToken = (persistData as any).auth.session.accessToken
         try {
-            console.log(formData)
+            console.log(alert(formData))
             // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
             const response = await axios.post(
                 `http://152.69.228.245:10001/api/v1/qsheet`,
@@ -354,12 +284,6 @@ const USerNewQSheetContent: React.FC = () => {
     useEffect(() => {
         getList()
     }, [])
-
-    const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
-    const [newData, setNewData] = useState<QSheetExampleData>({
-        ...initialData,
-        orderIndex: 2
-    })
 
     const handleInputChange = (
         field: keyof QSheetExampleData,

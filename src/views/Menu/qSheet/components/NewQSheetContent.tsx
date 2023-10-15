@@ -130,56 +130,42 @@ const NewQSheetContent: React.FC = () => {
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
 
-        // const transformedData = dataList.map((item) => {
-        //     return {
-        //         orderIndex: item.orderIndex,
-        //         process: item.process,
-        //         content: item.content,
-        //         actor: item.actor,
-        //         note: item.note,
-        //         filePath: item.filePath
-        //     }
-        // })
-
-        // const body = {
-        //     name: name,
-        //     userSeq: userSeq,
-        //     data: transformedData
-        // }
-
-        // apiPostQSheetCardList(body)
-
-        const requestData = dataList.map((item) => ({
+        const qsheetData = {
             name: name,
             userSeq: userSeq,
-            data: [
-                {
-                    orderIndex: item.orderIndex,
-                    process: item.process,
-                    content: item.content,
-                    actor: item.actor,
-                    note: item.note,
-                    filePath: ''
-                }
-            ]
-        }))
-
-        console.log('qsheetCreateDto = ', requestData)
-
+            data: []
+        }
+        const addData = []
         const formData = new FormData()
+
+        for (let i = 0; i < dataList.length; i++) {
+            const item = dataList[i]
+            const requestData = dataList.map((item) => ({
+                orderIndex: item.orderIndex,
+                process: item.process,
+                content: item.content,
+                actor: item.actor,
+                note: item.note,
+                filePath: `${item.process}_${item.filePath}`
+            }))
+
+            qsheetData.data = qsheetData.data.concat(requestData[i])
+        }
+
+        // console.log(alert(JSON.stringify(qsheetData)))
 
         formData.append(
             'qsheetCreateDto',
-            new Blob([JSON.stringify(requestData[0])], {
+            new Blob([JSON.stringify(qsheetData)], {
                 type: 'application/json'
             })
         )
 
-        const fileInput = document.getElementById('fileInput')
-        console.log(fileInput)
-        console.log(fileInput.files[0])
-
-        formData.append('files', fileInput.files[0])
+        fileInputs.forEach((file, index) => {
+            if (file) {
+                formData.append(`files`, file)
+            }
+        })
 
         const accessToken = (persistData as any).auth.session.accessToken
         try {
@@ -244,33 +230,91 @@ const NewQSheetContent: React.FC = () => {
 
     const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
 
+    const [fileInputs, setFileInputs] = useState([])
+
     const handleFileChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
+        console.log(e)
+        console.log(index)
+
         const updatedDataList = [...dataList]
-        const file = e.target.files[0]
-        console.log(e.target.files)
-        if (file) {
-            updatedDataList[index].filePath = file.name
-        }
-        setDataList(updatedDataList)
+        console.log('updatedDataList', updatedDataList)
+        // const file = e.target.files[0]
+        const files = e.target.files
+        console.log(files)
 
-        const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-        const fileNameDisplay = document.getElementById('fileNameDisplay')
+        const updatedFileInputs = [...fileInputs]
 
-        if (fileInputName && fileInputName.files.length > 0) {
-            // null 체크를 수행하여 오류 방지
-            const fileName = fileInputName.files[0].name
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = fileName
-            }
-        } else {
-            if (fileNameDisplay) {
-                fileNameDisplay.textContent = '파일'
-            }
+        for (let i = 0; i < e.target.files.length; i++) {
+            updatedFileInputs[index + i] = e.target.files[i]
         }
+
+        setFileInputs(updatedFileInputs)
+        if (files.length > 0) {
+            updatedDataList[index] = {
+                ...updatedDataList[index],
+                filePath: files[0].name
+            }
+            setDataList(updatedDataList)
+        }
+
+        // if (file) {
+        //     updatedDataList[index] = {
+        //         ...updatedDataList[index], //중요!!!
+        //         filePath: file.name
+        //     }
+        //     console.log(updatedDataList)
+        //     console.log(index)
+        //     console.log(file.name)
+        // }
+        // setDataList(updatedDataList)
+        console.log(updatedDataList)
+
+        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
+        // const fileNameDisplay = document.getElementById('fileNameDisplay')
+
+        // if (fileInputName && fileInputName.files.length > 0) {
+        //     // null 체크를 수행하여 오류 방지
+        //     const fileName = fileInputName.files[0].name
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = fileName
+        //     }
+        // } else {
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = '파일'
+        //     }
+        // }
     }
+
+    // const handleFileChange = (
+    //     e: React.ChangeEvent<HTMLInputElement>,
+    //     index: number
+    // ) => {
+    //     const updatedDataList = [...dataList]
+    //     const file = e.target.files[0]
+    //     console.log(e.target.files)
+    //     if (file) {
+    //         updatedDataList[index].filePath = file.name
+    //     }
+    //     setDataList(updatedDataList)
+
+    //     const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
+    //     const fileNameDisplay = document.getElementById('fileNameDisplay')
+
+    //     if (fileInputName && fileInputName.files.length > 0) {
+    //         // null 체크를 수행하여 오류 방지
+    //         const fileName = fileInputName.files[0].name
+    //         if (fileNameDisplay) {
+    //             fileNameDisplay.textContent = fileName
+    //         }
+    //     } else {
+    //         if (fileNameDisplay) {
+    //             fileNameDisplay.textContent = '파일'
+    //         }
+    //     }
+    // }
 
     const onDragEnd = (result: DropResult) => {
         console.log(result)
@@ -468,16 +512,17 @@ const NewQSheetContent: React.FC = () => {
                                                         <td className="border border-gray-200 w-1/12 py-2">
                                                             <div>
                                                                 <input
+                                                                    multiple
                                                                     className="focus:border border-gray-300"
                                                                     type="file"
+                                                                    ref={
+                                                                        fileInputRef
+                                                                    } // useRef로 파일 입력 요소를 참조
                                                                     style={{
                                                                         display:
                                                                             'none'
                                                                     }}
-                                                                    ref={
-                                                                        fileInputRef
-                                                                    } // useRef로 파일 입력 요소를 참조
-                                                                    id={`fileInput`}
+                                                                    id={`fileInput-${index}`}
                                                                     accept="*/*"
                                                                     onChange={(
                                                                         e
@@ -489,7 +534,7 @@ const NewQSheetContent: React.FC = () => {
                                                                     }
                                                                 />
                                                                 <label
-                                                                    htmlFor={`fileInput`}
+                                                                    htmlFor={`fileInput-${index}`}
                                                                     className="cursor-pointer flex items-center "
                                                                 >
                                                                     &nbsp;
