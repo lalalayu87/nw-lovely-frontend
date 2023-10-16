@@ -1,6 +1,7 @@
 import CompanySignUpForm from './CompanySignUpForm'
 
 const CompanySignUp = () => {
+    console.log('확인')
     return (
         <>
             <div className="mb-8">
