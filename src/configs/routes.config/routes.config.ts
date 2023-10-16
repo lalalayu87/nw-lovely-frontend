@@ -45,6 +45,7 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/Menu/Finaltempl/Finaltempl')),
         authority: [],
     },
+
     {
         key: 'FinaltemplEdit',
         path: '/FinaltemplEdit',

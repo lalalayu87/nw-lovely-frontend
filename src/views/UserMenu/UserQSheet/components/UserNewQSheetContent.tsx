@@ -99,7 +99,7 @@ const USerNewQSheetContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     const searchInput = useRef(null)
- 
+
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -132,68 +132,7 @@ const USerNewQSheetContent: React.FC = () => {
         ],
         []
     )
-    const formData = new FormData()
- 
-    // const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
- 
-    const [fileInputs, setFileInputs] = useState([])
- 
-    const handleFileChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        index: number
-    ) => {
-        console.log(e)
-        console.log(index)
- 
-        const updatedDataList = [...dataList]
-        console.log('updatedDataList', updatedDataList)
-        // const file = e.target.files[0]
-        const files = e.target.files
-        console.log(files)
- 
-        const updatedFileInputs = [...fileInputs]
- 
-        for (let i = 0; i < e.target.files.length; i++) {
-            updatedFileInputs[index + i] = e.target.files[i]
-        }
- 
-        setFileInputs(updatedFileInputs)
-        if (files.length > 0) {
-            updatedDataList[index] = {
-                ...updatedDataList[index],
-                filePath: files[0].name,
-            }
-            setDataList(updatedDataList)
-        }
- 
-        // if (file) {
-        //     updatedDataList[index] = {
-        //         ...updatedDataList[index], //중요!!!
-        //         filePath: file.name
-        //     }
-        //     console.log(updatedDataList)
-        //     console.log(index)
-        //     console.log(file.name)
-        // }
-        // setDataList(updatedDataList)
-        console.log(updatedDataList)
- 
-        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-        // const fileNameDisplay = document.getElementById('fileNameDisplay')
- 
-        // if (fileInputName && fileInputName.files.length > 0) {
-        //     // null 체크를 수행하여 오류 방지
-        //     const fileName = fileInputName.files[0].name
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = fileName
-        //     }
-        // } else {
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = '파일'
-        //     }
-        // }
-    }
- 
+
     const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
     const persistData = deepParseJson(rawPersistData)
  
@@ -208,42 +147,35 @@ const USerNewQSheetContent: React.FC = () => {
             name: name,
             userSeq: userSeq,
             orgSeq: orgSeq,
-            data: [],
-        }
-        const addData = []
+            data: [
+                {
+                    orderIndex: item.orderIndex,
+                    process: item.process,
+                    content: item.content,
+                    actor: item.actor,
+                    note: item.note,
+                    filePath: ''
+                }
+            ]
+        }))
+
+        console.log('qsheetCreateDto = ', requestData)
+
         const formData = new FormData()
- 
-        for (let i = 0; i < dataList.length; i++) {
-            const item = dataList[i]
-            const requestData = dataList.map((item) => ({
-                orderIndex: item.orderIndex,
-                process: item.process,
-                content: item.content,
-                actor: item.actor,
-                note: item.note,
-                filePath: `${item.process}_${item.filePath}`,
-            }))
-            console.log("requestData : ", requestData)
-            console.log("dataList : ", dataList)
- 
-            qsheetData.data = requestData
-        }
- 
-        console.log(alert(JSON.stringify(qsheetData)))
- 
+
         formData.append(
             'qsheetCreateDto',
             new Blob([JSON.stringify(qsheetData)], {
                 type: 'application/json',
             })
         )
- 
+
         fileInputs.forEach((file, index) => {
             if (file) {
                 formData.append(`files`, file)
             }
         })
- 
+
         // apiPostQSheetCardList(data)
         const accessToken = (persistData as any).auth.session.accessToken
         try {
@@ -260,6 +192,8 @@ const USerNewQSheetContent: React.FC = () => {
             )
  
             // API 응답을 필요에 따라 처리합니다.
+            console.log(response.data)
+            alert(`API 응답: ${JSON.stringify(response.data)}`)
             console.log(response.data)
         } catch (error) {
             // 에러를 처리합니다.
@@ -281,13 +215,7 @@ const USerNewQSheetContent: React.FC = () => {
     useEffect(() => {
         getList()
     }, [])
- 
-    const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
-    const [newData, setNewData] = useState<QSheetExampleData>({
-        ...initialData,
-        orderIndex: 2,
-    })
- 
+
     const handleInputChange = (
         field: keyof QSheetExampleData,
         value: string,
@@ -297,9 +225,9 @@ const USerNewQSheetContent: React.FC = () => {
         updatedDataList[index][field] = value
         setDataList(updatedDataList)
     }
- 
+
     // const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
- 
+
     const onDragEnd = (result: DropResult) => {
         console.log(result)
         // 드래그가 취소된 경우
@@ -457,13 +385,13 @@ const USerNewQSheetContent: React.FC = () => {
                         <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                             식순명
                         </th>
-                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                             행위자
                         </th>
                         <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                             내용
                         </th>
-                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                             파일
                         </th>
                         <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
@@ -521,7 +449,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                             />
                                                         </td>
                                                         {/* 행위자 */}
-                                                        <td className="border border-gray-200 w-2/12 py-2">
+                                                        <td className="border border-gray-200 w-1/12 py-2">
                                                             <input
                                                                 className="focus:border border-gray-300"
                                                                 type="text"
@@ -562,9 +490,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                 }
                                                             />
                                                         </td>
- 
                                                         {/* 파일 */}
- 
                                                         <td className="border border-gray-200 w-1/12 py-2">
                                                             <div>
                                                                 <input
@@ -609,7 +535,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                             textOverflow:
                                                                                 'ellipsis',
                                                                             maxWidth:
-                                                                                '50px',
+                                                                                '200px',
                                                                         }}
                                                                     >
                                                                         {data.filePath
