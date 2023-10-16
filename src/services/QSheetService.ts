@@ -11,6 +11,7 @@ export async function apiPostQSheetCardList<
     T,
     U extends Record<string, unknown>
 >(data: U) {
+    console.log(data)
     return ApiService.fetchData<T>({
         url: '/api/v1/qsheet',
         method: 'post',

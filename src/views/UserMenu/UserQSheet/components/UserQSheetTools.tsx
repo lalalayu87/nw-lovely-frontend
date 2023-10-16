@@ -4,7 +4,7 @@ import { HiOutlinePlusCircle } from 'react-icons/hi'
 
 import { Link } from 'react-router-dom'
 
-const QSheetTools = () => {
+const UserQSheetTools = () => {
     return (
         <div className="lg:flex items-center justify-between mb-4">
             <h3 className="mb-4 lg:mb-0">큐시트 목록</h3>
@@ -23,4 +23,4 @@ const QSheetTools = () => {
     )
 }
 
-export default QSheetTools
+export default UserQSheetTools

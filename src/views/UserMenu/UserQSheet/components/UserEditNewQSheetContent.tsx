@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
     text: Yup.string().required('내용을 입력해주세요.')
 })
 
-const EditNewQSheetContent: React.FC<{
+const UserEditNewQSheetContent: React.FC<{
     onClose: () => void
     disableSubmit: boolean
     data: QSheetExampleData
@@ -195,4 +195,4 @@ const EditNewQSheetContent: React.FC<{
     )
 }
 
-export default EditNewQSheetContent
+export default UserEditNewQSheetContent
