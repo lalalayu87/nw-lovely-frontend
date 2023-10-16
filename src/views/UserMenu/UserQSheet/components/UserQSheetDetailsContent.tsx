@@ -601,13 +601,13 @@ const UserQSheetDetailsContent = () => {
                             <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                                 식순명
                             </th>
-                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                                 행위자
                             </th>
                             <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                                 내용
                             </th>
-                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                                 파일
                             </th>
                             <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
@@ -671,7 +671,7 @@ const UserQSheetDetailsContent = () => {
                                                                 />
                                                             </td>
                                                             {/* 행위자 */}
-                                                            <td className="border border-gray-200 w-1/12 py-2">
+                                                            <td className="border border-gray-200 w-2/12 py-2">
                                                                 <input
                                                                     className="focus:border border-gray-300"
                                                                     type="text"
@@ -719,17 +719,8 @@ const UserQSheetDetailsContent = () => {
                                                                 />
                                                             </td>
                                                             {/* 파일 */}
-                                                            <td className="border border-gray-200 w-2/12 py-2">
-                                                                <div
-                                                                    style={{
-                                                                        display:
-                                                                            'flex',
-                                                                        alignItems:
-                                                                            'center',
-                                                                        justifyContent:
-                                                                            'center',
-                                                                    }}
-                                                                >
+                                                            <td className="border border-gray-200 w-1/12 py-2">
+                                                                <div>
                                                                     <input
                                                                         className="focus:border border-gray-300"
                                                                         type="file"
@@ -768,7 +759,7 @@ const UserQSheetDetailsContent = () => {
                                                                                 textOverflow:
                                                                                     'ellipsis',
                                                                                 maxWidth:
-                                                                                    '200px',
+                                                                                    '50px',
                                                                             }}
                                                                         >
                                                                             {data.filePath

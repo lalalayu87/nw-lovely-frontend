@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, {
     useCallback,
     useEffect,
@@ -48,9 +49,9 @@ import { DataTableResetHandle } from '@/components/shared'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
- 
+
 import axios from 'axios'
- 
+
 const inputStyle = {
     // border: '1px solid #ccc',
     borderRadius: '4px',
@@ -59,7 +60,7 @@ const inputStyle = {
     outline: 'none',
     width: '90%',
 }
- 
+
 const contentInputStyle = {
     // border: '1px solid #ccc'
     borderRadius: '4px',
@@ -68,7 +69,7 @@ const contentInputStyle = {
     outline: 'none',
     width: '95%',
 }
- 
+
 interface QSheetExampleData {
     process: string
     actor: string
@@ -78,7 +79,7 @@ interface QSheetExampleData {
     orderIndex: number
     // memo: string
 }
- 
+
 const initialData: QSheetExampleData = {
     process: '',
     actor: '',
@@ -88,18 +89,22 @@ const initialData: QSheetExampleData = {
     orderIndex: 1,
     memo: '',
 }
- 
+
 const validationSchema = Yup.object().shape({
     process: Yup.string().required('식순명을 입력해주세요.'),
     actor: Yup.string().required('행위자를 입력해주세요.'),
     text: Yup.string().required('내용을 입력해주세요.'),
 })
- 
+
 const USerNewQSheetContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     const searchInput = useRef(null)
-
+    const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
+    const [newData, setNewData] = useState<QSheetExampleData>({
+        ...initialData,
+        orderIndex: 2,
+    })
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -118,7 +123,7 @@ const USerNewQSheetContent: React.FC = () => {
                 accessorKey: 'content',
                 width: 'w-5/12',
             },
- 
+
             {
                 header: '파일',
                 accessorKey: 'filePath',
@@ -132,13 +137,74 @@ const USerNewQSheetContent: React.FC = () => {
         ],
         []
     )
+    const formData = new FormData()
+
+    // const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
+
+    const [fileInputs, setFileInputs] = useState([])
+
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        index: number
+    ) => {
+        console.log(e)
+        console.log(index)
+
+        const updatedDataList = [...dataList]
+        console.log('updatedDataList', updatedDataList)
+        // const file = e.target.files[0]
+        const files = e.target.files
+        console.log(files)
+
+        const updatedFileInputs = [...fileInputs]
+
+        for (let i = 0; i < e.target.files.length; i++) {
+            updatedFileInputs[index + i] = e.target.files[i]
+        }
+
+        setFileInputs(updatedFileInputs)
+        if (files.length > 0) {
+            updatedDataList[index] = {
+                ...updatedDataList[index],
+                filePath: files[0].name,
+            }
+            setDataList(updatedDataList)
+        }
+
+        // if (file) {
+        //     updatedDataList[index] = {
+        //         ...updatedDataList[index], //중요!!!
+        //         filePath: file.name
+        //     }
+        //     console.log(updatedDataList)
+        //     console.log(index)
+        //     console.log(file.name)
+        // }
+        // setDataList(updatedDataList)
+        console.log(updatedDataList)
+
+        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
+        // const fileNameDisplay = document.getElementById('fileNameDisplay')
+
+        // if (fileInputName && fileInputName.files.length > 0) {
+        //     // null 체크를 수행하여 오류 방지
+        //     const fileName = fileInputName.files[0].name
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = fileName
+        //     }
+        // } else {
+        //     if (fileNameDisplay) {
+        //         fileNameDisplay.textContent = '파일'
+        //     }
+        // }
+    }
 
     const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
     const persistData = deepParseJson(rawPersistData)
- 
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
- 
+
     const navigate = useNavigate()
     const onCreate = async () => {
         const date = new Date()
@@ -147,21 +213,26 @@ const USerNewQSheetContent: React.FC = () => {
             name: name,
             userSeq: userSeq,
             orgSeq: orgSeq,
-            data: [
-                {
-                    orderIndex: item.orderIndex,
-                    process: item.process,
-                    content: item.content,
-                    actor: item.actor,
-                    note: item.note,
-                    filePath: ''
-                }
-            ]
-        }))
-
-        console.log('qsheetCreateDto = ', requestData)
-
+            data: [],
+        }
+        const addData = []
         const formData = new FormData()
+
+        for (let i = 0; i < dataList.length; i++) {
+            const item = dataList[i]
+            const requestData = dataList.map((item) => ({
+                orderIndex: item.orderIndex,
+                process: item.process,
+                content: item.content,
+                actor: item.actor,
+                note: item.note,
+                filePath: `${item.process}_${item.filePath}`,
+            }))
+
+            qsheetData.data = qsheetData.data.concat(requestData[i])
+        }
+
+        console.log(alert(JSON.stringify(qsheetData)))
 
         formData.append(
             'qsheetCreateDto',
@@ -190,7 +261,7 @@ const USerNewQSheetContent: React.FC = () => {
                     },
                 }
             )
- 
+
             // API 응답을 필요에 따라 처리합니다.
             console.log(response.data)
             alert(`API 응답: ${JSON.stringify(response.data)}`)
@@ -199,19 +270,19 @@ const USerNewQSheetContent: React.FC = () => {
             // 에러를 처리합니다.
             console.error(error)
         }
- 
+
         toast.push(
             <Notification title={'큐시트가 생성되었습니다.'} type="success">
                 큐시트가 생성되었습니다.
             </Notification>
         )
- 
+
         setDataList([])
- 
+
         await getList()
         navigate('/cuesheetUser')
     }
- 
+
     useEffect(() => {
         getList()
     }, [])
@@ -232,20 +303,20 @@ const USerNewQSheetContent: React.FC = () => {
         console.log(result)
         // 드래그가 취소된 경우
         if (!result.destination) return
- 
+
         // 리액트 불변성을 지켜주기 위해 새로운 todoData 생성
         const newItems = [...dataList]
- 
+
         // 1. 변경시키는 아이템을 배열에서 지워줍니다.
         // 2. return 값으로 지워진 아이템을 잡아줍니다.
         const [reorderedItem] = newItems.splice(result.source.index, 1)
- 
+
         // 원하는 자리에 reorderedItem을 insert 해줍니다.
         newItems.splice(result.destination.index, 0, reorderedItem)
- 
+
         setDataList(newItems)
     }
- 
+
     const fontColor = (e: string | void) => {
         if (e === '신랑') {
             return 'm-2 bg-blue-200 border-blue-500 w-10 rounded-lg border-2 text-blue-500 text-center'
@@ -266,7 +337,7 @@ const USerNewQSheetContent: React.FC = () => {
             return 'text-purple-600'
         }
     }
- 
+
     const onAdd = () => {
         console.log('add')
         setNewData({
@@ -275,26 +346,26 @@ const USerNewQSheetContent: React.FC = () => {
         })
         setDataList([...dataList, newData])
     }
- 
+
     const ActionColumn = ({ row }: { row: QSheetExampleData }) => {
         const { textTheme } = useThemeClass()
- 
+
         const onDelete = (orderIndex: number) => {
             //삭제할 데이터 찾기
             const rowData = dataList.find(
                 (item) => item.orderIndex === row.orderIndex
             )
             console.log(rowData)
- 
+
             // 데이터를 삭제하고 업데이트된 배열을 생성합니다.
             const updatedData = dataList.filter(
                 (item) => item.orderIndex !== row.orderIndex
             )
             console.log(updatedData)
- 
+
             setDataList(updatedData)
         }
- 
+
         return (
             <div className="inset-0 flex items-center justify-center text-lg">
                 <Tooltip title="삭제">
@@ -308,17 +379,17 @@ const USerNewQSheetContent: React.FC = () => {
             </div>
         )
     }
- 
+
     const [orgSeq, setOrgSeq] = useState('')
- 
+
     const onSearch = async (e: ChangeEvent<HTMLInputElement>) => {
         const searchKeyword = e.target.value
         console.log(searchKeyword)
- 
+
         const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
         const persistData = deepParseJson(rawPersistData)
         const accessToken = (persistData as any).auth.session.accessToken
- 
+
         try {
             const response = await axios.get(
                 'http://152.69.228.245:10001/api/v1/org',
@@ -328,16 +399,16 @@ const USerNewQSheetContent: React.FC = () => {
                     },
                 }
             )
- 
+
             const orgData = response.data.content
- 
+
             const matchingOrgs = orgData.filter(
                 (org) => org.orgName === searchKeyword
             )
             const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
             const matchingOrgSeq = matchingOrgSeqs[0]
             console.log(matchingOrgSeq)
- 
+
             if (matchingOrgSeqs.length > 0) {
                 setOrgSeq(matchingOrgSeq)
             } else {
@@ -348,12 +419,12 @@ const USerNewQSheetContent: React.FC = () => {
             console.error(error)
         }
     }
- 
+
     return (
         <>
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
- 
+
                 <div className="flex flex-col md:flex-row md:items-center gap-1">
                     <div>
                         <Input
@@ -378,20 +449,20 @@ const USerNewQSheetContent: React.FC = () => {
                     </Button>
                 </div>
             </div>
- 
+
             <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700 ">
                     <tr>
                         <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                             식순명
                         </th>
-                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                             행위자
                         </th>
                         <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                             내용
                         </th>
-                        <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                        <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                             파일
                         </th>
                         <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
@@ -403,7 +474,7 @@ const USerNewQSheetContent: React.FC = () => {
                     </tr>
                 </thead>
             </table>
- 
+
             <div>
                 <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                     <Droppable droppableId="DetailsDroppable">
@@ -449,7 +520,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                             />
                                                         </td>
                                                         {/* 행위자 */}
-                                                        <td className="border border-gray-200 w-1/12 py-2">
+                                                        <td className="border border-gray-200 w-2/12 py-2">
                                                             <input
                                                                 className="focus:border border-gray-300"
                                                                 type="text"
@@ -490,7 +561,9 @@ const USerNewQSheetContent: React.FC = () => {
                                                                 }
                                                             />
                                                         </td>
+
                                                         {/* 파일 */}
+
                                                         <td className="border border-gray-200 w-1/12 py-2">
                                                             <div>
                                                                 <input
@@ -535,7 +608,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                             textOverflow:
                                                                                 'ellipsis',
                                                                             maxWidth:
-                                                                                '200px',
+                                                                                '50px',
                                                                         }}
                                                                     >
                                                                         {data.filePath
@@ -604,5 +677,5 @@ const USerNewQSheetContent: React.FC = () => {
         </>
     )
 }
- 
+
 export default USerNewQSheetContent

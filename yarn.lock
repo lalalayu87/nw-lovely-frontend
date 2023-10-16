@@ -726,11 +726,6 @@
   "resolved" "https://registry.npmjs.org/@types/ms/-/ms-0.7.31.tgz"
   "version" "0.7.31"
 
-"@types/node@^14.0.1":
-  "integrity" "sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ=="
-  "resolved" "https://registry.npmjs.org/@types/node/-/node-14.18.63.tgz"
-  "version" "14.18.63"
-
 "@types/node@^18.15.5", "@types/node@>= 12", "@types/node@>= 14":
   "integrity" "sha512-NpaM49IGQQAUlBhHMF82QH80J08os4ZmyF9MkpCzWAGuOHqE4gTEbhzd7L3l5LmWuZ6E0OiC1FweQ4tsiW35+g=="
   "resolved" "https://registry.npmjs.org/@types/node/-/node-18.16.16.tgz"
@@ -3074,17 +3069,6 @@
     "domhandler" "^5.0.3"
     "domutils" "^3.0.1"
     "entities" "^4.4.0"
-
-"http-errors@2.0.0":
-  "integrity" "sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ=="
-  "resolved" "https://registry.npmjs.org/http-errors/-/http-errors-2.0.0.tgz"
-  "version" "2.0.0"
-  dependencies:
-    "depd" "2.0.0"
-    "inherits" "2.0.4"
-    "setprototypeof" "1.2.0"
-    "statuses" "2.0.1"
-    "toidentifier" "1.0.1"
 
 "i18next@^22.4.13", "i18next@>= 19.0.0":
   "integrity" "sha512-sqWuJFj+wJAKQP2qBQ+b7STzxZNUmnSxrehBCCj9vDOW9RDYPfqCaK1Hbh2frNYQuPziz6O2CGoJPwtzY3vAYA=="
