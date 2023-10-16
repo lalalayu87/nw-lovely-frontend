@@ -55,6 +55,16 @@ const inputStyle = {
     width: '95%',
 }
 
+const actorInputStyle = {
+    borderRadius: '4px',
+    padding: '5px',
+    margin: '5px',
+    outline: 'none',
+    width: '95%',
+    border: '1px solid rgb(209 213 219)',
+    backgroundColor: 'white',
+}
+
 const contentInputStyle = {
     // border: '1px solid #ccc'
     borderRadius: '4px',
@@ -80,6 +90,7 @@ type DataContent = {
     note: string
     orderIndex: number
     process: string
+    readOnly: boolean // readOnly 속성 추가
 }
 
 // interface QSheetExampleData {
@@ -106,6 +117,7 @@ const UserQSheetDetailsContent = () => {
     // const UserQSheetDetailsContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
+    const [applyCustomStyle, setApplyCustomStyle] = useState(false)
 
     useEffect(() => {
         fetchData()
@@ -135,6 +147,7 @@ const UserQSheetDetailsContent = () => {
     const [loading, setLoading] = useState(true)
 
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
+
     const qsheetSeq = location.state.qsheetSeq
     const orgSeq = dataList?.orgSeq.orgSeq
 
@@ -146,13 +159,12 @@ const UserQSheetDetailsContent = () => {
             note: '',
             orderIndex: 1,
             process: '',
+            readOnly: false, // 처음에는 수정 가능하게 시작
         },
     ]
 
     const [dataContent, setDataContent] =
         useState<DataContent[]>(initialDataContent)
-
-    console.log(dataContent)
 
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
@@ -301,16 +313,26 @@ const UserQSheetDetailsContent = () => {
         //     console.error(error)
         // }
     }
+    const [readOnly, setReadOnly] = useState(true)
 
     const handleInputChange = (
-        field: keyof QSheetExampleData,
+        field: keyof DataContent,
         value: string,
         index: number
     ) => {
         console.log(dataList)
         const updatedDataList = [...dataContent]
+        console.log(field)
+
+        let className = ''
+        if (field === 'actor') {
+            className = fontColor(value)
+        } else {
+            className = 'text-purple-600' // 다른 필드에 대한 클래스 설정
+        }
         updatedDataList[index][field] = value
         setDataContent(updatedDataList)
+        console.log(updatedDataList)
     }
 
     const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
@@ -321,9 +343,6 @@ const UserQSheetDetailsContent = () => {
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        console.log(e)
-        console.log(index)
-
         const updatedDataList = [...dataContent]
         console.log('updatedDataList', updatedDataList)
 
@@ -443,25 +462,9 @@ const UserQSheetDetailsContent = () => {
         }
     }
 
-    // const initialData: DataContent = {
-    //     actor: '',
-    //     content: '',
-    //     filePath: '',
-    //     note: '',
-    //     orderIndex: 1,
-    //     process: ''
-    // }
-
-    // const [newData, setNewData] = useState<DataContent>({
-    //     ...initialData,
-    //     orderIndex: 2
-    // })
-
-    // 수정 활성, 비활성
-    // const [editableRowIndex, setEditableRowIndex] = useState(-1)
-
     const onAdd = () => {
-        const orderIndex = dataContent.length + 1 // 다음 행의 orderIndex를 설정
+        const orderIndex = dataContent.length + 1
+        console.log(orderIndex)
         const newDataItem = {
             actor: '',
             content: '',
@@ -469,18 +472,78 @@ const UserQSheetDetailsContent = () => {
             note: '',
             orderIndex,
             process: '',
+            readOnly: false,
         }
         // dataContent 배열에 새 데이터 아이템을 추가합니다.
         setDataContent([...dataContent, newDataItem])
     }
 
-    const ActionColumn = ({ row }: { row: DataContent }) => {
+    // const ActionColumn = ({ row }: { row: DataContent }) => {
+    const ActionColumn = ({
+        row,
+        dataContent,
+        setDataContent,
+    }: {
+        row: DataContent //QSheetExampleData
+        dataContent: DataContent[]
+        setDataContent: (data: DataContent[]) => void
+    }) => {
         const { textTheme } = useThemeClass()
 
-        // const onEdit = () => {
-        //     console.log('onEdit')
-        //     // setEditableRowIndex(row.orderIndex)
+        const onEdit = () => {
+            setDataContent(
+                dataContent.map((item) =>
+                    item.orderIndex === row.orderIndex
+                        ? { ...item, readOnly: !item.readOnly }
+                        : item
+                )
+            )
+            console.log(dataContent)
+            setReadOnly(!readOnly) // 클릭 시 readOnly 상태를 토글
+        }
+
+        // console.log('dataContent : ', dataContent)
+
+        //         const onEdit = () => {
+        //             // console.log(dataContent.map(() => ))
         // }
+
+        //             console.log(dataContent)
+        //             const readOnlyDataContent = dataContent.map((item) => {
+        //                 return { ...item, readOnly: false }
+        //             })
+
+        //             // readOnlyDataContent[row.orderIndex].readOnly === true
+        //             console.log(readOnlyDataContent)
+
+        //             const updatedDataContent = readOnlyDataContent.map((item) => {
+        //                 if (item.orderIndex === row.orderIndex) {
+        //                     return { ...item, readOnly: true }
+        //                     // return { ...item, readOnly: false }
+        //                 }
+        //                 return item
+        //             })
+
+        //             setDataContent(updatedDataContent)
+        //             console.log(updatedDataContent)
+        //             console.log(dataContent)
+
+        //             // 클릭한 행만 수정 가능하도록 업데이트
+        //             // const updatedData = dataList.data.map((item) => {
+        //             //     console.log(item.orderIndex)
+        //             //     console.log(row.orderIndex)
+        //             //     if (item.orderIndex === row.orderIndex) {
+        //             //         return { ...item, readOnly: !item.readOnly }
+        //             //     }
+        //             //     return item
+        //             // })
+
+        //             // setDataContent(updatedData)
+
+        //             // setReadOnly(!readOnly) // 클릭 시 readOnly 상태를 토글
+        //             // 클릭 시 커스텀 스타일 적용 여부를 토글
+        //             // setApplyCustomStyle(!applyCustomStyle)
+        //         }
 
         const onDelete = () => {
             //삭제할 데이터 찾기
@@ -505,14 +568,14 @@ const UserQSheetDetailsContent = () => {
 
         return (
             <div className="flex justify-normal text-lg">
-                {/* <Tooltip title="수정">
+                <Tooltip title="수정">
                     <span
                         className={`cursor-pointer p-2 hover:${textTheme}`}
                         onClick={() => onEdit()}
                     >
                         <HiOutlinePencil />
                     </span>
-                </Tooltip> */}
+                </Tooltip>
                 <Tooltip title="삭제">
                     <span
                         className="cursor-pointer p-2 hover:text-red-500"
@@ -673,13 +736,24 @@ const UserQSheetDetailsContent = () => {
                                                             {/* 행위자 */}
                                                             <td className="border border-gray-200 w-1/12 py-2">
                                                                 <input
-                                                                    className="focus:border border-gray-300"
+                                                                    // className="focus:border border-gray-300"
+                                                                    className={`focus:border border-gray-300 ${fontColor(
+                                                                        data.actor
+                                                                    )}`}
                                                                     type="text"
                                                                     style={
-                                                                        inputStyle
+                                                                        applyCustomStyle
+                                                                            ? {
+                                                                                  ...inputStyle,
+                                                                                  ...actorInputStyle,
+                                                                              }
+                                                                            : inputStyle
                                                                     }
                                                                     value={
                                                                         data.actor
+                                                                    }
+                                                                    readOnly={
+                                                                        readOnly
                                                                     }
                                                                     onChange={(
                                                                         e
@@ -825,6 +899,12 @@ const UserQSheetDetailsContent = () => {
                                                                     <ActionColumn
                                                                         row={
                                                                             data
+                                                                        }
+                                                                        dataContent={
+                                                                            dataContent
+                                                                        }
+                                                                        setDataContent={
+                                                                            setDataContent
                                                                         }
                                                                     />
                                                                 </div>

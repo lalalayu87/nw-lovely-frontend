@@ -107,8 +107,6 @@ const QSheetDetailsContent = () => {
     const [dataContent, setDataContent] =
         useState<DataContent[]>(initialDataContent)
 
-    console.log(dataContent)
-
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -225,7 +223,6 @@ const QSheetDetailsContent = () => {
             )
 
             // API 응답을 필요에 따라 처리합니다.
-            console.log(response.data)
 
             toast.push(
                 <Notification title={'큐시트가 수정되었습니다.'} type="success">
@@ -347,21 +344,6 @@ const QSheetDetailsContent = () => {
         // }
         // setDataList(updatedDataList)
         console.log(updatedDataList)
-
-        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-        // const fileNameDisplay = document.getElementById('fileNameDisplay')
-
-        // if (fileInputName && fileInputName.files.length > 0) {
-        //     // null 체크를 수행하여 오류 방지
-        //     const fileName = fileInputName.files[0].name
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = fileName
-        //     }
-        // } else {
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = '파일'
-        //     }
-        // }
     }
     // const handleFileChange = (
     //     e: React.ChangeEvent<HTMLInputElement>,

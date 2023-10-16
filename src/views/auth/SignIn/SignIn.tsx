@@ -9,8 +9,8 @@ const SignIn = () => {
             </div>
             <SignInForm
                 disableSubmit={false}
-                companySignUpUrl={''}
-                userSignUpUrl={''}
+                companySignUpUrl={'/company-sign-up'}
+                userSignUpUrl={'/sign-up'}
             />
         </>
     )

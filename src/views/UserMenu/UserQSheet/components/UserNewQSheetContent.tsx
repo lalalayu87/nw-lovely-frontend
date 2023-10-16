@@ -49,8 +49,8 @@ import { DataTableResetHandle } from '@/components/shared'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
-
 import axios from 'axios'
+import SearchDialog from './SearchDialog'
 
 const inputStyle = {
     // border: '1px solid #ccc',
@@ -87,7 +87,7 @@ const initialData: QSheetExampleData = {
     filePath: '',
     note: '',
     orderIndex: 1,
-    memo: '',
+    // memo: '',
 }
 
 const validationSchema = Yup.object().shape({
@@ -105,6 +105,12 @@ const USerNewQSheetContent: React.FC = () => {
         ...initialData,
         orderIndex: 2,
     })
+
+    const handleOpen = () => {
+        dispatch(updateDialogView('NEW_COLUMN'))
+        dispatch(openDialog())
+    }
+
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -147,14 +153,10 @@ const USerNewQSheetContent: React.FC = () => {
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        console.log(e)
-        console.log(index)
-
         const updatedDataList = [...dataList]
-        console.log('updatedDataList', updatedDataList)
+
         // const file = e.target.files[0]
         const files = e.target.files
-        console.log(files)
 
         const updatedFileInputs = [...fileInputs]
 
@@ -181,7 +183,6 @@ const USerNewQSheetContent: React.FC = () => {
         //     console.log(file.name)
         // }
         // setDataList(updatedDataList)
-        console.log(updatedDataList)
 
         // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
         // const fileNameDisplay = document.getElementById('fileNameDisplay')
@@ -250,7 +251,7 @@ const USerNewQSheetContent: React.FC = () => {
         // apiPostQSheetCardList(data)
         const accessToken = (persistData as any).auth.session.accessToken
         try {
-            console.log(alert(formData))
+            // console.log(alert(formData))
             // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
             const response = await axios.post(
                 `http://152.69.228.245:10001/api/v1/qsheet`,
@@ -263,9 +264,6 @@ const USerNewQSheetContent: React.FC = () => {
             )
 
             // API 응답을 필요에 따라 처리합니다.
-            console.log(response.data)
-            alert(`API 응답: ${JSON.stringify(response.data)}`)
-            console.log(response.data)
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
@@ -300,7 +298,6 @@ const USerNewQSheetContent: React.FC = () => {
     // const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
 
     const onDragEnd = (result: DropResult) => {
-        console.log(result)
         // 드래그가 취소된 경우
         if (!result.destination) return
 
@@ -339,7 +336,6 @@ const USerNewQSheetContent: React.FC = () => {
     }
 
     const onAdd = () => {
-        console.log('add')
         setNewData({
             ...newData,
             orderIndex: newData.orderIndex + 1,
@@ -355,13 +351,11 @@ const USerNewQSheetContent: React.FC = () => {
             const rowData = dataList.find(
                 (item) => item.orderIndex === row.orderIndex
             )
-            console.log(rowData)
 
             // 데이터를 삭제하고 업데이트된 배열을 생성합니다.
             const updatedData = dataList.filter(
                 (item) => item.orderIndex !== row.orderIndex
             )
-            console.log(updatedData)
 
             setDataList(updatedData)
         }
@@ -382,9 +376,24 @@ const USerNewQSheetContent: React.FC = () => {
 
     const [orgSeq, setOrgSeq] = useState('')
 
+    const [dialogIsOpen, setIsOpen] = useState(false)
+
+    const openDialog = () => {
+        setIsOpen(true)
+    }
+
+    const onDialogClose = (e: MouseEvent) => {
+        console.log('onDialogClose', e)
+        setIsOpen(false)
+    }
+
+    const onDialogOk = (e: MouseEvent) => {
+        console.log('onDialogOk', e)
+        setIsOpen(false)
+    }
+
     const onSearch = async (e: ChangeEvent<HTMLInputElement>) => {
         const searchKeyword = e.target.value
-        console.log(searchKeyword)
 
         const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
         const persistData = deepParseJson(rawPersistData)
@@ -407,7 +416,6 @@ const USerNewQSheetContent: React.FC = () => {
             )
             const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
             const matchingOrgSeq = matchingOrgSeqs[0]
-            console.log(matchingOrgSeq)
 
             if (matchingOrgSeqs.length > 0) {
                 setOrgSeq(matchingOrgSeq)
@@ -427,6 +435,7 @@ const USerNewQSheetContent: React.FC = () => {
 
                 <div className="flex flex-col md:flex-row md:items-center gap-1">
                     <div>
+                        {/* <button onClick={handleOpen}>Open Popup</button> */}
                         <Input
                             ref={searchInput}
                             className="max-w-md md:w-52 md:mb-0 mb-4" // 가로 길이 조절
@@ -434,6 +443,7 @@ const USerNewQSheetContent: React.FC = () => {
                             placeholder="조직 검색"
                             prefix={<HiOutlineSearch className="text-lg" />}
                             onChange={(e) => onSearch(e)}
+                            // onClick={() => openDialog()}
                         />
                     </div>
                     <Button size="sm" onClick={onAdd}>
@@ -448,6 +458,33 @@ const USerNewQSheetContent: React.FC = () => {
                         저장
                     </Button>
                 </div>
+            </div>
+
+            <div>
+                {/* <Button variant="solid" onClick={() => openDialog()}>
+                    Open Dialog
+                </Button> */}
+                <Dialog
+                    isOpen={dialogIsOpen}
+                    onClose={onDialogClose}
+                    onRequestClose={onDialogClose}
+                >
+                    <SearchDialog />
+                    {/* <h5 className="mb-4">Dialog Title</h5>
+                    <p>There are many variationsr</p>
+                    <div className="text-right mt-6">
+                        <Button
+                            className="ltr:mr-2 rtl:ml-2"
+                            variant="plain"
+                            onClick={onDialogClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button variant="solid" onClick={onDialogOk}>
+                            Okay
+                        </Button>
+                    </div> */}
+                </Dialog>
             </div>
 
             <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
