@@ -13,13 +13,15 @@ const AuthLayout = () => {
     )
 
     return (
-        <div className="app-layout-blank flex flex-auto flex-col h-[100vh]">
+        <div className="app-layout-blank flex flex-auto flex-col h-[100vh] justify-center items-center bg-white">
             {layoutType === LAYOUT_TYPE_BLANK ? (
                 <View />
             ) : (
-                <Side>
+                // <Side>
+                <div className="w-1/4">
                     <View />
-                </Side>
+                </div>
+                // </Side>
             )}
         </div>
     )

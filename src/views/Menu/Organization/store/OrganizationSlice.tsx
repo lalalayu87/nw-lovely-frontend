@@ -12,7 +12,6 @@ import {
 } from '@/services/SalesService'
 import type { TableQueries } from '@/@types/common'
 import ApiService from '@/services/ApiService'
-import async from 'react-select/dist/declarations/src/async/index'
 
 
 type Order = {

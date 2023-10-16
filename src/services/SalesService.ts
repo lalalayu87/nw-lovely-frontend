@@ -95,8 +95,7 @@ export async function apiGetSalesOrderDetails<
 }
 
 // 조직 목록
-export async function apiGetOrgList<T, U extends Record<string, unknown>>(
-) {
+export async function apiGetOrgList<T, U extends Record<string, unknown>>() {
     return ApiService.fetchData<T>({
         url: '/api/v1/org',
         method: 'get',
@@ -115,13 +114,42 @@ export async function apiCreateOrg<T, U extends Record<string, unknown>>(
 }
 
 // 조직 삭제
-export async function apiDeleteOrg<
-    T,
-    U extends Record<string, unknown>
->(data: U) {
+export async function apiDeleteOrg<T, U extends Record<string, unknown>>(
+    data: U
+) {
     return ApiService.fetchData<T>({
         url: `/api/v1/org/${data.id}`,
         method: 'delete',
+        data,
+    })
+}
+
+// 최종확인서 템플릿 목록
+// export async function apiGetFinaltempl<T>() {
+//     console.log("확인")
+//     return ApiService.fetchData<T>({
+//         url: '/nw/api/v1/finaltempl',
+//         method: 'get',
+//     })
+// }
+
+export async function apiGetFinaltempl<T, U extends Record<string, unknown>>(
+    data: U
+) {
+    return ApiService.fetchData<T>({
+        url: '/nw/api/v1/finaltempl',
+        method: 'get',
+        data,
+    })
+}
+
+// 최종확인서 템플릿 생성
+export async function apiCreateFinaltempl<T, U extends Record<string, unknown>>(
+    data: U
+) {
+    return ApiService.fetchData<T>({
+        url: '/nw/api/v1/finaltempl',
+        method: 'post',
         data,
     })
 }

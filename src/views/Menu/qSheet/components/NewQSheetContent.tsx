@@ -4,7 +4,7 @@ import {
     DragDropContext,
     Droppable,
     DropResult,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 // import '@/assets/styles/components/_tables.css'
 import { Tooltip, Button } from '@/components/ui'
@@ -12,14 +12,14 @@ import {
     HiOutlinePencil,
     HiOutlineTrash,
     HiPlusSm,
-    HiOutlineUpload
+    HiOutlineUpload,
 } from 'react-icons/hi'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import NewQSheetHeader from './NewQSheetHeader'
 import { useReactToPrint } from 'react-to-print'
 import type {
     DataTableResetHandle,
-    ColumnDef
+    ColumnDef,
 } from '@/components/shared/DataTable'
 import { useAppDispatch, useAppSelector, getList } from '../store'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
@@ -36,7 +36,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%'
+    width: '95%',
 }
 
 const contentInputStyle = {
@@ -46,7 +46,7 @@ const contentInputStyle = {
     margin: '5px',
     outline: 'none',
     width: '95%',
-    overFlow: 'hidden'
+    overFlow: 'hidden',
 }
 interface QSheetExampleData {
     process: string
@@ -65,7 +65,7 @@ const initialData: QSheetExampleData = {
     filePath: '',
     note: '',
     orderIndex: 1,
-    memo: ''
+    memo: '',
 }
 
 const NewQSheetContent: React.FC = () => {
@@ -91,30 +91,30 @@ const NewQSheetContent: React.FC = () => {
             {
                 header: '식순명',
                 accessorKey: 'process',
-                width: 'w-1/12'
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12'
+                width: 'w-5/12',
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12'
-            }
+                width: 'w-2/12',
+            },
         ],
         []
     )
@@ -133,7 +133,7 @@ const NewQSheetContent: React.FC = () => {
         const qsheetData = {
             name: name,
             userSeq: userSeq,
-            data: []
+            data: [],
         }
         const addData = []
         const formData = new FormData()
@@ -146,7 +146,7 @@ const NewQSheetContent: React.FC = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`
+                filePath: `${item.process}_${item.filePath}`,
             }))
 
             qsheetData.data = qsheetData.data.concat(requestData[i])
@@ -157,7 +157,7 @@ const NewQSheetContent: React.FC = () => {
         formData.append(
             'qsheetCreateDto',
             new Blob([JSON.stringify(qsheetData)], {
-                type: 'application/json'
+                type: 'application/json',
             })
         )
 
@@ -175,8 +175,8 @@ const NewQSheetContent: React.FC = () => {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             )
 
@@ -206,7 +206,7 @@ const NewQSheetContent: React.FC = () => {
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
-        orderIndex: 2
+        orderIndex: 2,
     })
 
     // const handleAddData = () => {
@@ -255,7 +255,7 @@ const NewQSheetContent: React.FC = () => {
         if (files.length > 0) {
             updatedDataList[index] = {
                 ...updatedDataList[index],
-                filePath: files[0].name
+                filePath: files[0].name,
             }
             setDataList(updatedDataList)
         }
@@ -338,7 +338,7 @@ const NewQSheetContent: React.FC = () => {
         console.log('add')
         setNewData({
             ...newData,
-            orderIndex: newData.orderIndex + 1
+            orderIndex: newData.orderIndex + 1,
         })
         setDataList([...dataList, newData])
     }
@@ -403,13 +403,13 @@ const NewQSheetContent: React.FC = () => {
                             <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                                 식순명
                             </th>
-                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                                 행위자
                             </th>
                             <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                                 내용
                             </th>
-                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                                 파일
                             </th>
                             <th className="px-2  w-2/12 py-3 text-center border border-gray-300">
@@ -467,7 +467,7 @@ const NewQSheetContent: React.FC = () => {
                                                             />
                                                         </td>
                                                         {/* 행위자 */}
-                                                        <td className="border border-gray-200 w-2/12 py-2">
+                                                        <td className="border border-gray-200 w-1/12 py-2">
                                                             <input
                                                                 className="focus:border border-gray-300"
                                                                 type="text"
@@ -509,8 +509,17 @@ const NewQSheetContent: React.FC = () => {
                                                             />
                                                         </td>
                                                         {/* 파일 */}
-                                                        <td className="border border-gray-200 w-1/12 py-2">
-                                                            <div>
+                                                        <td className="border border-gray-200 w-2/12 py-2">
+                                                            <div
+                                                                style={{
+                                                                    display:
+                                                                        'flex',
+                                                                    alignItems:
+                                                                        'center',
+                                                                    justifyContent:
+                                                                        'center',
+                                                                }}
+                                                            >
                                                                 <input
                                                                     multiple
                                                                     className="focus:border border-gray-300"
@@ -520,7 +529,7 @@ const NewQSheetContent: React.FC = () => {
                                                                     } // useRef로 파일 입력 요소를 참조
                                                                     style={{
                                                                         display:
-                                                                            'none'
+                                                                            'none',
                                                                     }}
                                                                     id={`fileInput-${index}`}
                                                                     accept="*/*"
@@ -550,7 +559,7 @@ const NewQSheetContent: React.FC = () => {
                                                                             textOverflow:
                                                                                 'ellipsis',
                                                                             maxWidth:
-                                                                                '50px' // 파일명을 표시할 최대 너비 설정
+                                                                                '200px', // 파일명을 표시할 최대 너비 설정
                                                                         }}
                                                                     >
                                                                         {data.filePath
@@ -593,7 +602,7 @@ const NewQSheetContent: React.FC = () => {
                                                             className="border border-gray-200 w-1/12 py-2 text-center"
                                                             style={{
                                                                 verticalAlign:
-                                                                    'middle'
+                                                                    'middle',
                                                             }}
                                                         >
                                                             <div>

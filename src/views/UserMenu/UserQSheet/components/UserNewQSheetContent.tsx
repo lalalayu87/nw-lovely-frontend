@@ -7,20 +7,20 @@ import React, {
     useState,
     Suspense,
     lazy,
-    ChangeEvent
+    ChangeEvent,
 } from 'react'
 import {
     DragDropContext,
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 import {
     HiOutlineUpload,
     HiOutlineTrash,
     HiPlusSm,
-    HiOutlineSearch
+    HiOutlineSearch,
 } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
@@ -29,7 +29,7 @@ import {
     useAppSelector,
     updateDialogView,
     openDialog,
-    getList
+    getList,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate } from 'react-router-dom'
@@ -58,7 +58,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '90%'
+    width: '90%',
 }
 
 const contentInputStyle = {
@@ -67,7 +67,7 @@ const contentInputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%'
+    width: '95%',
 }
 
 interface QSheetExampleData {
@@ -87,13 +87,13 @@ const initialData: QSheetExampleData = {
     filePath: '',
     note: '',
     orderIndex: 1,
-    memo: ''
+    memo: '',
 }
 
 const validationSchema = Yup.object().shape({
     process: Yup.string().required('식순명을 입력해주세요.'),
     actor: Yup.string().required('행위자를 입력해주세요.'),
-    text: Yup.string().required('내용을 입력해주세요.')
+    text: Yup.string().required('내용을 입력해주세요.'),
 })
 
 const USerNewQSheetContent: React.FC = () => {
@@ -103,37 +103,37 @@ const USerNewQSheetContent: React.FC = () => {
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
-        orderIndex: 2
+        orderIndex: 2,
     })
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
                 header: '식순명',
                 accessorKey: 'process',
-                width: 'w-1/12'
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12'
+                width: 'w-5/12',
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12'
-            }
+                width: 'w-2/12',
+            },
         ],
         []
     )
@@ -166,7 +166,7 @@ const USerNewQSheetContent: React.FC = () => {
         if (files.length > 0) {
             updatedDataList[index] = {
                 ...updatedDataList[index],
-                filePath: files[0].name
+                filePath: files[0].name,
             }
             setDataList(updatedDataList)
         }
@@ -213,7 +213,7 @@ const USerNewQSheetContent: React.FC = () => {
             name: name,
             userSeq: userSeq,
             orgSeq: orgSeq,
-            data: []
+            data: [],
         }
         const addData = []
         const formData = new FormData()
@@ -226,7 +226,7 @@ const USerNewQSheetContent: React.FC = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`
+                filePath: `${item.process}_${item.filePath}`,
             }))
 
             qsheetData.data = qsheetData.data.concat(requestData[i])
@@ -237,7 +237,7 @@ const USerNewQSheetContent: React.FC = () => {
         formData.append(
             'qsheetCreateDto',
             new Blob([JSON.stringify(qsheetData)], {
-                type: 'application/json'
+                type: 'application/json',
             })
         )
 
@@ -257,8 +257,8 @@ const USerNewQSheetContent: React.FC = () => {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             )
 
@@ -342,7 +342,7 @@ const USerNewQSheetContent: React.FC = () => {
         console.log('add')
         setNewData({
             ...newData,
-            orderIndex: newData.orderIndex + 1
+            orderIndex: newData.orderIndex + 1,
         })
         setDataList([...dataList, newData])
     }
@@ -395,8 +395,8 @@ const USerNewQSheetContent: React.FC = () => {
                 'http://152.69.228.245:10001/api/v1/org',
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             )
 
@@ -571,7 +571,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                     type="file"
                                                                     style={{
                                                                         display:
-                                                                            'none'
+                                                                            'none',
                                                                     }}
                                                                     onChange={(
                                                                         e
@@ -608,7 +608,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                                             textOverflow:
                                                                                 'ellipsis',
                                                                             maxWidth:
-                                                                                '50px'
+                                                                                '50px',
                                                                         }}
                                                                     >
                                                                         {data.filePath
@@ -651,7 +651,7 @@ const USerNewQSheetContent: React.FC = () => {
                                                             className="border border-gray-200 w-1/12 py-2 text-center"
                                                             style={{
                                                                 verticalAlign:
-                                                                    'middle'
+                                                                    'middle',
                                                             }}
                                                         >
                                                             <div className="flex items-center">

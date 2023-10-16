@@ -5,28 +5,28 @@ import {
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 import {
     HiOutlineUpload,
     HiOutlineTrash,
     HiPlusSm,
     HiOutlinePencil,
-    HiExternalLink
+    HiExternalLink,
 } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
     useAppDispatch,
     useAppSelector,
-    getList
+    getList,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import {
     apiGetQSheetCardDetails,
-    apiPatchQSheetCardList
+    apiPatchQSheetCardList,
 } from '@/services/QSheetService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -52,7 +52,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%'
+    width: '95%',
 }
 
 const contentInputStyle = {
@@ -61,7 +61,7 @@ const contentInputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '95%'
+    width: '95%',
 }
 
 type QSheetDetailsResponse = {
@@ -145,8 +145,8 @@ const UserQSheetDetailsContent = () => {
             filePath: '',
             note: '',
             orderIndex: 1,
-            process: ''
-        }
+            process: '',
+        },
     ]
 
     const [dataContent, setDataContent] =
@@ -159,30 +159,30 @@ const UserQSheetDetailsContent = () => {
             {
                 header: '식순명',
                 accessorKey: 'process',
-                width: 'w-1/12'
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12'
+                width: 'w-5/12',
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12'
-            }
+                width: 'w-2/12',
+            },
         ],
         []
     )
@@ -199,7 +199,7 @@ const UserQSheetDetailsContent = () => {
     const onUpdate = async () => {
         const qsheetData = {
             orgSeq: orgSeq,
-            data: []
+            data: [],
         }
         const addData = []
         const formData = new FormData()
@@ -212,7 +212,7 @@ const UserQSheetDetailsContent = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`
+                filePath: `${item.process}_${item.filePath}`,
             }))
             qsheetData.data = qsheetData.data.concat(requestData[i])
             console.log(qsheetData.data)
@@ -224,7 +224,7 @@ const UserQSheetDetailsContent = () => {
         formData.append(
             'qsheetUpdateDto',
             new Blob([JSON.stringify(qsheetData)], {
-                type: 'application/json'
+                type: 'application/json',
             })
         )
         console.log([JSON.stringify(qsheetData)])
@@ -243,8 +243,8 @@ const UserQSheetDetailsContent = () => {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             )
 
@@ -340,7 +340,7 @@ const UserQSheetDetailsContent = () => {
         if (files.length > 0) {
             updatedDataList[index] = {
                 ...updatedDataList[index],
-                filePath: files[0].name
+                filePath: files[0].name,
             }
             setDataContent(updatedDataList)
         }
@@ -468,7 +468,7 @@ const UserQSheetDetailsContent = () => {
             filePath: '',
             note: '',
             orderIndex,
-            process: ''
+            process: '',
         }
         // dataContent 배열에 새 데이터 아이템을 추가합니다.
         setDataContent([...dataContent, newDataItem])
@@ -536,7 +536,7 @@ const UserQSheetDetailsContent = () => {
           size: 30cm 40cm;
           margin: 1cm;
         }
-      `
+      `,
     })
 
     const [isFinalConfirmed, setIsFinalConfirmed] = useState(false)
@@ -726,7 +726,7 @@ const UserQSheetDetailsContent = () => {
                                                                         type="file"
                                                                         style={{
                                                                             display:
-                                                                                'none'
+                                                                                'none',
                                                                         }}
                                                                         ref={
                                                                             fileInputRef
@@ -759,7 +759,7 @@ const UserQSheetDetailsContent = () => {
                                                                                 textOverflow:
                                                                                     'ellipsis',
                                                                                 maxWidth:
-                                                                                    '50px'
+                                                                                    '50px',
                                                                             }}
                                                                         >
                                                                             {data.filePath
@@ -805,7 +805,7 @@ const UserQSheetDetailsContent = () => {
                                                                 className="border border-gray-200 w-1/12 py-2 text-center"
                                                                 style={{
                                                                     verticalAlign:
-                                                                        'middle'
+                                                                        'middle',
                                                                 }}
                                                             >
                                                                 <div className="flex items-center">

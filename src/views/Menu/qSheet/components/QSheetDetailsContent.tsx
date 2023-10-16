@@ -5,28 +5,28 @@ import {
     Droppable,
     DropResult,
     DraggableChildrenFn,
-    Draggable
+    Draggable,
 } from 'react-beautiful-dnd'
 import {
     HiOutlinePencil,
     HiOutlineTrash,
     HiPlusSm,
     HiExternalLink,
-    HiOutlineUpload
+    HiOutlineUpload,
 } from 'react-icons/hi'
 import {
     toggleDeleteConfirmation,
     // toggleEditConfirmation,
     useAppDispatch,
     useAppSelector,
-    getList
+    getList,
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import {
     apiGetQSheetCardDetails,
-    apiPatchQSheetCardList
+    apiPatchQSheetCardList,
 } from '@/services/QSheetService'
 import QSheetDetatilsHeader from './QSheetDetailsHeader'
 import toast from '@/components/ui/toast'
@@ -51,7 +51,7 @@ const inputStyle = {
     padding: '5px',
     margin: '5px',
     outline: 'none',
-    width: '90%'
+    width: '90%',
 }
 
 const contentInputStyle = {
@@ -61,7 +61,7 @@ const contentInputStyle = {
     margin: '5px',
     outline: 'none',
     width: '95%',
-    overFlow: 'hidden'
+    overFlow: 'hidden',
 }
 
 type QSheetDetailsResponse = {
@@ -101,8 +101,8 @@ const QSheetDetailsContent = () => {
             filePath: '',
             note: '',
             orderIndex: 1,
-            process: ''
-        }
+            process: '',
+        },
     ]
     const [dataContent, setDataContent] =
         useState<DataContent[]>(initialDataContent)
@@ -114,30 +114,30 @@ const QSheetDetailsContent = () => {
             {
                 header: '절차',
                 accessorKey: 'process',
-                width: 'w-1/12'
+                width: 'w-1/12',
             },
             {
                 header: '행위자',
                 accessorKey: 'actor',
                 sortable: true,
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '내용',
                 accessorKey: 'content',
-                width: 'w-5/12'
+                width: 'w-5/12',
             },
 
             {
                 header: '파일',
                 accessorKey: 'filePath',
-                width: 'w-2/12'
+                width: 'w-2/12',
             },
             {
                 header: '비고',
                 accessorKey: 'note',
-                width: 'w-2/12'
-            }
+                width: 'w-2/12',
+            },
         ],
         []
     )
@@ -154,7 +154,7 @@ const QSheetDetailsContent = () => {
     const onUpdate = async () => {
         const qsheetData = {
             orgSeq: orgSeq,
-            data: []
+            data: [],
         }
         const addData = []
         const formData = new FormData()
@@ -167,22 +167,22 @@ const QSheetDetailsContent = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`
+                filePath: `${item.process}_${item.filePath}`,
             }))
             qsheetData.data = qsheetData.data.concat(requestData[i])
             console.log(qsheetData.data)
             console.log(qsheetData)
         }
 
-        console.log(alert(JSON.stringify(qsheetData)))
+        // console.log(alert(JSON.stringify(qsheetData)))
 
         formData.append(
             'qsheetUpdateDto',
             new Blob([JSON.stringify(qsheetData)], {
-                type: 'application/json'
+                type: 'application/json',
             })
         )
-        console.log([JSON.stringify(qsheetData)])
+        // console.log([JSON.stringify(qsheetData)])
 
         fileInputs.forEach((file, index) => {
             if (file) {
@@ -219,8 +219,8 @@ const QSheetDetailsContent = () => {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                        Authorization: `Bearer ${accessToken}`,
+                    },
                 }
             )
 
@@ -331,7 +331,7 @@ const QSheetDetailsContent = () => {
         if (files.length > 0) {
             updatedDataList[index] = {
                 ...updatedDataList[index],
-                filePath: files[0].name
+                filePath: files[0].name,
             }
             setDataContent(updatedDataList)
         }
@@ -439,7 +439,7 @@ const QSheetDetailsContent = () => {
             filePath: '',
             note: '',
             orderIndex,
-            process: ''
+            process: '',
         }
         // dataContent 배열에 새 데이터 아이템을 추가합니다.
         setDataContent([...dataContent, newDataItem])
@@ -520,7 +520,7 @@ const QSheetDetailsContent = () => {
           size: 30cm 40cm;
           margin: 1cm;
         }
-      `
+      `,
     })
 
     const [isFinalConfirmed, setIsFinalConfirmed] = useState(false)
@@ -583,52 +583,22 @@ const QSheetDetailsContent = () => {
                     <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th
-                                    className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300"
-                                    // style={{
-                                    //     width: '10%'
-                                    // }}
-                                >
+                                <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                                     절차
                                 </th>
-                                <th
-                                    className="px-2 w-2/12 py-3 text-center border border-gray-300"
-                                    // style={{
-                                    //     width: '20%'
-                                    // }}
-                                >
+                                <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                                     행위자
                                 </th>
-                                <th
-                                    className="px-2 w-5/12 py-3 text-center border border-gray-300"
-                                    // style={{
-                                    //     width: '30%'
-                                    // }}
-                                >
+                                <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                                     내용
                                 </th>
-                                <th
-                                    className="px-2 w-1/12 py-3 text-center border border-gray-300"
-                                    // style={{
-                                    //     width: '10%'
-                                    // }}
-                                >
+                                <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                                     파일
                                 </th>
-                                <th
-                                    className="px-2 w-2/12 py-3 text-center border border-gray-300"
-                                    // style={{
-                                    //     width: '10%'
-                                    // }}
-                                >
+                                <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                                     비고
                                 </th>
-                                <th
-                                    className="px-2 w-1/12 py-3 text-center border border-gray-300"
-                                    // style={{
-                                    //     width: '10%'
-                                    // }}
-                                >
+                                <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                                     액션
                                 </th>
                             </tr>
@@ -688,7 +658,7 @@ const QSheetDetailsContent = () => {
                                                                     />
                                                                 </td>
                                                                 {/* 행위자 */}
-                                                                <td className="border border-gray-200 w-2/12 py-2">
+                                                                <td className="border border-gray-200 w-1/12 py-2">
                                                                     <input
                                                                         className="focus:border border-gray-300"
                                                                         type="text"
@@ -712,7 +682,6 @@ const QSheetDetailsContent = () => {
                                                                     />
                                                                 </td>
                                                                 {/* 내용 */}
-
                                                                 <td className="border border-gray-200 w-5/12 py-2">
                                                                     <input
                                                                         className="focus:border border-gray-300"
@@ -782,15 +751,24 @@ const QSheetDetailsContent = () => {
                                                                     /> */}
                                                                 {/* </td> */}
                                                                 {/* 파일 */}
-                                                                <td className="border border-gray-200 w-1/12 py-2">
-                                                                    <div>
+                                                                <td className="border border-gray-200 w-2/12 py-2">
+                                                                    <div
+                                                                        style={{
+                                                                            display:
+                                                                                'flex',
+                                                                            alignItems:
+                                                                                'center',
+                                                                            justifyContent:
+                                                                                'center',
+                                                                        }}
+                                                                    >
                                                                         <input
                                                                             multiple
                                                                             className="focus:border border-gray-300"
                                                                             type="file"
                                                                             style={{
                                                                                 display:
-                                                                                    'none'
+                                                                                    'none',
                                                                             }}
                                                                             ref={
                                                                                 fileInputRef
@@ -823,7 +801,7 @@ const QSheetDetailsContent = () => {
                                                                                     textOverflow:
                                                                                         'ellipsis',
                                                                                     maxWidth:
-                                                                                        '50px'
+                                                                                        '200px',
                                                                                 }}
                                                                             >
                                                                                 {data.filePath
@@ -869,7 +847,7 @@ const QSheetDetailsContent = () => {
                                                                     className="border border-gray-200 w-1/12 py-2 text-center"
                                                                     style={{
                                                                         verticalAlign:
-                                                                            'middle'
+                                                                            'middle',
                                                                     }}
                                                                 >
                                                                     <div>

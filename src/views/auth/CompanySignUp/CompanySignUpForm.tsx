@@ -60,7 +60,7 @@ const validationSchema = Yup.object().shape({
         '비밀번호가 일치하지 않습니다.'
     ),
     company: Yup.string().required('업체명을 입력하세요.'),
-    businessRegistration: Yup.string().required('사업자등록번호를 입력하세요.')
+    businessRegistration: Yup.string().required('사업자등록번호를 입력하세요.'),
 })
 
 const CompanySignUpForm = (props: SignUpFormProps) => {
@@ -127,13 +127,13 @@ const CompanySignUpForm = (props: SignUpFormProps) => {
             emailCode,
             password,
             company,
-            businessRegistration
+            businessRegistration,
         } = values
         setSubmitting(true)
         const result = await signUp({
             userName,
             password,
-            email
+            email,
         })
 
         if (result?.status === 'failed') {
@@ -160,7 +160,7 @@ const CompanySignUpForm = (props: SignUpFormProps) => {
                     password: '',
                     passwordConfirm: '',
                     company: '',
-                    businessRegistration: ''
+                    businessRegistration: '',
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
