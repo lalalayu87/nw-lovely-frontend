@@ -54,15 +54,6 @@ const inputStyle = {
     width: '90%',
 }
 
-const readOnlyStyle = {
-    borderRadius: '4px',
-    padding: '5px',
-    margin: '5px',
-    width: '95%',
-    border: '1px solid rgb(209 213 219)',
-    backgroundColor: 'white',
-}
-
 const contentInputStyle = {
     // border: '1px solid #ccc'
     borderRadius: '4px',
@@ -91,20 +82,17 @@ type DataContent = {
     process: string
 }
 
-type qsheetSeqq = string
-
 const QSheetDetailsContent = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
 
     const location = useLocation()
     const qsheetSeq = location.state.qsheetSeq
-    console.log(qsheetSeq)
 
     const [loading, setLoading] = useState(true)
 
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
-    const orgSeq = dataList?.orgSeq
+    const orgSeq = dataList?.orgSeq.orgSeq
 
     const initialDataContent: DataContent[] = [
         {
@@ -161,53 +149,7 @@ const QSheetDetailsContent = () => {
 
     const navigate = useNavigate()
 
-    const onConfirm = () => {
-        for (const e of dataContent) {
-            console.log(e)
-
-            if (
-                e.actor === '' &&
-                e.content === '' &&
-                e.filePath === '' &&
-                e.note === '' &&
-                e.process === ''
-            ) {
-                toast.push(
-                    <Notification title={'실패'} type="warning">
-                        입력되지 않은 행이 있습니다.
-                    </Notification>
-                )
-                // break
-                return
-            } else {
-                onUpdate()
-            }
-        }
-    }
-
     const onUpdate = async () => {
-        // 빈 행인지 확인하는 로직
-        const hasEmptyRow = dataContent.some(
-            (item) =>
-                item.process.trim() === '' &&
-                item.actor.trim() === '' &&
-                item.content.trim() === '' &&
-                item.note.trim() === '' &&
-                !fileInputs[item.orderIndex - 1] // 해당 행의 파일이 없는 경우
-        )
-
-        if (hasEmptyRow) {
-            toast.push(
-                <Notification title={'실패'} type="warning">
-                    입력되지 않은 행이 있습니다.
-                </Notification>
-            )
-            return // 빈 행이 있을 경우 함수 종료
-        }
-
-        // 빈 행이 없을 경우 아래의 업데이트 로직을 실행
-        // ... (기존의 onUpdate 내용)
-
         const qsheetData = {
             orgSeq: orgSeq,
             data: [],
@@ -285,7 +227,6 @@ const QSheetDetailsContent = () => {
             )
 
             // API 응답을 필요에 따라 처리합니다.
-            console.log(response)
 
             toast.push(
                 <Notification title={'큐시트가 수정되었습니다.'} type="success">
@@ -293,8 +234,7 @@ const QSheetDetailsContent = () => {
                 </Notification>
             )
 
-            // navigate('/cuesheet')
-            navigate('/home')
+            navigate('/cuesheet')
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
@@ -645,6 +585,10 @@ const QSheetDetailsContent = () => {
                             </tr>
                         </thead>
                     </table>
+
+                    {/* {dataContent.map((data, index) => (
+  {data.readOnly? (<div>{data.orderIndex}</div>):(<input onChange={handleChange} />)}
+)) */}
                     <div>
                         <DragDropContext
                             onDragEnd={(result) => onDragEnd(result)}

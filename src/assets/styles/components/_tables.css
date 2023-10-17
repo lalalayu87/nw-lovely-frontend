@@ -6,7 +6,8 @@
 
     > tr {
       > th {
-        @apply py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100;
+        @apply py-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100;
+    
       }
     }
   }
@@ -16,7 +17,7 @@
 
     > tr {
       > td {
-        @apply px-5 py-4 ;
+        @apply px-10 py-4 ;
       }
     }
   }

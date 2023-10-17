@@ -49,7 +49,7 @@ const navigationConfig: NavigationTree[] = [
     //     subMenu: [],
     // },
     {
-        key: 'qsheet',
+        key: 'home',
         path: '/cuesheet',
         title: '큐시트관리',
         translateKey: 'nav.qsheet',
@@ -58,6 +58,16 @@ const navigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
+    // {
+    //     key: 'qsheet',
+    //     path: '/cuesheet',
+    //     title: '큐시트관리',
+    //     translateKey: 'nav.qsheet',
+    //     icon: 'hiOutlineClipboardList',
+    //     type: NAV_ITEM_TYPE_ITEM,
+    //     authority: [],
+    //     subMenu: [],
+    // },
     // {
     //     key: 'mypage',
     //     path: '/mypage',

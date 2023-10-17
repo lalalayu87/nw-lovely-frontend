@@ -55,15 +55,6 @@ const inputStyle = {
     width: '95%',
 }
 
-const readOnlyStyle = {
-    borderRadius: '4px',
-    padding: '5px',
-    margin: '5px',
-    width: '95%',
-    border: '1px solid rgb(209 213 219)',
-    backgroundColor: 'white',
-}
-
 const actorInputStyle = {
     borderRadius: '4px',
     padding: '5px',
@@ -147,11 +138,6 @@ const UserQSheetDetailsContent = () => {
                 setLoading(false)
                 setDataList(res)
                 setDataContent(responseData)
-                setDataContent(
-                    responseData.map((data) => {
-                        return { ...data, readOnly: true }
-                    })
-                )
             }
         }
     }
@@ -163,7 +149,7 @@ const UserQSheetDetailsContent = () => {
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
 
     const qsheetSeq = location.state.qsheetSeq
-    const orgSeq = dataList?.orgSeq
+    const orgSeq = dataList?.orgSeq.orgSeq
 
     const initialDataContent: DataContent[] = [
         {
@@ -222,53 +208,7 @@ const UserQSheetDetailsContent = () => {
 
     const navigate = useNavigate()
 
-    // const onConfirm = () => {
-    //     for (const e of dataContent) {
-    //         console.log(e)
-
-    //         if (
-    //             e.actor === '' &&
-    //             e.content === '' &&
-    //             e.filePath === '' &&
-    //             e.note === '' &&
-    //             e.process === ''
-    //         ) {
-    //             toast.push(
-    //                 <Notification title={'실패'} type="warning">
-    //                     입력되지 않은 행이 있습니다.
-    //                 </Notification>
-    //             )
-    //             // break
-    //             return
-    //         } else {
-    //             onUpdate()
-    //         }
-    //     }
-    // }
-
     const onUpdate = async () => {
-        // 빈 행인지 확인하는 로직
-        const hasEmptyRow = dataContent.some(
-            (item) =>
-                item.process.trim() === '' &&
-                item.actor.trim() === '' &&
-                item.content.trim() === '' &&
-                item.note.trim() === '' &&
-                !fileInputs[item.orderIndex - 1] // 해당 행의 파일이 없는 경우
-        )
-
-        if (hasEmptyRow) {
-            toast.push(
-                <Notification title={'실패'} type="warning">
-                    입력되지 않은 행이 있습니다.
-                </Notification>
-            )
-            return // 빈 행이 있을 경우 함수 종료
-        }
-
-        // 빈 행이 없을 경우 아래의 업데이트 로직을 실행
-        // ... (기존의 onUpdate 내용)
-
         const qsheetData = {
             orgSeq: orgSeq,
             data: [],
@@ -333,8 +273,7 @@ const UserQSheetDetailsContent = () => {
                 </Notification>
             )
 
-            // navigate('/cuesheetUser')
-            navigate('/userhome')
+            navigate('/cuesheetUser')
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
@@ -378,6 +317,7 @@ const UserQSheetDetailsContent = () => {
         //     console.error(error)
         // }
     }
+    const [readOnly, setReadOnly] = useState(true)
 
     const handleInputChange = (
         field: keyof DataContent,
@@ -560,13 +500,41 @@ const UserQSheetDetailsContent = () => {
         // console.log('dataContent : ', dataContent)
 
         const onEdit = () => {
-            setDataContent(
-                dataContent.map((item) =>
-                    item.orderIndex === row.orderIndex
-                        ? { ...item, readOnly: !item.readOnly }
-                        : item
-                )
-            )
+            console.log('d')
+            // console.log(dataContent.map(() => ))
+            const readOnlyDataContent = dataContent.map((item) => {
+                return { ...item, readOnly: false }
+            })
+
+            readOnlyDataContent[row.orderIndex].readOnly === true
+            console.log(readOnlyDataContent)
+
+            // const updatedDataContent = dataContent.map((item) => {
+            //     if (item.orderIndex === row.orderIndex) {
+            //         return { ...item, readOnly: true }
+            //         // return { ...item, readOnly: false }
+            //     }
+            //     return item
+            // })
+
+            setDataContent(readOnlyDataContent)
+            console.log(dataContent)
+
+            // 클릭한 행만 수정 가능하도록 업데이트
+            // const updatedData = dataList.data.map((item) => {
+            //     console.log(item.orderIndex)
+            //     console.log(row.orderIndex)
+            //     if (item.orderIndex === row.orderIndex) {
+            //         return { ...item, readOnly: !item.readOnly }
+            //     }
+            //     return item
+            // })
+
+            // setDataContent(updatedData)
+
+            // setReadOnly(!readOnly) // 클릭 시 readOnly 상태를 토글
+            // 클릭 시 커스텀 스타일 적용 여부를 토글
+            // setApplyCustomStyle(!applyCustomStyle)
         }
 
         const onDelete = () => {
@@ -657,7 +625,6 @@ const UserQSheetDetailsContent = () => {
                             block
                             size="sm"
                             disabled={isFinalConfirmed}
-                            // onClick={onConfirm}
                             onClick={onUpdate}
                         >
                             저장
@@ -737,17 +704,13 @@ const UserQSheetDetailsContent = () => {
 
                                                             <td className="border border-gray-200 w-1/12 py-2">
                                                                 <input
+                                                                    className="focus:border border-gray-300"
                                                                     type="text"
                                                                     style={
-                                                                        data.readOnly
-                                                                            ? inputStyle
-                                                                            : readOnlyStyle
-                                                                    } // readOnly일 때 readOnlyStyle을 적용
+                                                                        inputStyle
+                                                                    }
                                                                     value={
                                                                         data.process
-                                                                    }
-                                                                    readOnly={
-                                                                        data.readOnly
                                                                     }
                                                                     onChange={(
                                                                         e
@@ -782,7 +745,7 @@ const UserQSheetDetailsContent = () => {
                                                                         data.actor
                                                                     }
                                                                     readOnly={
-                                                                        data.readOnly
+                                                                        readOnly
                                                                     }
                                                                     onChange={(
                                                                         e
@@ -800,17 +763,13 @@ const UserQSheetDetailsContent = () => {
                                                             {/* 내용 */}
                                                             <td className="border border-gray-200 w-5/12 py-2">
                                                                 <input
+                                                                    className="focus:border border-gray-300"
                                                                     type="text"
                                                                     style={
-                                                                        data.readOnly
-                                                                            ? inputStyle //contentInputStyle
-                                                                            : readOnlyStyle
+                                                                        contentInputStyle
                                                                     }
                                                                     value={
                                                                         data.content
-                                                                    }
-                                                                    readOnly={
-                                                                        data.readOnly
                                                                     }
                                                                     onChange={(
                                                                         e
@@ -896,17 +855,13 @@ const UserQSheetDetailsContent = () => {
                                                             {/* 비고 */}
                                                             <td className="border border-gray-200 w-2/12 py-2">
                                                                 <input
+                                                                    className="focus:border border-gray-300"
                                                                     type="text"
                                                                     style={
-                                                                        data.readOnly
-                                                                            ? inputStyle //contentInputStyle
-                                                                            : readOnlyStyle
+                                                                        inputStyle
                                                                     }
                                                                     value={
                                                                         data.note
-                                                                    }
-                                                                    readOnly={
-                                                                        data.readOnly
                                                                     }
                                                                     onChange={(
                                                                         e

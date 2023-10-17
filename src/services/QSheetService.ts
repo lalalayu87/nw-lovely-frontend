@@ -1,5 +1,15 @@
 import ApiService from './ApiService'
 
+export async function apiGetQSheetList<T, U extends Record<string, unknown>>(
+    data: U
+) {
+    return ApiService.fetchData<T>({
+        url: `/api/v1/qsheet`,
+        method: 'get',
+        data,
+    })
+}
+
 export async function apiGetQSheetCardList<T>() {
     return ApiService.fetchData<T>({
         url: '/api/v1/qsheet',

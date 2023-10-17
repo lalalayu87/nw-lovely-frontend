@@ -206,6 +206,29 @@ const USerNewQSheetContent: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
 
+    const onConfirm = () => {
+        // dataList.map((e) => {
+        for (const e of dataList) {
+            console.log(e)
+            if (
+                e.actor === '' &&
+                e.content === '' &&
+                e.filePath === '' &&
+                e.note === '' &&
+                e.process === ''
+            ) {
+                toast.push(
+                    <Notification title={'실패'} type="warning">
+                        입력되지 않은 행이 있습니다.
+                    </Notification>
+                )
+                break
+            } else {
+                onCreate()
+            }
+        }
+    }
+
     const navigate = useNavigate()
     const onCreate = async () => {
         const date = new Date()
@@ -221,13 +244,16 @@ const USerNewQSheetContent: React.FC = () => {
 
         for (let i = 0; i < dataList.length; i++) {
             const item = dataList[i]
+            const filePath = item.filePath
+                ? `${item.process}_${item.filePath}`
+                : ''
             const requestData = dataList.map((item) => ({
                 orderIndex: item.orderIndex,
                 process: item.process,
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`,
+                filePath: filePath,
             }))
 
             qsheetData.data = qsheetData.data.concat(requestData[i])
@@ -279,6 +305,7 @@ const USerNewQSheetContent: React.FC = () => {
 
         await getList()
         navigate('/cuesheetUser')
+        // navigate('/userhome')
     }
 
     useEffect(() => {
@@ -453,7 +480,7 @@ const USerNewQSheetContent: React.FC = () => {
                         block
                         size="sm"
                         variant="twoTone"
-                        onClick={onCreate}
+                        onClick={onConfirm}
                     >
                         저장
                     </Button>

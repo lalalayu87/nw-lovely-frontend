@@ -63,10 +63,17 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/Menu/Schedule')),
         authority: [],
     },
+    // {
+    //     key: 'qsheet',
+    //     path: '/cuesheet',
+    //     component: lazy(() => import('@/views/Menu/qSheet/QSheetMain')),
+    //     authority: [],
+    // },
     {
         key: 'qsheet',
         path: '/cuesheet',
-        component: lazy(() => import('@/views/Menu/qSheet/QSheetMain')),
+        component: lazy(() => import('@/views/Menu/QSheet_List/Organization')),
+        // component: lazy(() => import('@/views/Menu/QsheetList/QSheetMain')),
         authority: [],
     },
     {

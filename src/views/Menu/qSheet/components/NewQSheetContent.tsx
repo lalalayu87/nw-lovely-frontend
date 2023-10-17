@@ -125,6 +125,34 @@ const NewQSheetContent: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
 
+    const onConfirm = () => {
+        let allRowsEmpty = false // 모든 행이 빈 칸인지 여부를 추적
+
+        for (const e of dataList) {
+            console.log(e)
+            if (
+                e.actor === '' &&
+                e.content === '' &&
+                e.filePath === '' &&
+                e.note === '' &&
+                e.process === ''
+            ) {
+                allRowsEmpty = true // 한 행이라도 내용이 입력되었음
+                break
+            }
+        }
+
+        if (allRowsEmpty) {
+            toast.push(
+                <Notification title={'실패'} type="warning">
+                    입력되지 않은 행이 있습니다.
+                </Notification>
+            )
+        } else {
+            onCreate()
+        }
+    }
+
     const navigate = useNavigate()
     const onCreate = async () => {
         const date = new Date()
@@ -140,13 +168,17 @@ const NewQSheetContent: React.FC = () => {
 
         for (let i = 0; i < dataList.length; i++) {
             const item = dataList[i]
+            const filePath = item.filePath
+                ? `${item.process}_${item.filePath}`
+                : ''
+
             const requestData = dataList.map((item) => ({
                 orderIndex: item.orderIndex,
                 process: item.process,
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`,
+                filePath: filePath,
             }))
 
             qsheetData.data = qsheetData.data.concat(requestData[i])
@@ -389,7 +421,7 @@ const NewQSheetContent: React.FC = () => {
                         block
                         size="sm"
                         variant="twoTone"
-                        onClick={onCreate}
+                        onClick={onConfirm}
                     >
                         저장
                     </Button>
