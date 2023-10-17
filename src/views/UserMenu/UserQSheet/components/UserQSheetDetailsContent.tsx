@@ -23,6 +23,7 @@ import {
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { HiOutlineExclamationCircle } from 'react-icons/hi'
 
 import {
     apiGetQSheetCardDetails,
@@ -69,6 +70,7 @@ type QSheetDetailsResponse = {
     name: string
     created_at: string
     data: []
+    memo:string
     orgSeq: string
     userSeq: string
 }
@@ -200,6 +202,7 @@ const UserQSheetDetailsContent = () => {
         const qsheetData = {
             orgSeq: orgSeq,
             data: [],
+            memo:secretMemo,
         }
         const addData = []
         const formData = new FormData()
@@ -212,7 +215,8 @@ const UserQSheetDetailsContent = () => {
                 content: item.content,
                 actor: item.actor,
                 note: item.note,
-                filePath: `${item.process}_${item.filePath}`,
+                filePath: `${item.filePath}`,
+                memo: item.memo
             }))
             qsheetData.data = qsheetData.data.concat(requestData[i])
             console.log(qsheetData.data)
@@ -601,13 +605,13 @@ const UserQSheetDetailsContent = () => {
                             <th className="px-2 w-1/12 py-3 text-center rtl:text-rightfont-semibold uppercase tracking-wider text-gray-500 dark:text-gray-100 border border-gray-300">
                                 식순명
                             </th>
-                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
                                 행위자
                             </th>
                             <th className="px-2 w-5/12 py-3 text-center border border-gray-300">
                                 내용
                             </th>
-                            <th className="px-2 w-1/12 py-3 text-center border border-gray-300">
+                            <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
                                 파일
                             </th>
                             <th className="px-2 w-2/12 py-3 text-center border border-gray-300">
@@ -671,7 +675,7 @@ const UserQSheetDetailsContent = () => {
                                                                 />
                                                             </td>
                                                             {/* 행위자 */}
-                                                            <td className="border border-gray-200 w-2/12 py-2">
+                                                            <td className="border border-gray-200 w-1/12 py-2">
                                                                 <input
                                                                     className="focus:border border-gray-300"
                                                                     type="text"
@@ -719,8 +723,17 @@ const UserQSheetDetailsContent = () => {
                                                                 />
                                                             </td>
                                                             {/* 파일 */}
-                                                            <td className="border border-gray-200 w-1/12 py-2">
-                                                                <div>
+                                                            <td className="border border-gray-200 w-2/12 py-2">
+                                                                <div
+                                                                    style={{
+                                                                        display:
+                                                                            'flex',
+                                                                        alignItems:
+                                                                            'center',
+                                                                        justifyContent:
+                                                                            'center',
+                                                                    }}
+                                                                >
                                                                     <input
                                                                         className="focus:border border-gray-300"
                                                                         type="file"
@@ -759,7 +772,7 @@ const UserQSheetDetailsContent = () => {
                                                                                 textOverflow:
                                                                                     'ellipsis',
                                                                                 maxWidth:
-                                                                                    '50px',
+                                                                                    '200px',
                                                                             }}
                                                                         >
                                                                             {data.filePath
@@ -831,6 +844,20 @@ const UserQSheetDetailsContent = () => {
                             )}
                         </Droppable>
                     </DragDropContext>
+                </div>
+            </div>
+            <div className="mb-10">
+                <div className="mb-4">
+                <Input
+                     textArea
+                    className="focus:border border-gray-300"
+                    style={
+                    inputStyle
+                        }
+                      value={
+                        dataList?.memo
+                      }
+                     />
                 </div>
             </div>
         </>

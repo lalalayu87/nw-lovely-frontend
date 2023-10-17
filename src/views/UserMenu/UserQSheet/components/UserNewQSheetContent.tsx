@@ -105,6 +105,8 @@ const USerNewQSheetContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     const searchInput = useRef(null)
+    const [qsheetName,setQsheetName]=  useState("")
+    const [secretMemo, setSecretMemo] = useState("")
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])
     const [newData, setNewData] = useState<QSheetExampleData>({
         ...initialData,
@@ -218,10 +220,11 @@ const USerNewQSheetContent: React.FC = () => {
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
         const qsheetData = {
-            name: name,
+            name: qsheetName,
             userSeq: userSeq,
             orgSeq: orgSeq,
             data: [],
+            memo:secretMemo,
         }
         const addData = []
         const formData = new FormData()
@@ -488,6 +491,7 @@ const USerNewQSheetContent: React.FC = () => {
                     size="sm"
                     className="max-w-md md:w-52 md:mb-0 mb-4"
                     prefix={<HiOutlineUser  className="text-lg" />}
+                    onChange={(e) => setQsheetName(e.target.value)}
                     suffix={
                         <Tooltip title="큐시트 이름을 입력하세요">
                             <HiOutlineExclamationCircle className="text-lg cursor-pointer ml-1" />
@@ -736,6 +740,15 @@ const USerNewQSheetContent: React.FC = () => {
                         )}
                     </Droppable>
                 </DragDropContext>
+            </div>
+            <div className="mb-10">
+                <div className="mb-4">
+                <Input
+                    placeholder="비공개 요청사항을 입력해주세요."
+                    textArea
+                    onChange={(e) => setSecretMemo(e.target.value)}
+                />
+                </div>
             </div>
         </>
     )
