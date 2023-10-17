@@ -42,6 +42,7 @@ function SignUpForm({ className }: SignUpFormProps) {
         userName: '',
         userEmail: '',
         userPassword: '',
+        confirmPassword: '',
         // 다른 필드의 오류 메시지도 추가
     })
 
@@ -76,6 +77,7 @@ function SignUpForm({ className }: SignUpFormProps) {
                 }
             }
         }
+
         if (name === 'userName') {
             if (value === '') {
                 setErrorMessages({
@@ -97,6 +99,7 @@ function SignUpForm({ className }: SignUpFormProps) {
                 }
             }
         }
+
         if (name === 'userEmail') {
             const emailReg =
                 /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
@@ -123,6 +126,7 @@ function SignUpForm({ className }: SignUpFormProps) {
                 }
             }
         }
+
         if (name === 'userPassword') {
             if (value === '') {
                 setErrorMessages({
@@ -158,51 +162,6 @@ function SignUpForm({ className }: SignUpFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        const emailReg =
-            /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
-
-        if (userId === '') {
-            const alphanumericRegex = /^[a-zA-Z0-9]+$/
-            if (!alphanumericRegex.test(userId)) {
-                toast.push(
-                    <Notification title={''} type="warning">
-                        아이디를 숫자 또는 영어로 입력하세요.
-                    </Notification>
-                )
-            }
-        }
-
-        // 아이디가 4자 이상인지 검사
-
-        // if (userName === '') {
-        //     toast.push(
-        //         <Notification title={''} type="warning">
-        //             이름을 입력하세요.
-        //         </Notification>
-        //     )
-        //     return false
-        // }
-        if (
-            userPassword === '' ||
-            confirmPassword === '' ||
-            userPassword !== confirmPassword
-        ) {
-            toast.push(
-                <Notification title={''} type="warning">
-                    비밀번호가 일치하지 않습니다.
-                </Notification>
-            )
-            return false
-        }
-        if (userEmail === '' || !emailReg.test(userEmail)) {
-            toast.push(
-                <Notification title={''} type="warning">
-                    이메일이 형식에 일치하지 않습니다.
-                </Notification>
-            )
-            return false
-        }
-
         try {
             const response = await axios.post(
                 `${SERVER_URL}/api/auth/register`,
@@ -213,17 +172,22 @@ function SignUpForm({ className }: SignUpFormProps) {
                     userPassword,
                 }
             )
-
             console.log(response)
-            toast.push(
-                <Notification title={'성공'} type="success">
-                    회원가입이 완료되었습니다.
-                </Notification>
-            )
-
-            navigate('/sign-in')
+            if (response.status === 200) {
+                toast.push(
+                    <Notification title={'성공'} type="success">
+                        회원가입이 완료되었습니다.
+                    </Notification>
+                )
+                navigate('/sign-in')
+            }
         } catch (error) {
             console.error('회원 가입 실패:', error)
+            toast.push(
+                <Notification title={'실패'} type="warning">
+                    회원가입 실패
+                </Notification>
+            )
         }
     }
 
@@ -344,8 +308,8 @@ function SignUpForm({ className }: SignUpFormProps) {
                     // margin: '0 auto',
                     margin: '20px 0',
                     color: 'white',
-                    backgroundColor: '#FFA2A2',
-                    height: '60px',
+                    backgroundColor: '#E11D48',
+                    height: '50px',
                     borderRadius: '4px',
                     fontWeight: 'bold', // 글자를 진하게 설정
                     fontSize: '16px', // 글자 크기를 20px로 설정
