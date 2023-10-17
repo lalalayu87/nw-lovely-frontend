@@ -27,28 +27,6 @@ import type {
 } from '@/components/shared/DataTable'
 import { apiDeleteQSheetCardList } from '@/services/QSheetService'
 
-import styled from 'styled-components'
-
-const NameColumn = styled.div`
-    width: 20%;
-    /* 다른 스타일 속성 추가 가능 */
-`
-
-const UserColumn = styled.div`
-    width: 30%;
-    /* 다른 스타일 속성 추가 가능 */
-`
-
-const OrgColumn = styled.div`
-    width: 25%;
-    /* 다른 스타일 속성 추가 가능 */
-`
-
-const DateColumn = styled.div`
-    width: 25%;
-    /* 다른 스타일 속성 추가 가능 */
-`
-
 type Order = {
     qsheetSeq: string
     name: string
@@ -211,34 +189,11 @@ const OrdersTable = () => {
             {
                 header: '관리자 이름',
                 accessorKey: 'orgSeq.orgName',
-                // 컬럼에 스타일된 컴포넌트 사용
-                style: {
-                    width: '20px',
-                },
             },
             {
                 header: '생성날짜',
                 accessorKey: 'created_at',
-                // 컬럼에 스타일된 컴포넌트 사용
-                className: DateColumn,
             },
-            // {
-            //     header: '큐시트 이름',
-            //     accessorKey: 'name',
-            //     cell: (props) => <OrderColumn row={props.row.original} />,
-            // },
-            // {
-            //     header: '작성자 이름',
-            //     accessorKey: 'userSeq.userName',
-            // },
-            // {
-            //     header: '관리자 이름',
-            //     accessorKey: 'orgSeq.orgName',
-            // },
-            // {
-            //     header: '생성날짜',
-            //     accessorKey: 'created_at',
-            // },
         ],
         []
     )

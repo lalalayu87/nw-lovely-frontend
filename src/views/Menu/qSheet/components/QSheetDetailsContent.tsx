@@ -63,6 +63,16 @@ const readOnlyStyle = {
     backgroundColor: 'white',
 }
 
+const actorInputStyle = {
+    borderRadius: '4px',
+    padding: '5px',
+    margin: '5px',
+    outline: 'none',
+    width: '95%',
+    border: '1px solid rgb(209 213 219)',
+    backgroundColor: 'white',
+}
+
 const contentInputStyle = {
     // border: '1px solid #ccc'
     borderRadius: '4px',
@@ -70,7 +80,6 @@ const contentInputStyle = {
     margin: '5px',
     outline: 'none',
     width: '95%',
-    overFlow: 'hidden',
 }
 
 type QSheetDetailsResponse = {
@@ -78,6 +87,7 @@ type QSheetDetailsResponse = {
     name: string
     created_at: string
     data: []
+    memo: string
     orgSeq: string
     userSeq: string
 }
@@ -89,6 +99,8 @@ type DataContent = {
     note: string
     orderIndex: number
     process: string
+    readOnly: boolean // readOnly 속성 추가
+    memo: string
 }
 
 type qsheetSeqq = string
@@ -96,6 +108,7 @@ type qsheetSeqq = string
 const QSheetDetailsContent = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
+    const [applyCustomStyle, setApplyCustomStyle] = useState(false)
 
     const location = useLocation()
     const qsheetSeq = location.state.qsheetSeq
@@ -105,6 +118,7 @@ const QSheetDetailsContent = () => {
 
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
     const orgSeq = dataList?.orgSeq
+    const secretMemo = dataList?.memo
 
     const initialDataContent: DataContent[] = [
         {
@@ -114,6 +128,8 @@ const QSheetDetailsContent = () => {
             note: '',
             orderIndex: 1,
             process: '',
+            readOnly: false, // 처음에는 수정 가능하게 시작
+            memo: '', // memo: 추가
         },
     ]
     const [dataContent, setDataContent] =
@@ -161,29 +177,29 @@ const QSheetDetailsContent = () => {
 
     const navigate = useNavigate()
 
-    const onConfirm = () => {
-        for (const e of dataContent) {
-            console.log(e)
+    // const onConfirm = () => {
+    //     for (const e of dataContent) {
+    //         console.log(e)
 
-            if (
-                e.actor === '' &&
-                e.content === '' &&
-                e.filePath === '' &&
-                e.note === '' &&
-                e.process === ''
-            ) {
-                toast.push(
-                    <Notification title={'실패'} type="warning">
-                        입력되지 않은 행이 있습니다.
-                    </Notification>
-                )
-                // break
-                return
-            } else {
-                onUpdate()
-            }
-        }
-    }
+    //         if (
+    //             e.actor === '' &&
+    //             e.content === '' &&
+    //             e.filePath === '' &&
+    //             e.note === '' &&
+    //             e.process === ''
+    //         ) {
+    //             toast.push(
+    //                 <Notification title={'실패'} type="warning">
+    //                     입력되지 않은 행이 있습니다.
+    //                 </Notification>
+    //             )
+    //             // break
+    //             return
+    //         } else {
+    //             onUpdate()
+    //         }
+    //     }
+    // }
 
     const onUpdate = async () => {
         // 빈 행인지 확인하는 로직
@@ -211,6 +227,7 @@ const QSheetDetailsContent = () => {
         const qsheetData = {
             orgSeq: orgSeq,
             data: [],
+            memo: secretMemo,
         }
         const addData = []
         const formData = new FormData()
@@ -228,6 +245,7 @@ const QSheetDetailsContent = () => {
                 actor: item.actor,
                 note: item.note,
                 filePath: updatedFilePath,
+                memo: item.memo,
             }))
             qsheetData.data = qsheetData.data.concat(requestData[i])
             console.log(qsheetData.data)
@@ -287,14 +305,28 @@ const QSheetDetailsContent = () => {
             // API 응답을 필요에 따라 처리합니다.
             console.log(response)
 
-            toast.push(
-                <Notification title={'큐시트가 수정되었습니다.'} type="success">
-                    큐시트가 수정되었습니다.
-                </Notification>
-            )
+            if (response.data === 200) {
+                toast.push(
+                    <Notification
+                        title={'큐시트가 수정되었습니다.'}
+                        type="success"
+                    >
+                        큐시트가 수정되었습니다.
+                    </Notification>
+                )
 
-            // navigate('/cuesheet')
-            navigate('/home')
+                navigate('/cuesheet')
+                // navigate('/home')
+            }
+
+            // toast.push(
+            //     <Notification title={'큐시트가 수정되었습니다.'} type="success">
+            //         큐시트가 수정되었습니다.
+            //     </Notification>
+            // )
+
+            // // navigate('/cuesheet')
+            // navigate('/home')
         } catch (error) {
             // 에러를 처리합니다.
             console.error(error)
@@ -355,14 +387,24 @@ const QSheetDetailsContent = () => {
     }
 
     const handleInputChange = (
-        field: keyof QSheetExampleData,
+        field: keyof DataContent,
         value: string,
         index: number
     ) => {
-        console.log(dataList)
         const updatedDataList = [...dataContent]
+
+        let className = ''
+        if (field === 'actor') {
+            className = fontColor(value)
+        } else {
+            className = 'text-purple-600' // 다른 필드에 대한 클래스 설정
+        }
         updatedDataList[index][field] = value
         setDataContent(updatedDataList)
+        // console.log(dataList)
+        // const updatedDataList = [...dataContent]
+        // updatedDataList[index][field] = value
+        // setDataContent(updatedDataList)
     }
 
     const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
@@ -481,27 +523,47 @@ const QSheetDetailsContent = () => {
             note: '',
             orderIndex,
             process: '',
+            readOnly: false,
         }
         // dataContent 배열에 새 데이터 아이템을 추가합니다.
         setDataContent([...dataContent, newDataItem])
     }
 
-    const ActionColumn = ({ row }: { row: QSheetDetailsResponse }) => {
-        // const dispatch = useAppDispatch()
+    // const ActionColumn = ({ row }: { row: QSheetDetailsResponse }) => {
+    //     // const dispatch = useAppDispatch()
+    //     const { textTheme } = useThemeClass()
+    //     // const navigate = useNavigate()
+
+    //     //행 수정
+    //     const onEdit = () => {
+    //         // 클릭한 행의 데이터를 전달
+    //         const rowDataTmp = dataContent.find(
+    //             (item) => item.orderIndex === row.orderIndex
+    //         )
+    //         console.log(rowDataTmp)
+
+    //         // setDataContent(rowDataTmp) // setDataForEdit 함수로 데이터 전달
+    //     }
+    const ActionColumn = ({
+        row,
+        dataContent,
+        setDataContent,
+    }: {
+        row: DataContent //QSheetExampleData
+        dataContent: DataContent[]
+        setDataContent: (data: DataContent[]) => void
+    }) => {
         const { textTheme } = useThemeClass()
-        // const navigate = useNavigate()
 
-        //행 수정
         const onEdit = () => {
-            // 클릭한 행의 데이터를 전달
-            const rowDataTmp = dataContent.find(
-                (item) => item.orderIndex === row.orderIndex
+            setDataContent(
+                dataContent.map((item) =>
+                    item.orderIndex === row.orderIndex
+                        ? { ...item, readOnly: !item.readOnly }
+                        : item
+                )
             )
-            console.log(rowDataTmp)
-
-            // setDataContent(rowDataTmp) // setDataForEdit 함수로 데이터 전달
         }
-
         // 행 삭제
         const onDelete = () => {
             const rowData = dataContent.find(
@@ -678,10 +740,15 @@ const QSheetDetailsContent = () => {
                                                                         className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
-                                                                            inputStyle
-                                                                        }
+                                                                            data.readOnly
+                                                                                ? inputStyle
+                                                                                : readOnlyStyle
+                                                                        } // readOnly일 때 readOnlyStyle을 적용
                                                                         value={
                                                                             data.process
+                                                                        }
+                                                                        readOnly={
+                                                                            data.readOnly
                                                                         }
                                                                         onChange={(
                                                                             e
@@ -702,10 +769,18 @@ const QSheetDetailsContent = () => {
                                                                         className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
-                                                                            inputStyle
+                                                                            applyCustomStyle
+                                                                                ? {
+                                                                                      ...inputStyle,
+                                                                                      ...actorInputStyle,
+                                                                                  }
+                                                                                : inputStyle
                                                                         }
                                                                         value={
                                                                             data.actor
+                                                                        }
+                                                                        readOnly={
+                                                                            data.readOnly
                                                                         }
                                                                         onChange={(
                                                                             e
@@ -726,10 +801,15 @@ const QSheetDetailsContent = () => {
                                                                         className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
-                                                                            contentInputStyle
+                                                                            data.readOnly
+                                                                                ? inputStyle //contentInputStyle
+                                                                                : readOnlyStyle
                                                                         }
                                                                         value={
                                                                             data.content
+                                                                        }
+                                                                        readOnly={
+                                                                            data.readOnly
                                                                         }
                                                                         onChange={(
                                                                             e
@@ -864,10 +944,15 @@ const QSheetDetailsContent = () => {
                                                                         className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
-                                                                            inputStyle
+                                                                            data.readOnly
+                                                                                ? inputStyle //contentInputStyle
+                                                                                : readOnlyStyle
                                                                         }
                                                                         value={
                                                                             data.note
+                                                                        }
+                                                                        readOnly={
+                                                                            data.readOnly
                                                                         }
                                                                         onChange={(
                                                                             e
@@ -894,6 +979,12 @@ const QSheetDetailsContent = () => {
                                                                             row={
                                                                                 data
                                                                             }
+                                                                            dataContent={
+                                                                                dataContent
+                                                                            }
+                                                                            setDataContent={
+                                                                                setDataContent
+                                                                            }
                                                                         />
                                                                     </div>
                                                                 </td>
@@ -908,6 +999,16 @@ const QSheetDetailsContent = () => {
                                 )}
                             </Droppable>
                         </DragDropContext>
+                    </div>
+                </div>
+                <div className="mb-10">
+                    <div className="mb-4 w-full">
+                        <Input
+                            textArea
+                            className="w-full focus:border border-gray-300 mt-3"
+                            // style={inputStyle}
+                            value={dataList?.memo}
+                        />
                     </div>
                 </div>
             </div>
