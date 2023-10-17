@@ -8,13 +8,13 @@ export type AppConfig = {
     enableMock: boolean
 }
 
+console.log("VITE_API_URL : ", import.meta.env.VITE_API_URL);
+
 const appConfig: AppConfig = {
-    apiPrefix: 'http://152.69.228.245:10001',
+    apiPrefix: import.meta.env.VITE_API_URL || 'http://127.0.0.1:10001',
     // apiPrefix: '/api',
-    authenticatedEntryPath: '/cuesheet',
-    authenticatedEntryPathUser: '/cuesheetUser',
-    // authenticatedEntryPath: '/home',
-    // authenticatedEntryPathUser: '/home',
+    authenticatedEntryPath: '/home',
+    authenticatedEntryPathUser: '/home',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/',
     locale: 'en',

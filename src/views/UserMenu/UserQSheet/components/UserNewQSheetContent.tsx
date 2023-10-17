@@ -20,6 +20,7 @@ import {
     HiOutlineUpload,
     HiOutlineTrash,
     HiPlusSm,
+    HiOutlineUser,
     HiOutlineSearch,
 } from 'react-icons/hi'
 import {
@@ -49,8 +50,11 @@ import { DataTableResetHandle } from '@/components/shared'
 import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { apiPostQSheetCardList } from '@/services/QSheetService'
-
-import axios from 'axios'
+import { HiOutlineExclamationCircle } from 'react-icons/hi'
+import InputGroup from '@/components/ui/InputGroup'
+import Select from '@/components/ui/Select'
+import { apiGetOrgList } from '@/services/OrgService'
+import axios, { responseEncoding } from 'axios'
 
 const inputStyle = {
     // border: '1px solid #ccc',
@@ -69,6 +73,7 @@ const contentInputStyle = {
     outline: 'none',
     width: '95%',
 }
+
 
 interface QSheetExampleData {
     process: string
@@ -105,6 +110,9 @@ const USerNewQSheetContent: React.FC = () => {
         ...initialData,
         orderIndex: 2,
     })
+    const [orgList,setOrgList] =  useState([]);
+
+    const [loadingOrgList, setLoadingOrgList] = useState(false)
     const columns: ColumnDef<qSheet>[] = useMemo(
         () => [
             {
@@ -382,43 +390,78 @@ const USerNewQSheetContent: React.FC = () => {
 
     const [orgSeq, setOrgSeq] = useState('')
 
-    const onSearch = async (e: ChangeEvent<HTMLInputElement>) => {
-        const searchKeyword = e.target.value
-        console.log(searchKeyword)
+    // const onSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+    //     const searchKeyword = e.target.value
+    //     console.log(searchKeyword)
 
-        const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
-        const persistData = deepParseJson(rawPersistData)
-        const accessToken = (persistData as any).auth.session.accessToken
+    //     const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
+    //     const persistData = deepParseJson(rawPersistData)
+    //     const accessToken = (persistData as any).auth.session.accessToken
 
-        try {
-            const response = await axios.get(
-                'http://152.69.228.245:10001/api/v1/org',
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            )
+    //     try {
+    //         const response = await axios.get(
+    //             'http://152.69.228.245:10001/api/v1/org',
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${accessToken}`,
+    //                 },
+    //             }
+    //         )
 
-            const orgData = response.data.content
+    //         const orgData = response.data.content
 
-            const matchingOrgs = orgData.filter(
-                (org) => org.orgName === searchKeyword
-            )
-            const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
-            const matchingOrgSeq = matchingOrgSeqs[0]
-            console.log(matchingOrgSeq)
+    //         const matchingOrgs = orgData.filter(
+    //             (org) => org.orgName === searchKeyword
+    //         )
+    //         const matchingOrgSeqs = matchingOrgs.map((org) => org.orgSeq)
+    //         const matchingOrgSeq = matchingOrgSeqs[0]
+    //         console.log(matchingOrgSeq)
 
-            if (matchingOrgSeqs.length > 0) {
-                setOrgSeq(matchingOrgSeq)
-            } else {
-                console.log('No matching organizations found.')
-            }
-        } catch (error) {
-            // 오류 처리
-            console.error(error)
+    //         if (matchingOrgSeqs.length > 0) {
+    //             setOrgSeq(matchingOrgSeq)
+    //         } else {
+    //             console.log('No matching organizations found.')
+    //         }
+    //     } catch (error) {
+    //         // 오류 처리
+    //         console.error(error)
+    //     }
+    // }
+    
+    const onFocus = () => {
+        if (orgList.length === 0) {
+            setLoadingOrgList(true)
+            getOrgs()
         }
     }
+
+
+
+    const onSelectOrg=(e)=>{
+        setOrgSeq(e.value)
+    }
+    const getOrgs= async () => {
+        try {
+            const response = await apiGetOrgList()
+                if (response.data) {
+                    var optionList = [];
+                   for(var res of response.data.content){
+                    optionList.push({ value: res.orgSeq, label: res.orgName })
+                   }
+                   setTimeout(() => {
+                    setOrgList(optionList);
+                    setLoadingOrgList(false)
+                }, 1500)
+                  
+                }
+            } catch (error){
+                console.log(error)
+            }
+    }
+
+
+
+
 
     return (
         <>
@@ -426,16 +469,6 @@ const USerNewQSheetContent: React.FC = () => {
                 <h3 className="mb-4 lg:mb-0">큐시트 생성</h3>
 
                 <div className="flex flex-col md:flex-row md:items-center gap-1">
-                    <div>
-                        <Input
-                            ref={searchInput}
-                            className="max-w-md md:w-52 md:mb-0 mb-4" // 가로 길이 조절
-                            size="sm"
-                            placeholder="조직 검색"
-                            prefix={<HiOutlineSearch className="text-lg" />}
-                            onChange={(e) => onSearch(e)}
-                        />
-                    </div>
                     <Button size="sm" onClick={onAdd}>
                         추가
                     </Button>
@@ -449,7 +482,37 @@ const USerNewQSheetContent: React.FC = () => {
                     </Button>
                 </div>
             </div>
-
+            <div className="flex flex-col gap-1 h-20">
+            <Input
+                    placeholder="큐시트 이름"
+                    size="sm"
+                    className="max-w-md md:w-52 md:mb-0 mb-4"
+                    prefix={<HiOutlineUser  className="text-lg" />}
+                    suffix={
+                        <Tooltip title="큐시트 이름을 입력하세요">
+                            <HiOutlineExclamationCircle className="text-lg cursor-pointer ml-1" />
+                        </Tooltip>
+                    }
+                />
+                <Select
+                      ref={searchInput}
+                      className="max-w-md md:w-52 md:mb-0 mb-4" // 가로 길이 조절
+                      size="sm"
+                      placeholder="업체 검색"
+                    
+                      required
+                    //   onChange={(e) => onSearch(e)}
+                      onChange={(e)=>onSelectOrg(e)}
+                    
+                      options={orgList}
+                      onFocus={onFocus}
+                      isLoading={loadingOrgList}
+                />
+           
+            </div>
+                    
+            
+          
             <table className="min-w-full divide-x divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700 ">
                     <tr>
@@ -474,7 +537,7 @@ const USerNewQSheetContent: React.FC = () => {
                     </tr>
                 </thead>
             </table>
-
+            
             <div>
                 <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
                     <Droppable droppableId="DetailsDroppable">
