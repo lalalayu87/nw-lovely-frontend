@@ -228,11 +228,24 @@ const NewQSheetContent: React.FC = () => {
         setDataList([])
 
         await getList()
+
         navigate('/cuesheet')
     }
 
     useEffect(() => {
         getList()
+        const initialDataLists = [
+            {
+                process: '',
+                actor: '',
+                content: '',
+                filePath: '',
+                note: '',
+                orderIndex: 1,
+                memo: '',
+            },
+        ]
+        setDataList(initialDataLists)
     }, [])
 
     const [dataList, setDataList] = useState<QSheetExampleData[]>([initialData])

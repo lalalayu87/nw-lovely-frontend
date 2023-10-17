@@ -179,30 +179,48 @@ const USerNewQSheetContent: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
 
-    const onConfirm = () => {
-        for (const e of dataList) {
-            console.log(e)
-            if (
-                e.actor === '' &&
-                e.content === '' &&
-                e.filePath === '' &&
-                e.note === '' &&
-                e.process === ''
-            ) {
-                toast.push(
-                    <Notification title={'실패'} type="warning">
-                        입력되지 않은 행이 있습니다.
-                    </Notification>
-                )
-                break
-            } else {
-                onCreate()
-            }
-        }
-    }
+    // const onConfirm = () => {
+    //     for (const e of dataList) {
+    //         console.log(e)
+    //         if (
+    //             e.actor === '' &&
+    //             e.content === '' &&
+    //             e.filePath === '' &&
+    //             e.note === '' &&
+    //             e.process === ''
+    //         ) {
+    //             toast.push(
+    //                 <Notification title={'실패'} type="warning">
+    //                     입력되지 않은 행이 있습니다.
+    //                 </Notification>
+    //             )
+    //             break
+    //         } else {
+    //             onCreate()
+    //         }
+    //     }
+    // }
 
     const navigate = useNavigate()
     const onCreate = async () => {
+        const hasEmptyRow = dataList.some(
+            (item) =>
+                item.process.trim() === '' &&
+                item.actor.trim() === '' &&
+                item.content.trim() === '' &&
+                item.note.trim() === '' &&
+                !fileInputs[item.orderIndex - 1] // 해당 행의 파일이 없는 경우
+        )
+
+        if (hasEmptyRow) {
+            toast.push(
+                <Notification title={'실패'} type="warning">
+                    입력되지 않은 행이 있습니다.
+                </Notification>
+            )
+            return // 빈 행이 있을 경우 함수 종료
+        }
+
         const date = new Date()
         const name = '큐시트_' + date.toLocaleDateString('ko-kr')
         const qsheetData = {
@@ -269,20 +287,6 @@ const USerNewQSheetContent: React.FC = () => {
                         큐시트가 생성되었습니다.
                     </Notification>
                 )
-                // 데이터 초기화
-                const initialDataLists = [
-                    {
-                        process: '',
-                        actor: '',
-                        content: '',
-                        filePath: '',
-                        note: '',
-                        orderIndex: 1,
-                        memo: '',
-                    },
-                ]
-
-                setDataList(initialDataLists)
 
                 console.log(dataList)
 
@@ -323,6 +327,18 @@ const USerNewQSheetContent: React.FC = () => {
 
     useEffect(() => {
         getList()
+        const initialDataLists = [
+            {
+                process: '',
+                actor: '',
+                content: '',
+                filePath: '',
+                note: '',
+                orderIndex: 1,
+                memo: '',
+            },
+        ]
+        setDataList(initialDataLists)
     }, [])
 
     useEffect(() => {
@@ -550,7 +566,7 @@ const USerNewQSheetContent: React.FC = () => {
                         block
                         size="sm"
                         variant="twoTone"
-                        onClick={onConfirm}
+                        onClick={onCreate}
                     >
                         저장
                     </Button>

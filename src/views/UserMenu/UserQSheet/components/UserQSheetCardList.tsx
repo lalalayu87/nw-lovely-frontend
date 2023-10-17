@@ -20,19 +20,20 @@ const UserQSheetCardList = () => {
 
     const rawPersistData = localStorage.getItem(PERSIST_STORE_NAME)
     const persistData = deepParseJson(rawPersistData)
+    const userSeq = (persistData as any).auth.user.userSeq
 
     useEffect(() => {
         const accessToken = (persistData as any).auth.session.accessToken
-        console.log('되나')
 
         const sendFormDataToAPI = async () => {
             try {
+                // user filter
                 const response = await axios.get(
-                    `http://152.69.228.245:10001/api/v1/qsheet`,
+                    `http://152.69.228.245:10001/api/v1/qsheet?size=100&userid=${userSeq}`,
                     {
                         headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
+                            Authorization: `Bearer ${accessToken}`,
+                        },
                     }
                 )
                 console.log(response)
@@ -56,7 +57,6 @@ const UserQSheetCardList = () => {
 
     useEffect(() => {
         dispatch(getList())
-        console.log('되나')
     }, [dispatch])
 
     return (

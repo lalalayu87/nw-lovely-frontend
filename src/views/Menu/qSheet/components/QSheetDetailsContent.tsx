@@ -110,14 +110,41 @@ const QSheetDetailsContent = () => {
     const dispatch = useAppDispatch()
     const [applyCustomStyle, setApplyCustomStyle] = useState(false)
 
+    useEffect(() => {
+        fetchData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const fetchData = async () => {
+        const qsheetSeq = location.state.qsheetSeq
+        if (qsheetSeq) {
+            setLoading(true)
+            const response = await apiGetQSheetCardDetails<
+                QSheetDetailsResponse,
+                { qsheetSeq: string }
+            >({ qsheetSeq })
+            if (response) {
+                const res = response.data
+                const responseData = response.data?.data
+                setLoading(false)
+                setDataList(res)
+                setDataContent(responseData)
+                setDataContent(
+                    responseData.map((data) => {
+                        return { ...data, readOnly: true }
+                    })
+                )
+            }
+        }
+    }
+
     const location = useLocation()
     const qsheetSeq = location.state.qsheetSeq
-    console.log(qsheetSeq)
 
     const [loading, setLoading] = useState(true)
 
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
-    const orgSeq = dataList?.orgSeq
+    const orgSeq = dataList?.orgSe?.orgSeq
     const secretMemo = dataList?.memo
 
     const initialDataContent: DataContent[] = [
@@ -302,10 +329,7 @@ const QSheetDetailsContent = () => {
                 }
             )
 
-            // API 응답을 필요에 따라 처리합니다.
-            console.log(response)
-
-            if (response.data === 200) {
+            if (response.status === 200) {
                 toast.push(
                     <Notification
                         title={'큐시트가 수정되었습니다.'}
@@ -314,8 +338,8 @@ const QSheetDetailsContent = () => {
                         큐시트가 수정되었습니다.
                     </Notification>
                 )
-
                 navigate('/cuesheet')
+
                 // navigate('/home')
             }
 
@@ -325,7 +349,7 @@ const QSheetDetailsContent = () => {
             //     </Notification>
             // )
 
-            // // navigate('/cuesheet')
+            // navigate('/cuesheet')
             // navigate('/home')
         } catch (error) {
             // 에러를 처리합니다.
@@ -362,30 +386,6 @@ const QSheetDetailsContent = () => {
         //     ]
         // }
     }
-
-    useEffect(() => {
-        fetchData()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const fetchData = async () => {
-        const qsheetSeq = location.state.qsheetSeq
-        if (qsheetSeq) {
-            setLoading(true)
-            const response = await apiGetQSheetCardDetails<
-                QSheetDetailsResponse,
-                { qsheetSeq: string }
-            >({ qsheetSeq })
-            if (response) {
-                const res = response.data
-                const responseData = response.data?.data
-                setLoading(false)
-                setDataList(res)
-                setDataContent(responseData)
-            }
-        }
-    }
-
     const handleInputChange = (
         field: keyof DataContent,
         value: string,
@@ -737,7 +737,6 @@ const QSheetDetailsContent = () => {
                                                                 {/* 절차 */}
                                                                 <td className="border border-gray-200 w-1/12 py-2">
                                                                     <input
-                                                                        className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
                                                                             data.readOnly
@@ -766,7 +765,9 @@ const QSheetDetailsContent = () => {
                                                                 {/* 행위자 */}
                                                                 <td className="border border-gray-200 w-1/12 py-2">
                                                                     <input
-                                                                        className="focus:border border-gray-300"
+                                                                        className={`focus:border border-gray-300 ${fontColor(
+                                                                            data.actor
+                                                                        )}`}
                                                                         type="text"
                                                                         style={
                                                                             applyCustomStyle
@@ -798,7 +799,6 @@ const QSheetDetailsContent = () => {
                                                                 {/* 내용 */}
                                                                 <td className="border border-gray-200 w-5/12 py-2">
                                                                     <input
-                                                                        className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
                                                                             data.readOnly
@@ -883,7 +883,6 @@ const QSheetDetailsContent = () => {
                                                                     >
                                                                         <input
                                                                             multiple
-                                                                            className="focus:border border-gray-300"
                                                                             type="file"
                                                                             style={{
                                                                                 display:
@@ -941,7 +940,6 @@ const QSheetDetailsContent = () => {
                                                                 {/* 비고 */}
                                                                 <td className="border border-gray-200 w-2/12 py-2">
                                                                     <input
-                                                                        className="focus:border border-gray-300"
                                                                         type="text"
                                                                         style={
                                                                             data.readOnly
