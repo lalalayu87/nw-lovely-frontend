@@ -140,12 +140,16 @@ const SignInForm = (props: SignInFormProps) => {
                             </Button>
                             <div className="mt-4 text-center">
                                 <span>{`아직 회원이 아니신가요?`} </span>
-                                <ActionLink to={companySignUpUrl}>
+                                {/* <ActionLink to={companySignUpUrl}>
                                     기업 회원가입&nbsp;
                                 </ActionLink>
                                 <span>|</span>
                                 <ActionLink to={userSignUpUrl}>
                                     &nbsp;일반 회원가입
+                                </ActionLink> */}
+
+                                <ActionLink to={userSignUpUrl}>
+                                    &nbsp;회원가입
                                 </ActionLink>
                             </div>
                         </FormContainer>

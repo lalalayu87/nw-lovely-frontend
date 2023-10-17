@@ -1,247 +1,256 @@
-import { FormItem, FormContainer } from '@/components/ui/Form'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
-import Alert from '@/components/ui/Alert'
-import PasswordInput from '@/components/shared/PasswordInput'
-import ActionLink from '@/components/shared/ActionLink'
-import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
-import { Field, Form, Formik } from 'formik'
-import * as Yup from 'yup'
-import useAuth from '@/utils/hooks/useAuth'
-import type { CommonProps } from '@/@types/common'
+import React, { useState } from 'react'
+import { SERVER_URL } from '../../../../config'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { Notification, toast } from '@/components/ui'
 
-interface SignUpFormProps extends CommonProps {
-    disableSubmit?: boolean
-    signInUrl?: string
+interface SignUpFormProps {
+    className: string
 }
 
-type SignUpFormSchema = {
-    id: string
+interface FormData {
+    userId: string
     userName: string
-    phone: string
-    email: string
-    emailCode: string
-    password: string
-    passwordConfirm: string
+    userEmail: string
+    userPassword: string
+    confirmPassword: string
+    userType: string
 }
+function SignUpForm({ className }: SignUpFormProps) {
+    const [formData, setFormData] = useState({
+        userId: '',
+        userName: '',
+        userEmail: '',
+        userPassword: '',
+        confirmPassword: '',
+        userType: 'user', // 기본값으로 'user' 설정
+    })
 
-const validationSchema = Yup.object().shape({
-    id: Yup.string()
-        .min(3, '3자 이상 입력하세요.')
-        .max(50, '50자 이내로 입력하세요.')
-        // 숫자와 알파벳만
-        .matches(/[a-z0-9]/, '숫자 또는 영어로 입력하세요.')
-        .required('id를 입력하세요.'),
-    userName: Yup.string()
-        .matches(/^[가-힣]{2,5}$/, '한글로 입력하세요.')
-        .min(2, '2자 이상 입력하세요.')
-        .required('이름을 입력하세요.'),
-    phone: Yup.string()
-        .matches(/^[0-9]{11}$/i, '숫자만 입력하세요.')
-        .required('핸드폰 번호를 입력하세요.'),
-    email: Yup.string()
-        .matches(/^[^@\s]+@[^@\s]+\.[^@\s]+$/, '이메일 형식에 맞지 않습니다.')
-        .required('이메일을 입력하세요.'),
-    emailCode: Yup.string()
-        .length(8, '유효하지 않는 코드입니다.')
-        .matches(/[a-z0-9]/, '유효하지 않는 코드입니다.')
-        .required('인증코드를 입력하세요.'),
-    password: Yup.string()
-        .matches(
-            /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,30}$/,
-            '영문, 숫자, 특수문자(!, @, #, $, %, ^, *만 사용 가능) 8-30자'
-        )
-        .required('비밀번호를 입력하세요.'),
-    passwordConfirm: Yup.string().oneOf(
-        [Yup.ref('password')],
-        '비밀번호가 일치하지 않습니다.'
-    )
-})
+    const {
+        userId,
+        userName,
+        userEmail,
+        userPassword,
+        confirmPassword,
+        userType,
+    } = formData
 
-const SignUpForm = (props: SignUpFormProps) => {
-    const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
+    const [errors, setErrors] = useState({})
 
-    const { signUp } = useAuth()
-
-    const [message, setMessage] = useTimeOutMessage()
-
-    const onSignUp = async (
-        values: SignUpFormSchema,
-        setSubmitting: (isSubmitting: boolean) => void
+    const onChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
-        const { id, userName, phone, email, emailCode, password } = values
-        setSubmitting(true)
-        const result = await signUp({
-            userName,
-            email,
-            password
+        const { value, name } = e.target
+        setFormData({
+            ...formData,
+            [name]: value,
         })
-
-        if (result?.status === 'failed') {
-            setMessage(result.message)
-        }
-
-        setSubmitting(false)
     }
 
+    // const validCheck = () => {
+    //     const emailReg =
+    //         /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
+
+    //     if (userId === '') {
+    //         return false
+    //     }
+    //     if (userName === '') {
+    //         return false
+    //     }
+    //     if (
+    //         userPassword === '' ||
+    //         confirmPassword === '' ||
+    //         userPassword !== confirmPassword
+    //     ) {
+    //         return false
+    //     }
+    //     if (userEmail === '' || !emailReg.test(userEmail)) {
+    //         return false
+    //     }
+
+    //     return true
+    // }
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const emailReg =
+            /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
+
+        if (userId === '') {
+            toast.push(
+                <Notification title={''} type="warning">
+                    아이디를 입력하세요.
+                </Notification>
+            )
+            return false
+        }
+        if (userName === '') {
+            toast.push(
+                <Notification title={''} type="warning">
+                    이름을 입력하세요.
+                </Notification>
+            )
+            return false
+        }
+        if (
+            userPassword === '' ||
+            confirmPassword === '' ||
+            userPassword !== confirmPassword
+        ) {
+            toast.push(
+                <Notification title={''} type="warning">
+                    비밀번호가 일치하지 않습니다.
+                </Notification>
+            )
+            return false
+        }
+        if (userEmail === '' || !emailReg.test(userEmail)) {
+            toast.push(
+                <Notification title={''} type="warning">
+                    이메일이 형식에 일치하지 않습니다.
+                </Notification>
+            )
+            return false
+        }
+
+        try {
+            const response = await axios.post(
+                `${SERVER_URL}/api/auth/register`,
+                {
+                    userId,
+                    userName,
+                    userEmail,
+                    userPassword,
+                }
+            )
+
+            console.log(response.data)
+            navigate('/sign-in')
+        } catch (error) {
+            console.error('회원 가입 실패:', error)
+        }
+    }
+
+    // validateForm 함수와 handleSubmit 함수 수정 필요
+
     return (
-        <div className={className}>
-            {message && (
-                <Alert showIcon className="mb-4" type="danger">
-                    {message}
-                </Alert>
-            )}
-            <Formik
-                initialValues={{
-                    id: '',
-                    userName: '',
-                    phone: '',
-                    email: '',
-                    emailCode: '',
-                    password: '',
-                    passwordConfirm: ''
+        <div className="mb-8">
+            <div>
+                <label htmlFor="userId">아이디</label>
+                <input
+                    type="text"
+                    name="userId"
+                    value={userId}
+                    style={{
+                        width: '500px',
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                />
+            </div>
+
+            <div style={{ margin: '20px 0' }}>
+                <label htmlFor="userName">이름</label>
+                <input
+                    type="text"
+                    name="userName"
+                    value={userName}
+                    style={{
+                        width: '500px',
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                    onChange={onChange}
+                />
+            </div>
+
+            <div style={{ margin: '20px 0' }}>
+                <label htmlFor="userEmail">이메일</label>
+                <input
+                    type="email"
+                    name="userEmail"
+                    value={userEmail}
+                    style={{
+                        width: '500px',
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                    onChange={onChange}
+                />
+            </div>
+
+            <div style={{ margin: '20px 0' }}>
+                <label htmlFor="userPassword">비밀번호</label>
+                <input
+                    type="password"
+                    name="userPassword"
+                    value={userPassword}
+                    style={{
+                        width: '500px',
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                    onChange={onChange}
+                />
+            </div>
+
+            <div style={{ margin: '20px 0' }}>
+                <label htmlFor="confirmPassword">비밀번호 확인</label>
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    value={confirmPassword}
+                    style={{
+                        width: '500px',
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                    onChange={onChange}
+                />
+            </div>
+
+            <div style={{ margin: '20px 0' }}>
+                <label htmlFor="userType">회원 유형</label>
+                <select
+                    name="userType"
+                    value={userType}
+                    style={{
+                        width: '500px', // select 엘리먼트의 폭을 500px로 설정
+                        border: '1px solid #ccc', // 경계선 스타일 및 색상 설정
+                        borderRadius: '4px', // 경계선 둥근 모서리 설정
+                        padding: '8px', // 내부 여백 설정
+                    }}
+                    onChange={onChange}
+                >
+                    <option value="user">일반 사용자</option>
+                    <option value="org">기업 사용자</option>
+                </select>
+            </div>
+
+            <button
+                type="submit"
+                style={{
+                    width: '500px',
+                    display: 'block',
+                    margin: '0 auto',
+                    color: 'white',
+                    backgroundColor: '#FFA2A2',
+                    height: '60px',
+                    borderRadius: '4px',
+                    fontWeight: 'bold', // 글자를 진하게 설정
+                    fontSize: '16px', // 글자 크기를 20px로 설정
                 }}
-                validationSchema={validationSchema}
-                onSubmit={(values, { setSubmitting }) => {
-                    if (!disableSubmit) {
-                        onSignUp(values, setSubmitting)
-                    } else {
-                        setSubmitting(false)
-                    }
-                }}
+                onClick={handleSubmit}
             >
-                {({ touched, errors, isSubmitting }) => (
-                    <Form>
-                        <FormContainer>
-                            <FormItem
-                                className="my-6"
-                                label="ID"
-                                invalid={errors.id && touched.id}
-                                errorMessage={errors.id}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="id"
-                                    placeholder="아이디"
-                                    component={Input}
-                                />
-                            </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="이름"
-                                invalid={errors.userName && touched.userName}
-                                errorMessage={errors.userName}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="userName"
-                                    placeholder="이름"
-                                    component={Input}
-                                />
-                            </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="폰번호"
-                                invalid={errors.phone && touched.phone}
-                                errorMessage={errors.phone}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="phone"
-                                    placeholder="숫자만 입력하세요"
-                                    component={Input}
-                                />
-                            </FormItem>
-
-                            <FormItem
-                                className=" my-6"
-                                label="Email"
-                                invalid={errors.email && touched.email}
-                                errorMessage={errors.email}
-                            >
-                                {/* 왼쪽 여백 space-x-1 > * + * */}
-                                <div className="flex space-x-1 > * + *">
-                                    <Field
-                                        type="text"
-                                        autoComplete="off"
-                                        name="email"
-                                        placeholder="test@email.com"
-                                        component={Input}
-                                    />
-                                    <Button
-                                        className="mr-2 mb-2"
-                                        variant="twoTone"
-                                        color="red-600"
-                                    >
-                                        인증
-                                    </Button>
-                                </div>
-                            </FormItem>
-
-                            <FormItem
-                                className=" my-6"
-                                label="인증코드"
-                                invalid={errors.emailCode && touched.emailCode}
-                                errorMessage={errors.emailCode}
-                            >
-                                <Field
-                                    type="text"
-                                    autoComplete="off"
-                                    name="emailCode"
-                                    placeholder="이메일 인증코드"
-                                    component={Input}
-                                />
-                            </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="비밀번호"
-                                invalid={errors.password && touched.password}
-                                errorMessage={errors.password}
-                            >
-                                <Field
-                                    autoComplete="off"
-                                    name="password"
-                                    placeholder="비밀번호 (영문, 숫자, 특수문자 8-30자)"
-                                    component={PasswordInput}
-                                />
-                            </FormItem>
-                            <FormItem
-                                className="my-6"
-                                label="비밀번호 확인"
-                                invalid={
-                                    errors.passwordConfirm &&
-                                    touched.passwordConfirm
-                                }
-                                errorMessage={errors.passwordConfirm}
-                            >
-                                <Field
-                                    autoComplete="off"
-                                    name="passwordConfirm"
-                                    placeholder="비밀번호를 한번 더 입력하세요"
-                                    component={PasswordInput}
-                                />
-                            </FormItem>
-                            <Button
-                                block
-                                loading={isSubmitting}
-                                variant="solid"
-                                type="submit"
-                            >
-                                {isSubmitting
-                                    ? 'Creating Account...'
-                                    : 'Sign Up'}
-                            </Button>
-                            <div className="mt-4 text-center">
-                                <span>이미 계정이 있으신가요? </span>
-                                <ActionLink to={signInUrl}>Sign in</ActionLink>
-                            </div>
-                        </FormContainer>
-                    </Form>
-                )}
-            </Formik>
+                가입하기
+            </button>
         </div>
     )
 }
