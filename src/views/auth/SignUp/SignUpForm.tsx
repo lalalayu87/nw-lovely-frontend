@@ -134,10 +134,7 @@ function SignUpForm({ className }: SignUpFormProps) {
                     userPassword: '비밀번호를 입력하세요.',
                 })
             } else {
-                if (
-                    confirmPassword === '' ||
-                    userPassword !== confirmPassword
-                ) {
+                if (userPassword !== confirmPassword) {
                     setErrorMessages({
                         ...errorMessages,
                         userPassword: '비밀번호를 확인해주세요.',
@@ -185,7 +182,7 @@ function SignUpForm({ className }: SignUpFormProps) {
             console.error('회원 가입 실패:', error)
             toast.push(
                 <Notification title={'실패'} type="warning">
-                    회원가입 실패
+                    아이디가 중복되었습니다.
                 </Notification>
             )
         }
