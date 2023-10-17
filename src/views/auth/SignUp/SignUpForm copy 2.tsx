@@ -37,122 +37,39 @@ function SignUpForm({ className }: SignUpFormProps) {
 
     const [errors, setErrors] = useState({})
 
-    const [errorMessages, setErrorMessages] = useState({
-        userId: '',
-        userName: '',
-        userEmail: '',
-        userPassword: '',
-        // 다른 필드의 오류 메시지도 추가
-    })
-
     const onChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { value, name } = e.target
-
-        if (name === 'userId') {
-            if (value === '') {
-                setErrorMessages({
-                    ...errorMessages,
-                    userId: '아이디를 입력하세요.',
-                })
-            } else if (value.length < 4) {
-                setErrorMessages({
-                    ...errorMessages,
-                    userId: '아이디를 4자 이상 입력해주세요.',
-                })
-            } else {
-                const alphanumericRegex = /^[a-zA-Z0-9]+/
-                if (!alphanumericRegex.test(value)) {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userId: '아이디를 숫자 또는 영어로 입력해주세요.',
-                    })
-                } else {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userId: '', // 오류가 없을 때 빈 문자열로 설정
-                    })
-                }
-            }
-        }
-        if (name === 'userName') {
-            if (value === '') {
-                setErrorMessages({
-                    ...errorMessages,
-                    userName: '이름을 입력하세요.',
-                })
-            } else {
-                const regex = /^[가-힣]+$/
-                if (!regex.test(value)) {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userName: '이름을 한글로 입력하세요.',
-                    })
-                } else {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userName: '', // 오류가 없을 때 빈 문자열로 설정
-                    })
-                }
-            }
-        }
-        if (name === 'userEmail') {
-            const emailReg =
-                /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
-            if (value === '') {
-                setErrorMessages({
-                    ...errorMessages,
-                    userEmail: '이메일을 입력하세요.',
-                })
-            } else {
-                const emailReg =
-                    /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
-                console.log('emailReg : ', emailReg)
-                if (!emailReg.test(value)) {
-                    console.log('errorMessages', errorMessages)
-                    setErrorMessages({
-                        ...errorMessages,
-                        userEmail: '이메일이 형식에 맞지 않습니다.',
-                    })
-                } else {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userEmail: '', // 오류가 없을 때 빈 문자열로 설정
-                    })
-                }
-            }
-        }
-        if (name === 'userPassword') {
-            if (value === '') {
-                setErrorMessages({
-                    ...errorMessages,
-                    userPassword: '비밀번호를 입력하세요.',
-                })
-            } else {
-                if (
-                    confirmPassword === '' ||
-                    userPassword !== confirmPassword
-                ) {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userPassword: '비밀번호를 확인해주세요.',
-                    })
-                } else {
-                    setErrorMessages({
-                        ...errorMessages,
-                        userPassword: '', // 오류가 없을 때 빈 문자열로 설정
-                    })
-                }
-            }
-        }
-
         setFormData({
             ...formData,
             [name]: value,
         })
     }
 
+    // const validCheck = () => {
+    //     const emailReg =
+    //         /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
+
+    //     if (userId === '') {
+    //         return false
+    //     }
+    //     if (userName === '') {
+    //         return false
+    //     }
+    //     if (
+    //         userPassword === '' ||
+    //         confirmPassword === '' ||
+    //         userPassword !== confirmPassword
+    //     ) {
+    //         return false
+    //     }
+    //     if (userEmail === '' || !emailReg.test(userEmail)) {
+    //         return false
+    //     }
+
+    //     return true
+    // }
     const navigate = useNavigate()
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -162,26 +79,21 @@ function SignUpForm({ className }: SignUpFormProps) {
             /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
 
         if (userId === '') {
-            const alphanumericRegex = /^[a-zA-Z0-9]+$/
-            if (!alphanumericRegex.test(userId)) {
-                toast.push(
-                    <Notification title={''} type="warning">
-                        아이디를 숫자 또는 영어로 입력하세요.
-                    </Notification>
-                )
-            }
+            toast.push(
+                <Notification title={''} type="warning">
+                    아이디를 입력하세요.
+                </Notification>
+            )
+            return false
         }
-
-        // 아이디가 4자 이상인지 검사
-
-        // if (userName === '') {
-        //     toast.push(
-        //         <Notification title={''} type="warning">
-        //             이름을 입력하세요.
-        //         </Notification>
-        //     )
-        //     return false
-        // }
+        if (userName === '') {
+            toast.push(
+                <Notification title={''} type="warning">
+                    이름을 입력하세요.
+                </Notification>
+            )
+            return false
+        }
         if (
             userPassword === '' ||
             confirmPassword === '' ||
@@ -214,13 +126,7 @@ function SignUpForm({ className }: SignUpFormProps) {
                 }
             )
 
-            console.log(response)
-            toast.push(
-                <Notification title={'성공'} type="success">
-                    회원가입이 완료되었습니다.
-                </Notification>
-            )
-
+            console.log(response.data)
             navigate('/sign-in')
         } catch (error) {
             console.error('회원 가입 실패:', error)
@@ -243,12 +149,10 @@ function SignUpForm({ className }: SignUpFormProps) {
                         borderRadius: '4px', // 경계선 둥근 모서리 설정
                         padding: '8px', // 내부 여백 설정
                     }}
-                    onChange={onChange}
                 />
-                <div style={{ color: 'red' }}>{errorMessages.userId}</div>
             </div>
 
-            <div style={{ margin: '30px 0' }}>
+            <div style={{ margin: '20px 0' }}>
                 <label htmlFor="userName">이름</label>
                 <input
                     type="text"
@@ -262,7 +166,6 @@ function SignUpForm({ className }: SignUpFormProps) {
                     }}
                     onChange={onChange}
                 />
-                <div style={{ color: 'red' }}>{errorMessages.userName}</div>
             </div>
 
             <div style={{ margin: '20px 0' }}>
@@ -279,7 +182,6 @@ function SignUpForm({ className }: SignUpFormProps) {
                     }}
                     onChange={onChange}
                 />
-                <div style={{ color: 'red' }}>{errorMessages.userEmail}</div>
             </div>
 
             <div style={{ margin: '20px 0' }}>
@@ -296,7 +198,6 @@ function SignUpForm({ className }: SignUpFormProps) {
                     }}
                     onChange={onChange}
                 />
-                <div style={{ color: 'red' }}>{errorMessages.userPassword}</div>
             </div>
 
             <div style={{ margin: '20px 0' }}>
@@ -313,9 +214,6 @@ function SignUpForm({ className }: SignUpFormProps) {
                     }}
                     onChange={onChange}
                 />
-                <div style={{ color: 'red' }}>
-                    {errorMessages.confirmPassword}
-                </div>
             </div>
 
             <div style={{ margin: '20px 0' }}>

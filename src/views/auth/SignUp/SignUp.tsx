@@ -4,7 +4,7 @@ const SignUp = () => {
     return (
         <>
             <div className="mb-8">
-                <h3 className="mb-1">일반 회원가입</h3>
+                <h3 className="mb-1">회원가입</h3>
             </div>
             <SignUpForm disableSubmit={false} />
         </>
