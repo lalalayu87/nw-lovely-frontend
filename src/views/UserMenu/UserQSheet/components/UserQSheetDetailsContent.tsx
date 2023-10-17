@@ -23,7 +23,6 @@ import {
 } from '../store'
 import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useNavigate, useLocation } from 'react-router-dom'
-
 import {
     apiGetQSheetCardDetails,
     apiPatchQSheetCardList,
@@ -45,6 +44,7 @@ import { PERSIST_STORE_NAME } from '@/constants/app.constant'
 import deepParseJson from '@/utils/deepParseJson'
 import { useReactToPrint } from 'react-to-print'
 import axios from 'axios'
+import { SERVER_URL } from '../../../../../config'
 
 const inputStyle = {
     // border: '1px solid #ccc'
@@ -88,6 +88,7 @@ type QSheetDetailsResponse = {
     name: string
     created_at: string
     data: []
+    memo: string
     orgSeq: string
     userSeq: string
 }
@@ -100,17 +101,8 @@ type DataContent = {
     orderIndex: number
     process: string
     readOnly: boolean // readOnly 속성 추가
+    memo: string
 }
-
-// interface QSheetExampleData {
-//     process: string
-//     actor: string
-//     content: string
-//     filePath: string
-//     note: string
-//     orderIndex: number
-//     memo: string
-// }
 
 // const initialData: QSheetExampleData = {
 //     process: '',
@@ -123,7 +115,6 @@ type DataContent = {
 // }
 
 const UserQSheetDetailsContent = () => {
-    // const UserQSheetDetailsContent: React.FC = () => {
     const tableRef = useRef<DataTableResetHandle>(null)
     const dispatch = useAppDispatch()
     const [applyCustomStyle, setApplyCustomStyle] = useState(false)
@@ -163,7 +154,8 @@ const UserQSheetDetailsContent = () => {
     const [dataList, setDataList] = useState<QSheetDetailsResponse>()
 
     const qsheetSeq = location.state.qsheetSeq
-    const orgSeq = dataList?.orgSeq
+    const orgSeq = dataList?.orgSeq?.orgSeq
+    const secretMemo = dataList?.memo
 
     const initialDataContent: DataContent[] = [
         {
@@ -174,6 +166,7 @@ const UserQSheetDetailsContent = () => {
             orderIndex: 1,
             process: '',
             readOnly: false, // 처음에는 수정 가능하게 시작
+            memo: '', // memo: 추가
         },
     ]
 
@@ -218,33 +211,9 @@ const UserQSheetDetailsContent = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSeq = (persistData as any).auth.user.userSeq
-    // const orgSeq = dataList
+    console.log(dataContent)
 
     const navigate = useNavigate()
-
-    // const onConfirm = () => {
-    //     for (const e of dataContent) {
-    //         console.log(e)
-
-    //         if (
-    //             e.actor === '' &&
-    //             e.content === '' &&
-    //             e.filePath === '' &&
-    //             e.note === '' &&
-    //             e.process === ''
-    //         ) {
-    //             toast.push(
-    //                 <Notification title={'실패'} type="warning">
-    //                     입력되지 않은 행이 있습니다.
-    //                 </Notification>
-    //             )
-    //             // break
-    //             return
-    //         } else {
-    //             onUpdate()
-    //         }
-    //     }
-    // }
 
     const onUpdate = async () => {
         // 빈 행인지 확인하는 로직
@@ -265,14 +234,12 @@ const UserQSheetDetailsContent = () => {
             )
             return // 빈 행이 있을 경우 함수 종료
         }
-
-        // 빈 행이 없을 경우 아래의 업데이트 로직을 실행
-        // ... (기존의 onUpdate 내용)
-
         const qsheetData = {
             orgSeq: orgSeq,
             data: [],
+            memo: secretMemo,
         }
+        // console.log(secretMemo)
         const addData = []
         const formData = new FormData()
 
@@ -289,10 +256,10 @@ const UserQSheetDetailsContent = () => {
                 actor: item.actor,
                 note: item.note,
                 filePath: updatedFilePath,
+                memo: item.memo,
             }))
+            console.log(dataContent.map((i) => i.memo))
             qsheetData.data = qsheetData.data.concat(requestData[i])
-            console.log(qsheetData.data)
-            console.log(qsheetData)
         }
 
         // console.log(alert(JSON.stringify(qsheetData)))
@@ -303,7 +270,6 @@ const UserQSheetDetailsContent = () => {
                 type: 'application/json',
             })
         )
-        console.log([JSON.stringify(qsheetData)])
 
         fileInputs.forEach((file, index) => {
             if (file) {
@@ -313,7 +279,6 @@ const UserQSheetDetailsContent = () => {
 
         const accessToken = (persistData as any).auth.session.accessToken
         try {
-            // Axios나 fetch 등을 사용하여 API로 FormData를 POST 요청으로 보냅니다.
             const response = await axios.patch(
                 `http://152.69.228.245:10001/api/v1/qsheet/${qsheetSeq}`,
                 formData,
@@ -324,19 +289,15 @@ const UserQSheetDetailsContent = () => {
                 }
             )
 
-            // API 응답을 필요에 따라 처리합니다.
-            console.log(response.data)
-
             toast.push(
                 <Notification title={'큐시트가 수정되었습니다.'} type="success">
                     큐시트가 수정되었습니다.
                 </Notification>
             )
 
-            // navigate('/cuesheetUser')
-            navigate('/userhome')
+            navigate('/cuesheetUser')
+            // navigate('/userhome')
         } catch (error) {
-            // 에러를 처리합니다.
             console.error(error)
         }
 
@@ -360,23 +321,6 @@ const UserQSheetDetailsContent = () => {
         // for (let i = 0; i < transformedData.length; i++) {
         //     body.data.push(transformedData[i].data[0])
         // }
-
-        // try {
-        //     const response = await apiPatchQSheetCardList<ResponseType>(
-        //         qsheetSeq,
-        //         body
-        //     )
-
-        //     toast.push(
-        //         <Notification title={'큐시트가 수정되었습니다.'} type="success">
-        //             큐시트가 수정되었습니다.
-        //         </Notification>
-        //     )
-
-        //     navigate('/cuesheetUser')
-        // } catch (error) {
-        //     console.error(error)
-        // }
     }
 
     const handleInputChange = (
@@ -384,9 +328,7 @@ const UserQSheetDetailsContent = () => {
         value: string,
         index: number
     ) => {
-        console.log(dataList)
         const updatedDataList = [...dataContent]
-        console.log(field)
 
         let className = ''
         if (field === 'actor') {
@@ -396,7 +338,6 @@ const UserQSheetDetailsContent = () => {
         }
         updatedDataList[index][field] = value
         setDataContent(updatedDataList)
-        console.log(updatedDataList)
     }
 
     const fileInputRef = useRef<HTMLInputElement>(null) // useRef를 사용하여 파일 입력 요소를 참조
@@ -407,14 +348,9 @@ const UserQSheetDetailsContent = () => {
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
-        console.log(e)
-        console.log(index)
-
         const updatedDataList = [...dataContent]
-        console.log('updatedDataList', updatedDataList)
 
         const files = e.target.files
-        console.log(files)
 
         const updatedFileInputs = [...fileInputs]
 
@@ -430,68 +366,9 @@ const UserQSheetDetailsContent = () => {
             }
             setDataContent(updatedDataList)
         }
-
-        // if (file) {
-        //     updatedDataList[index] = {
-        //         ...updatedDataList[index], //중요!!!
-        //         filePath: file.name
-        //     }
-        //     console.log(updatedDataList)
-        //     console.log(index)
-        //     console.log(file.name)
-        // }
-        // setDataList(updatedDataList)
-        console.log(updatedDataList)
-
-        // const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-        // const fileNameDisplay = document.getElementById('fileNameDisplay')
-
-        // if (fileInputName && fileInputName.files.length > 0) {
-        //     // null 체크를 수행하여 오류 방지
-        //     const fileName = fileInputName.files[0].name
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = fileName
-        //     }
-        // } else {
-        //     if (fileNameDisplay) {
-        //         fileNameDisplay.textContent = '파일'
-        //     }
-        // }
     }
 
-    // const handleFileChange = (
-    //     e: React.ChangeEvent<HTMLInputElement>,
-    //     index: number
-    // ) => {
-    //     const updatedDataList = [...dataContent]
-    //     console.log(e.target.files[0].name)
-    //     const file = e.target.files[0]
-    //     console.log(file)
-
-    //     if (file) {
-    //         updatedDataList[index].filePath = file.name
-    //     }
-    //     setDataContent(updatedDataList)
-    //     console.log(updatedDataList)
-
-    //     const fileInputName = fileInputRef.current // useRef를 통해 파일 입력 요소를 얻음
-    //     const fileNameDisplay = document.getElementById('fileNameDisplay')
-
-    //     if (fileInputName && fileInputName.files.length > 0) {
-    //         // null 체크를 수행하여 오류 방지
-    //         const fileName = fileInputName.files[0].name
-    //         if (fileNameDisplay) {
-    //             fileNameDisplay.textContent = fileName
-    //         }
-    //     } else {
-    //         if (fileNameDisplay) {
-    //             fileNameDisplay.textContent = '파일'
-    //         }
-    //     }
-    // }
-
     const onDragEnd = (result: DropResult) => {
-        console.log(result)
         // 드래그가 취소된 경우
         if (!result.destination) return
 
@@ -505,7 +382,7 @@ const UserQSheetDetailsContent = () => {
         // 원하는 자리에 reorderedItem을 insert 해줍니다.
         newItems.splice(result.destination.index, 0, reorderedItem)
 
-        setDataContent(newItems) //setDataList에서 수정
+        setDataContent(newItems)
     }
 
     const fontColor = (e: string | void) => {
@@ -531,7 +408,6 @@ const UserQSheetDetailsContent = () => {
 
     const onAdd = () => {
         const orderIndex = dataContent.length + 1
-        console.log(orderIndex)
         const newDataItem = {
             actor: '',
             content: '',
@@ -545,7 +421,6 @@ const UserQSheetDetailsContent = () => {
         setDataContent([...dataContent, newDataItem])
     }
 
-    // const ActionColumn = ({ row }: { row: DataContent }) => {
     const ActionColumn = ({
         row,
         dataContent,
@@ -556,8 +431,6 @@ const UserQSheetDetailsContent = () => {
         setDataContent: (data: DataContent[]) => void
     }) => {
         const { textTheme } = useThemeClass()
-
-        // console.log('dataContent : ', dataContent)
 
         const onEdit = () => {
             setDataContent(
@@ -574,13 +447,11 @@ const UserQSheetDetailsContent = () => {
             const rowData = dataContent.find(
                 (item) => item.orderIndex === row.orderIndex
             )
-            console.log(rowData)
 
             // 데이터를 삭제하고 업데이트된 배열을 생성합니다.
             const updatedData = dataContent.filter(
                 (item) => item.orderIndex !== row.orderIndex
             )
-            console.log(updatedData)
 
             setDataContent(updatedData)
             toast.push(
@@ -626,6 +497,7 @@ const UserQSheetDetailsContent = () => {
       `,
     })
 
+    // 최종승인
     const [isFinalConfirmed, setIsFinalConfirmed] = useState(false)
     const finalButton = () => {
         setIsFinalConfirmed(true)
@@ -957,6 +829,16 @@ const UserQSheetDetailsContent = () => {
                             )}
                         </Droppable>
                     </DragDropContext>
+                </div>
+            </div>
+            <div className="mb-10">
+                <div className="mb-4 w-full">
+                    <Input
+                        textArea
+                        className="w-full focus:border border-gray-300 mt-3"
+                        // style={inputStyle}
+                        value={dataList?.memo}
+                    />
                 </div>
             </div>
         </>

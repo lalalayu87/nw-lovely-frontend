@@ -24,6 +24,7 @@ const layouts = {
 
 const Layout = () => {
     const layoutType = useAppSelector((state) => state.theme.layout.type)
+    console.log(layoutType)
 
     const { authenticated } = useAuth()
 

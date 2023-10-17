@@ -7,10 +7,11 @@ import type {
     SignInResponse,
     SignUpResponse,
 } from '@/@types/auth'
+import { SERVER_URL } from '../../config'
 
 export async function apiSignIn(data: SignInCredential) {
     return ApiService.fetchData<SignInResponse>({
-        url: '/api/auth/login',
+        url: `${SERVER_URL}/api/auth/login`,
         method: 'post',
         data,
     })
@@ -18,7 +19,7 @@ export async function apiSignIn(data: SignInCredential) {
 
 export async function apiSignUp(data: SignUpCredential) {
     return ApiService.fetchData<SignUpResponse>({
-        url: '/api/auth/register',
+        url: `${SERVER_URL}/api/auth/register`,
         method: 'post',
         data,
     })
@@ -26,14 +27,14 @@ export async function apiSignUp(data: SignUpCredential) {
 
 export async function apiSignOut() {
     return ApiService.fetchData({
-        url: '/sign-out',
+        url: `${SERVER_URL}/sign-out`,
         method: 'post',
     })
 }
 
 export async function apiForgotPassword(data: ForgotPassword) {
     return ApiService.fetchData({
-        url: '/forgot-password',
+        url: `${SERVER_URL}/forgot-password`,
         method: 'post',
         data,
     })
@@ -41,7 +42,7 @@ export async function apiForgotPassword(data: ForgotPassword) {
 
 export async function apiResetPassword(data: ResetPassword) {
     return ApiService.fetchData({
-        url: '/reset-password',
+        url: `${SERVER_URL}/reset-password`,
         method: 'post',
         data,
     })

@@ -7,6 +7,7 @@
         "qsheet": "큐시트관리",
         "mypage": "마이페이지",
         "communityUser": "커뮤니티",
+        "finaltempl": "최종확인서 템플릿",
         "collapseMenu": {
             "collapseMenu": "장소관리",
             "item1": "Collapse menu item 1",

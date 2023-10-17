@@ -14,7 +14,7 @@ export async function apiGetSalesProducts<T, U extends Record<string, unknown>>(
     data: U
 ) {
     return ApiService.fetchData<T>({
-        url: '/api/v1/qsheet',
+        url: `${SERVER_URL}/api/v1/qsheet`,
         method: 'post',
         data,
     })
@@ -26,7 +26,7 @@ export async function apiDeleteSalesProducts<
 >(data: U) {
     console.log(data.id)
     return ApiService.fetchData<T>({
-        url: `/api/v1/qsheet/${data.id}`,
+        url: `${SERVER_URL}/api/v1/qsheet/${data.id}`,
         method: 'delete',
         data,
     })
@@ -36,7 +36,7 @@ export async function apiGetSalesProduct<T, U extends Record<string, unknown>>(
     params: U
 ) {
     return ApiService.fetchData<T>({
-        url: '/api/v1/qsheet',
+        url: `${SERVER_URL}/api/v1/qsheet`,
         method: 'get',
         params,
     })
@@ -94,10 +94,9 @@ export async function apiGetSalesOrderDetails<
         params,
     })
 }
-
 // 조직 목록
-export async function apiGetOrgList<T, U extends Record<string, unknown>>() {
-    return ApiService.fetchData<T>({
+export async function apiGetOrgList() {
+    return ApiService.fetchData<string, string>({
         url: `${SERVER_URL}/api/v1/org`,
         method: 'get',
     })
